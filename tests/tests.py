@@ -119,7 +119,7 @@ class PyNWBAnotherTestCase(TestCase):
         rrs_timestamps = rrs.timestamps
         # and now do something cool!
 
-    def test_open_NWB_file_and_create_state_variable(self):
+    def test_open_NWB_file_and_inspect_data(self):
         nwb_path = './test_data/nwb_test_file.nwb'
         # read data back in
         io = NWBHDF5IO(nwb_path, 'r')
