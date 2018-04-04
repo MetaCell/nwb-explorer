@@ -1,6 +1,8 @@
 from django.test import TestCase
 from datetime import datetime
 
+import numpy as np
+
 from pynwb import NWBFile, TimeSeries, NWBHDF5IO
 from pynwb.ophys import TwoPhotonSeries, OpticalChannel, ImageSegmentation, Fluorescence
 
@@ -117,4 +119,20 @@ class PyNWBAnotherTestCase(TestCase):
         rrs_timestamps = rrs.timestamps
         # and now do something cool!
 
-        
+    def test_open_NWB_file_and_create_state_variable(self):
+        nwb_path = './test_data/nwb_test_file.nwb'
+        # read data back in
+        io = NWBHDF5IO(nwb_path, 'r')
+        self.nwbfile = io.read()
+
+        # get the processing module
+        mod = self.nwbfile.get_processing_module('img_seg_example')
+
+        # get the RoiResponseSeries from the Fluorescence data interface
+        rrs = mod['Fluorescence'].get_roi_response_series()
+        # get the data...
+        rrs_data = rrs.data
+        rrs_timestamps = rrs.timestamps
+
+        self.assertTrue(np.array_equal(rrs_data[()], [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]))
+        self.assertTrue(np.array_equal(rrs_timestamps[()], [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]))
