@@ -20,7 +20,7 @@ class NWBModelInterpreter(ModelInterpreter):
         logging.debug('Creating a Geppetto Model')
 
         geppetto_model = self.factory.createGeppettoModel('GepettoModel')
-        nwb_geppetto_library = pygeppetto.GeppettoLibrary(name='nwblib')
+        nwb_geppetto_library = pygeppetto.GeppettoLibrary(name='nwblib', id='nwblib')
         geppetto_model.libraries.append(nwb_geppetto_library)
         
 
@@ -49,7 +49,7 @@ class NWBModelInterpreter(ModelInterpreter):
         time = self.factory.createTimeSeries('myTimeSeriesValue', rrs_timestamps[()].tolist())
         geppetto_model.variables.append(self.factory.createStateVariable('time', time))
 
-        stimulus_value = self.factory.createTimeSeries('myTimeSeriesValue', stimulus_data.tolist())
+        stimulus_value = self.factory.createTimeSeries('myTimeSeriesValue', stimulus_data)
         nwbType.variables.append(self.factory.createStateVariable('Stimulus', stimulus_value)) 
         stimulus_time = self.factory.createTimeSeries('myTimeSeriesValue', stimulus_timestamps.tolist())
         geppetto_model.variables.append(self.factory.createStateVariable('stimulus_time', stimulus_time))
