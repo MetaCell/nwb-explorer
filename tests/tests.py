@@ -98,7 +98,7 @@ class PyNWBAnotherTestCase(TestCase):
         with NWBHDF5IO(nwb_path, 'w') as io:
             io.write(nwbfile)
 
-    def test_open_NWB_file_and_inspect_data(self):
+    def test_open_generated_NWB_file_retrieve_time_series(self):
         nwb_path = './test_data/nwb_test_file.nwb'
         # read data back in
         io = NWBHDF5IO(nwb_path, 'r')
@@ -115,7 +115,23 @@ class PyNWBAnotherTestCase(TestCase):
 
         self.assertTrue(np.array_equal(rrs_data[()], [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]))
         self.assertTrue(np.array_equal(rrs_timestamps[()], [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]))
+        
+        io.close()
+    
+    def test_open_static_NWB_file_and_fish_time_series_data(self):
+        file_path = './test_data/ophys_672584839.nwb'
+        # read data back in
+        io = NWBHDF5IO(file_path, 'r')
+        nwbfile = io.read()
 
-        nwbType = pygeppetto.CompositeType(id=str('nwb'), name=str('nwb'), abstract= False)
-        ts_val = self.factory.createTimeSeries('myTimeSeriesValue', rrs_data[()].all())
-        nwbType.variables.append(self.factory.createStateVariable('timeSeriesVariable', ts_val))
+        # get the processing module
+        mod = nwbfile.get_processing_module('ophys')
+
+        # get the RoiResponseSeries from the Fluorescence data interface
+        # get the data...
+        rrs = mod['DfOverF'].get_roi_response_series()
+        rrs_data = rrs.data
+        rrs_timestamps = rrs.timestamps
+
+        print(rrs_data[()][0])
+        print(rrs_data[()][1])
