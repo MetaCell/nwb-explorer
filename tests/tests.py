@@ -126,6 +126,10 @@ class PyNWBAnotherTestCase(TestCase):
 
         # get the processing module
         mod = nwbfile.get_processing_module('ophys')
+        stimulus = nwbfile.get_stimulus('natural_images_timeseries')
+
+        stimulus_data = stimulus.data[()]
+        stimulus_timestamps = stimulus.timestamps[()]
 
         # get the RoiResponseSeries from the Fluorescence data interface
         # get the data...
@@ -133,5 +137,5 @@ class PyNWBAnotherTestCase(TestCase):
         rrs_data = rrs.data
         rrs_timestamps = rrs.timestamps
 
-        print(rrs_data[()][0])
-        print(rrs_data[()][1])
+        print(stimulus_data )
+        print(stimulus_timestamps)

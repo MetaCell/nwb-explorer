@@ -38,13 +38,22 @@ class NWBModelInterpreter(ModelInterpreter):
         rrs_data = rrs.data
         rrs_timestamps = rrs.timestamps
 
+        stimulus = nwbfile.get_stimulus('natural_images_timeseries')
+        stimulus_data = stimulus.data[()]
+        stimulus_timestamps = stimulus.timestamps[()]
+
         nwbType = pygeppetto.CompositeType(id=str('nwb'), name=str('nwb'), abstract= False)
-        ts_val1 = self.factory.createTimeSeries('myTimeSeriesValue', rrs_data[()][0].tolist())
-        nwbType.variables.append(self.factory.createStateVariable('timeSeriesVariable', ts_val1))
-        ts_val2 = self.factory.createTimeSeries('myTimeSeriesValue', rrs_data[()][1].tolist())
-        nwbType.variables.append(self.factory.createStateVariable('timeSeriesVariable', ts_val2))
+        dff_val1 = self.factory.createTimeSeries('myTimeSeriesValue', rrs_data[()][0].tolist())
+        nwbType.variables.append(self.factory.createStateVariable('DfOverF_1', dff_val1))
+        dff_val2 = self.factory.createTimeSeries('myTimeSeriesValue', rrs_data[()][1].tolist())
+        nwbType.variables.append(self.factory.createStateVariable('DfOverF_2', dff_val2))
         time = self.factory.createTimeSeries('myTimeSeriesValue', rrs_timestamps[()].tolist())
         geppetto_model.variables.append(self.factory.createStateVariable('time', time))
+
+        stimulus_value = self.factory.createTimeSeries('myTimeSeriesValue', stimulus_data.tolist())
+        nwbType.variables.append(self.factory.createStateVariable('Stimulus', stimulus_value)) 
+        stimulus_time = self.factory.createTimeSeries('myTimeSeriesValue', stimulus_timestamps.tolist())
+        geppetto_model.variables.append(self.factory.createStateVariable('stimulus_time', stimulus_time))
 
         model = GeppettoModelSerializer().serialize(geppetto_model)
         return model
