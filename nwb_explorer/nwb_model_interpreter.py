@@ -8,6 +8,7 @@ from model.services.model_interpreter import ModelInterpreter
 from model.model_factory import GeppettoModelFactory
 from model.values import Point, ArrayElement, ArrayValue
 from model.model_serializer import GeppettoModelSerializer
+from model.variables import Variable
 from pynwb import NWBHDF5IO
 
 
@@ -53,8 +54,14 @@ class NWBModelInterpreter(ModelInterpreter):
         nwbType.variables.append(self.factory.createStateVariable('Stimulus', stimulus_value)) 
         stimulus_time = self.factory.createTimeSeries('myTimeSeriesValue', stimulus_timestamps.tolist())
         geppetto_model.variables.append(self.factory.createStateVariable('stimulus_time', stimulus_time))
-
+        
+        # add type to nwb
         nwb_geppetto_library.types.append(nwbType)
+
+        # add top level variables
+        nwb_variable = Variable(id='nwb')
+        nwb_variable.types.append(nwbType)
+        geppetto_model.variables.append(nwb_variable)
 
         model = GeppettoModelSerializer().serialize(geppetto_model)
         return model
