@@ -8,6 +8,7 @@ from model.services.model_interpreter import ModelInterpreter
 from model.model_factory import GeppettoModelFactory
 from model.values import Point, ArrayElement, ArrayValue
 from model.model_serializer import GeppettoModelSerializer
+from pynwb import NWBHDF5IO
 
 
 class NWBModelInterpreter(ModelInterpreter):
