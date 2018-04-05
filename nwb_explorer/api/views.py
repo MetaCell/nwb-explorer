@@ -13,7 +13,7 @@ def load(request):
         # posts = Post.objects.all()
         # serializer = PostSerializer(posts, many=True)
         model_interpreter = NWBModelInterpreter()
-        return Response(model_interpreter.importType("","","",""))
+        return Response(model_interpreter.importType('./test_data/ophys_672584839.nwb','','',''))
     elif request.method == 'POST':
         return Response("Post model")
     
