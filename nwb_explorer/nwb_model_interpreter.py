@@ -19,8 +19,7 @@ class NWBModelInterpreter(ModelInterpreter):
     def importType(self, url, typeName, library, commonLibraryAccess):
         logging.debug('Creating a Geppetto Model')
 
-        factory = GeppettoModelFactory()
-        geppetto_model = factory.createGeppettoModel('GepettoModel')
+        geppetto_model = self.factory.createGeppettoModel('GepettoModel')
         nwb_geppetto_library = pygeppetto.GeppettoLibrary(name='nwblib')
         geppetto_model.libraries.append(nwb_geppetto_library)
         
@@ -46,6 +45,7 @@ class NWBModelInterpreter(ModelInterpreter):
         time = self.factory.createTimeSeries('myTimeSeriesValue', rrs_timestamps[()].tolist())
         geppetto_model.variables.append(self.factory.createStateVariable('time', time))
 
+        nwb_geppetto_library.types.append(nwbType)
         model = GeppettoModelSerializer().serialize(geppetto_model)
         return model
 
