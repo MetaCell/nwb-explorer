@@ -3,4 +3,4 @@
 *pyc
 static/org.geppetto.frontend/
 .DS_Store
-.nwb
+*.nwb
