@@ -23,7 +23,7 @@ class NWBModelInterpreter(ModelInterpreter):
         geppetto_model = factory.createGeppettoModel('GepettoModel')
         nwb_geppetto_library = pygeppetto.GeppettoLibrary(name='nwblib')
         geppetto_model.libraries.append(nwb_geppetto_library)
-        model = GeppettoModelSerializer().serialize(geppetto_model)
+        
 
         # read data 
         io = NWBHDF5IO(url, 'r')
@@ -39,13 +39,14 @@ class NWBModelInterpreter(ModelInterpreter):
         rrs_timestamps = rrs.timestamps
 
         nwbType = pygeppetto.CompositeType(id=str('nwb'), name=str('nwb'), abstract= False)
-        ts_val1 = self.factory.createTimeSeries('myTimeSeriesValue', rrs_data[()][0].all())
+        ts_val1 = self.factory.createTimeSeries('myTimeSeriesValue', rrs_data[()][0].tolist())
         nwbType.variables.append(self.factory.createStateVariable('timeSeriesVariable', ts_val1))
-        ts_val2 = self.factory.createTimeSeries('myTimeSeriesValue', rrs_data[()][1].all())
+        ts_val2 = self.factory.createTimeSeries('myTimeSeriesValue', rrs_data[()][1].tolist())
         nwbType.variables.append(self.factory.createStateVariable('timeSeriesVariable', ts_val2))
-        time = self.factory.createTimeSeries('myTimeSeriesValue', rrs_timestamps[()].all())
+        time = self.factory.createTimeSeries('myTimeSeriesValue', rrs_timestamps[()].tolist())
         geppetto_model.variables.append(self.factory.createStateVariable('time', time))
 
+        model = GeppettoModelSerializer().serialize(geppetto_model)
         return model
 
     def importValue(self, importValue):
