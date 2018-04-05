@@ -7,7 +7,6 @@ import model as pygeppetto
 from model.services.model_interpreter import ModelInterpreter
 from model.model_factory import GeppettoModelFactory
 from model.values import Point, ArrayElement, ArrayValue
-from model.model_serializer import GeppettoModelSerializer
 from model.variables import Variable
 from pynwb import NWBHDF5IO
 
@@ -62,8 +61,8 @@ class NWBModelInterpreter(ModelInterpreter):
         nwb_variable.types.append(nwbType)
         geppetto_model.variables.append(nwb_variable)
 
-        model = GeppettoModelSerializer().serialize(geppetto_model)
-        return model
+        
+        return geppetto_model
 
     def importValue(self, importValue):
         pass
