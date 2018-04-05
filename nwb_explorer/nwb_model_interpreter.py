@@ -24,7 +24,6 @@ class NWBModelInterpreter(ModelInterpreter):
         nwb_geppetto_library = pygeppetto.GeppettoLibrary(name='nwblib', id='nwblib')
         geppetto_model.libraries.append(nwb_geppetto_library)
         
-
         # read data 
         io = NWBHDF5IO(url, 'r')
         nwbfile = io.read()
@@ -43,16 +42,16 @@ class NWBModelInterpreter(ModelInterpreter):
         stimulus_timestamps = stimulus.timestamps[()]
 
         nwbType = pygeppetto.CompositeType(id=str('nwb'), name=str('nwb'), abstract= False)
-        dff_val1 = self.factory.createTimeSeries('myTimeSeriesValue', rrs_data[()][0].tolist())
+        dff_val1 = self.factory.createTimeSeries('myTimeSeriesValue', rrs_data[()][0].tolist(), 'v')
         nwbType.variables.append(self.factory.createStateVariable('DfOverF_1', dff_val1))
-        dff_val2 = self.factory.createTimeSeries('myTimeSeriesValue', rrs_data[()][1].tolist())
+        dff_val2 = self.factory.createTimeSeries('myTimeSeriesValue', rrs_data[()][1].tolist(), 'v')
         nwbType.variables.append(self.factory.createStateVariable('DfOverF_2', dff_val2))
-        time = self.factory.createTimeSeries('myTimeSeriesValue', rrs_timestamps[()].tolist())
+        time = self.factory.createTimeSeries('myTimeSeriesValue', rrs_timestamps[()].tolist(), 's')
         geppetto_model.variables.append(self.factory.createStateVariable('time', time))
 
-        stimulus_value = self.factory.createTimeSeries('myTimeSeriesValue', stimulus_data)
+        stimulus_value = self.factory.createTimeSeries('myTimeSeriesValue', stimulus_data, 'v')
         nwbType.variables.append(self.factory.createStateVariable('Stimulus', stimulus_value)) 
-        stimulus_time = self.factory.createTimeSeries('myTimeSeriesValue', stimulus_timestamps.tolist())
+        stimulus_time = self.factory.createTimeSeries('myTimeSeriesValue', stimulus_timestamps.tolist(), 's')
         geppetto_model.variables.append(self.factory.createStateVariable('stimulus_time', stimulus_time))
         
         # add type to nwb
