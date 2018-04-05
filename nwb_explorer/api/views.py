@@ -6,6 +6,7 @@ import model as pygeppetto
 from ..nwb_model_interpreter import NWBModelInterpreter
 from ..plots_controller import PlotsController
 from model.model_serializer import GeppettoModelSerializer
+from django.conf import settings
 
 geppetto_model = None
 
@@ -18,6 +19,10 @@ def load(request):
         model_interpreter = NWBModelInterpreter()
         geppetto_model = model_interpreter.importType('./test_data/ophys_672584839.nwb','','','')
         serialized_model = GeppettoModelSerializer().serialize(geppetto_model)
+        
+        # TODO serialise and store geppetto model in session (temporary stored in settings)
+        settings.GEPPETTO_MODEL = geppetto_model
+
         return Response(serialized_model)
     elif request.method == 'POST':
         return Response("Post model")
@@ -27,6 +32,7 @@ def load(request):
 @permission_classes((AllowAny, ))
 def plot(request):
     if request.method == 'GET':
+        geppetto_model = settings.GEPPETTO_MODEL
         plot_controller = PlotsController(geppetto_model)
         return Response(plot_controller.plot_mean())
     elif request.method == 'POST':
