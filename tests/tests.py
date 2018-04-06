@@ -113,8 +113,8 @@ class PyNWBAnotherTestCase(TestCase):
         rrs_data = rrs.data
         rrs_timestamps = rrs.timestamps
 
-        self.assertTrue(np.array_equal(rrs_data[()], [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]))
-        self.assertTrue(np.array_equal(rrs_timestamps[()], [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]))
+        self.assertTrue(np.array_equal(rrs_data, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]))
+        self.assertTrue(np.array_equal(rrs_timestamps, [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]))
         
         io.close()
     
@@ -128,8 +128,8 @@ class PyNWBAnotherTestCase(TestCase):
         mod = nwbfile.get_processing_module('ophys')
         stimulus = nwbfile.get_stimulus('natural_images_timeseries')
 
-        stimulus_data = stimulus.data[()]
-        stimulus_timestamps = stimulus.timestamps[()]
+        stimulus_data = stimulus.data
+        stimulus_timestamps = stimulus.timestamps
 
         # get the RoiResponseSeries from the Fluorescence data interface
         # get the data...
@@ -137,5 +137,25 @@ class PyNWBAnotherTestCase(TestCase):
         rrs_data = rrs.data
         rrs_timestamps = rrs.timestamps
 
-        print(stimulus_data )
-        print(stimulus_timestamps)
+        print(stimulus_data[()])
+        print(stimulus_timestamps[()])
+
+        io.close()
+    
+    #def test_open_big_static_NWB_file(self):
+    #    file_path = './test_data/mem_potential_real.nwb'
+    #    # read data back in
+    #    io = NWBHDF5IO(file_path, 'r')
+    #    nwbfile = io.read()
+    #
+    #    mod = nwbfile.get_processing_module('name')
+    #    rrs_data = mod['va_table'].data
+    #    time_data = np.arange(len(rrs_data))
+    #    
+    #    nwbType = pygeppetto.CompositeType(id=str('nwb'), name=str('nwb'), abstract= False)
+    #    va_table_val1 = self.factory.createTimeSeries('myTimeSeriesValue', rrs_data[()][:,0].tolist(), 'V')
+    #    nwbType.variables.append(self.factory.createStateVariable('DfOverF_1', va_table_val1))
+    #    time = self.factory.createTimeSeries('myTimeSeriesValue', time_data.tolist(), 's')
+    #    geppetto_model.variables.append(self.factory.createStateVariable('time', time))
+
+    #    io.close()

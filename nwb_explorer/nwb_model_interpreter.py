@@ -37,7 +37,7 @@ class NWBModelInterpreter(ModelInterpreter):
         rrs_timestamps = rrs.timestamps
 
         stimulus = nwbfile.get_stimulus('natural_images_timeseries')
-        stimulus_data = [float(i) for i in stimulus.data[()]]
+        stimulus_data = [float(i) for i in stimulus.data]
         stimulus_timestamps = stimulus.timestamps[()]
 
         nwbType = pygeppetto.CompositeType(id=str('nwb'), name=str('nwb'), abstract= False)
