@@ -7,7 +7,7 @@ mkdir static
 cd static
 git clone https://github.com/openworm/org.geppetto.frontend
 cd org.geppetto.frontend/src/main/webapp/extensions
-git clone https://github.com/tarelli/nwb-explorer
+git clone https://github.com/tarelli/geppetto-nwbexplorer
 cd ..
 npm install
 npm run build-dev-noTest
