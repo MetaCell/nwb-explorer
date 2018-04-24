@@ -8,6 +8,7 @@ cd static
 git clone https://github.com/openworm/org.geppetto.frontend
 cd org.geppetto.frontend/src/main/webapp/extensions
 git clone https://github.com/tarelli/geppetto-nwbexplorer
+[at this stage copy the GeppettoConfiguration.json from this repo overwriting the default one inside the webapp folder]
 cd ..
 npm install
 npm run build-dev-noTest
