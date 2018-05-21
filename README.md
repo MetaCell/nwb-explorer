@@ -13,13 +13,18 @@ Below you will find the software you need to install to use nwb explorer (and th
 * Node (9.11.1) and npm (6.0.0).
 * Redis-Server (4.0.9).
 * Python 3 (3.6.5), pip (10.0.1) and Python3-tk.
-* Django (1.11.7). `pip install django`
+#### Python Dependencies
+ `pip install requirements.txt`
+
+or
+
+* Django (1.9). `pip install django`
 * Pygeppeto_server. ```git clone https://github.com/MetaCell/pygeppetto-django.git && cd pygeppetto-django && git checkout development && pip install -e . ```
 * Pygeppeto_model.```git clone https://github.com/openworm/pygeppetto.git && cd pygeppetto && git checkout manager && pip install -e . ```
 * Pyecore (0.8.1). `pip install pyecore`
 * Pynwb. ```git clone https://github.com/NeurodataWithoutBorders/pynwb.git && cd pynwb && git checkout dev && pip install -e . ```
 * Seaborn (0.8.1). `pip install seaborn`
-
+ 
 ### Installing
 
 A step by step instructions to get a development env running
