@@ -3,11 +3,11 @@ netpyne_model_interpreter.py
 Model interpreter for NWB. This class creates a geppetto type
 """
 import logging
-import model as pygeppetto
-from model.services.model_interpreter import ModelInterpreter
-from model.model_factory import GeppettoModelFactory
-from model.values import Point, ArrayElement, ArrayValue
-from model.variables import Variable
+import pygeppetto.model as pygeppetto
+from pygeppetto.model.services.model_interpreter import ModelInterpreter
+from pygeppetto.model.model_factory import GeppettoModelFactory
+from pygeppetto.model.values import Point, ArrayElement, ArrayValue
+from pygeppetto.model.variables import Variable
 import numpy as np
 import os
 import pandas as pd
