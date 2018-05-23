@@ -14,7 +14,7 @@ Below you will find the software you need to install to use nwb explorer (and th
 * Redis-Server (4.0.9).
 * Python 3 (3.6.5), pip (10.0.1) and Python3-tk.
 #### Python Dependencies
- `pip install requirements.txt`
+ `pip install -r requirements.txt`
 
 or
 
