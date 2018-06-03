@@ -17,7 +17,7 @@ def load(request):
     if request.method == 'GET':
 
         model_interpreter = NWBModelInterpreter()
-        geppetto_model = model_interpreter.importType('./test_data/ophys_672584839.nwb','','','')
+        geppetto_model = model_interpreter.importType('./test_data/brain_observatory.nwb','','','')
         serialized_model = GeppettoModelSerializer().serialize(geppetto_model)
         
         # TODO serialise and store geppetto model in session (temporary stored in settings)
