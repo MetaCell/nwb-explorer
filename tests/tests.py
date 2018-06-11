@@ -1,7 +1,7 @@
 from django.test import TestCase
 from datetime import datetime
-import model as pygeppetto
-from model.model_factory import GeppettoModelFactory
+import pygeppetto.model as pygeppetto
+from pygeppetto.model.model_factory import GeppettoModelFactory
 
 import numpy as np
 
@@ -45,13 +45,13 @@ class PyNWBAnotherTestCase(TestCase):
         
         # create acquisition metadata
         optical_channel = OpticalChannel('test_optical_channel', 'optical channel source',
-                                        'optical channel description', '3.14')
+                                        'optical channel description', 3.14)
         imaging_plane = nwbfile.create_imaging_plane('test_imaging_plane',
                                                     'ophys integration tests',
                                                     optical_channel,
                                                     'imaging plane description',
                                                     'imaging_device_1',
-                                                    '6.28', '2.718', 'GFP', 'somewhere in the brain',
+                                                    6.28, '2.718', 'GFP', 'somewhere in the brain',
                                                     (1, 2, 1, 2, 3), 4.0, 'manifold unit', 'A frame to refer to')
 
         # create acquisition data
@@ -75,19 +75,19 @@ class PyNWBAnotherTestCase(TestCase):
         img_mask1[0][0] = 1.1
         img_mask1[1][1] = 1.2
         img_mask1[2][2] = 1.3
-        ps.add_roi(pix_mask1, img_mask1)
+        ps.add_roi('1234', pix_mask1, img_mask1)
 
         pix_mask2 = [(0, 0, 2.1), (1, 1, 2.2)]
         img_mask2 = [[0.0 for x in range(w)] for y in range(h)]
         img_mask2[0][0] = 2.1
         img_mask2[1][1] = 2.2
-        ps.add_roi(pix_mask2, img_mask2)
+        ps.add_roi('5678', pix_mask2, img_mask2)
 
         # add a Fluorescence container
         fl = Fluorescence('a toy fluorescence container')
         mod.add_data_interface(fl)
         # get an ROI table region i.e. a subset of ROIs to create a RoiResponseSeries from
-        rt_region = ps.create_roi_table_region([0], 'the first of two ROIs')
+        rt_region = ps.create_roi_table_region('the first of two ROIs', region=[0])
         # make some fake timeseries data
         data = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
         timestamps = [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
@@ -119,21 +119,21 @@ class PyNWBAnotherTestCase(TestCase):
         io.close()
     
     def test_open_static_NWB_file_and_fish_time_series_data(self):
-        file_path = './test_data/ophys_672584839.nwb'
+        file_path = './test_data/brain_observatory.nwb'
         # read data back in
         io = NWBHDF5IO(file_path, 'r')
         nwbfile = io.read()
 
         # get the processing module
-        mod = nwbfile.get_processing_module('ophys')
-        stimulus = nwbfile.get_stimulus('natural_images_timeseries')
+        mod = nwbfile.get_processing_module('ophys_module')
+        stimulus = nwbfile.get_stimulus('locally_sparse_noise_4deg')
 
         stimulus_data = stimulus.data
         stimulus_timestamps = stimulus.timestamps
 
         # get the RoiResponseSeries from the Fluorescence data interface
         # get the data...
-        rrs = mod['DfOverF'].get_roi_response_series()
+        rrs = mod['dff_interface'].get_roi_response_series()
         rrs_data = rrs.data
         rrs_timestamps = rrs.timestamps
 

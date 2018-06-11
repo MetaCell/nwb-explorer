@@ -2,10 +2,10 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
 import logging
-import model as pygeppetto
+import pygeppetto.model as pygeppetto
 from ..nwb_model_interpreter import NWBModelInterpreter
 from ..plots_controller import PlotsController
-from model.model_serializer import GeppettoModelSerializer
+from pygeppetto.model.model_serializer import GeppettoModelSerializer
 from django.conf import settings
 
 geppetto_model = None
@@ -17,7 +17,7 @@ def load(request):
     if request.method == 'GET':
 
         model_interpreter = NWBModelInterpreter()
-        geppetto_model = model_interpreter.importType('./test_data/ophys_672584839.nwb','','','')
+        geppetto_model = model_interpreter.importType('./test_data/brain_observatory.nwb','','','')
         serialized_model = GeppettoModelSerializer().serialize(geppetto_model)
         
         # TODO serialise and store geppetto model in session (temporary stored in settings)

@@ -3,11 +3,11 @@ netpyne_model_interpreter.py
 Model interpreter for NWB. This class creates a geppetto type
 """
 import logging
-import model as pygeppetto
-from model.services.model_interpreter import ModelInterpreter
-from model.model_factory import GeppettoModelFactory
-from model.values import Point, ArrayElement, ArrayValue
-from model.variables import Variable
+import pygeppetto.model as pygeppetto
+from pygeppetto.model.services.model_interpreter import ModelInterpreter
+from pygeppetto.model.model_factory import GeppettoModelFactory
+from pygeppetto.model.values import Point, ArrayElement, ArrayValue
+from pygeppetto.model.variables import Variable
 from pynwb import NWBHDF5IO
 
 
@@ -28,15 +28,15 @@ class NWBModelInterpreter(ModelInterpreter):
         nwbfile = io.read()
 
         # get the processing module
-        mod = nwbfile.get_processing_module('ophys')
+        mod = nwbfile.get_processing_module('ophys_module')
 
         # get the RoiResponseSeries from the Fluorescence data interface
         # get the data...
-        rrs = mod['DfOverF'].get_roi_response_series()
+        rrs = mod['dff_interface'].get_roi_response_series()
         rrs_data = rrs.data
         rrs_timestamps = rrs.timestamps
 
-        stimulus = nwbfile.get_stimulus('natural_images_timeseries')
+        stimulus = nwbfile.get_stimulus('locally_sparse_noise_4deg')
         stimulus_data = [float(i) for i in stimulus.data]
         stimulus_timestamps = stimulus.timestamps[()]
 
