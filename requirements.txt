@@ -1,0 +1,6 @@
+django==1.9
+pyecore==0.8.1
+-e git+https://github.com/MetaCell/pygeppetto-django.git@development#egg=pygeppetto_django
+-e git+https://github.com/openworm/pygeppetto.git@manager#egg=pygeppetto
+-e git+https://github.com/NeurodataWithoutBorders/pynwb.git@dev#egg=pynwb
+seaborn==0.8.1
