@@ -5,8 +5,10 @@ from pygeppetto.model.model_factory import GeppettoModelFactory
 
 import numpy as np
 
-from pynwb import NWBFile, TimeSeries, NWBHDF5IO
-from pynwb.ophys import TwoPhotonSeries, OpticalChannel, ImageSegmentation, Fluorescence
+from pynwb import NWBFile, TimeSeries, NWBHDF5IO, ProcessingModule
+from pynwb.epoch import Epochs
+from pynwb.ophys import TwoPhotonSeries, OpticalChannel, ImageSegmentation, Fluorescence, ImagingPlane
+
 
 class PyNWBTestCase(TestCase):
 
@@ -159,3 +161,32 @@ class PyNWBAnotherTestCase(TestCase):
     #    geppetto_model.variables.append(self.factory.createStateVariable('time', time))
 
     #    io.close()
+
+
+class PyNWBGenericReadTestCase(TestCase):
+    factory = GeppettoModelFactory()
+    nwbfile = None
+
+    def setUp(self):
+        file_path = './test_data/brain_observatory.nwb'
+        # read data back in
+        io = NWBHDF5IO(file_path, 'r')
+        self.nwbfile = io.read()
+
+    def test_open_NWB_file_and_read_all_time_series_data(self):
+        for child in self.nwbfile.children:
+            if isinstance(child, TimeSeries):
+                print(child.name + " isTimeSeries")
+            elif isinstance(child, ProcessingModule):
+                for mod_child in child.children:
+                    for value in mod_child.children:
+                        if isinstance(value, TimeSeries):
+                            print(value.name + " isTimeSeries")
+            elif isinstance(child, Epochs):
+                print(child.name + " isEpoch")
+            elif isinstance(child, ImagingPlane):
+                print(child.name + " isImagingPlane")
+            else:
+                print(child)
+
+
