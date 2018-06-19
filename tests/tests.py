@@ -174,19 +174,14 @@ class PyNWBGenericReadTestCase(TestCase):
         self.nwbfile = io.read()
 
     def test_open_NWB_file_and_read_all_time_series_data(self):
-        for child in self.nwbfile.children:
+        time_series_list = self.getTimeSeries(self.nwbfile)
+        self.assertEqual(len(time_series_list), 10)
+
+    def getTimeSeries(self, node):
+        time_series_list = []
+        for child in node.children:
             if isinstance(child, TimeSeries):
-                print(child.name + " isTimeSeries")
-            elif isinstance(child, ProcessingModule):
-                for mod_child in child.children:
-                    for value in mod_child.children:
-                        if isinstance(value, TimeSeries):
-                            print(value.name + " isTimeSeries")
-            elif isinstance(child, Epochs):
-                print(child.name + " isEpoch")
-            elif isinstance(child, ImagingPlane):
-                print(child.name + " isImagingPlane")
+                time_series_list.append(child)
             else:
-                print(child)
-
-
+                time_series_list += self.getTimeSeries(child)
+        return time_series_list
