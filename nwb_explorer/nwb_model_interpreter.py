@@ -29,8 +29,8 @@ class NWBModelInterpreter(ModelInterpreter):
         geppetto_model = self.factory.createGeppettoModel('GepettoModel')
         nwb_geppetto_library = pygeppetto.GeppettoLibrary(name='nwblib', id='nwblib')
         geppetto_model.libraries.append(nwb_geppetto_library)
-        
-        # read data 
+
+        # read data
         io = NWBHDF5IO(url, 'r')
         nwbfile = io.read()
 
@@ -42,23 +42,18 @@ class NWBModelInterpreter(ModelInterpreter):
         geppetto_model.variables.append(self.factory.createStateVariable('time', time))
 
         nwbType = pygeppetto.CompositeType(id=str('nwb'), name=str('nwb'), abstract= False)
+        #timeType = pygeppetto.CompositeType(id=str('time'), name=str('time'), abstract= False)
         time_series_list = NWBModelInterpreter.get_timeseries(nwbfile)
         for time_series in time_series_list:
             if isinstance(time_series, RoiResponseSeries): #TODO: just focus on numerical time series for now
                 unit = time_series.unit
                 metatype = time_series.name
                 mono_dimensional_timeseries_list = NWBModelInterpreter.get_mono_dimensional_timeseries(time_series.data[()])
-                index = 0
-                stimulus_value = self.factory.createTimeSeries('myTimeSeriesValue3', mono_dimensional_timeseries_list[0], 'V')
-                nwbType.variables.append(self.factory.createStateVariable('Stimulus', stimulus_value))
-
-
-        # for index, mono_dimensional_timeseries in enumerate(mono_dimensional_timeseries_list, start=len(mono_dimensional_timeseries_list)-3):
-                #     mono_dimensional_timeseries_data = [float(i) for i in mono_dimensional_timeseries]
-                #     #print(mono_dimensional_timeseries_data)
-                #     time_series_variable = self.factory.createTimeSeries(metatype+str(index), mono_dimensional_timeseries_data, unit)
-                #     nwbType.variables.append(self.factory.createStateVariable(metatype, time_series_variable))
-                #     index += 1
+                print(len(mono_dimensional_timeseries_list))
+                for index, mono_dimensional_timeseries in enumerate(mono_dimensional_timeseries_list[:10]): #TODO: remove [:10] -> importTypes
+                    name = metatype + str(index)
+                    time_series_variable = self.factory.createTimeSeries(name+"variable", mono_dimensional_timeseries, unit) #TODO add scaling factor?
+                    nwbType.variables.append(self.factory.createStateVariable(name, time_series_variable))
 
         # add type to nwb
         nwb_geppetto_library.types.append(nwbType)
@@ -68,7 +63,7 @@ class NWBModelInterpreter(ModelInterpreter):
         nwb_variable.types.append(nwbType)
         geppetto_model.variables.append(nwb_variable)
 
-        
+
         return geppetto_model
 
     def importValue(self, importValue):
