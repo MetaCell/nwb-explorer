@@ -2,6 +2,7 @@ from django.test import TestCase
 from datetime import datetime
 import pygeppetto.model as pygeppetto
 from pygeppetto.model.model_factory import GeppettoModelFactory
+from nwb_explorer.nwb_model_interpreter import NWBModelInterpreter
 
 import numpy as np
 
@@ -174,14 +175,14 @@ class PyNWBGenericReadTestCase(TestCase):
         self.nwbfile = io.read()
 
     def test_open_NWB_file_and_read_all_time_series_data(self):
-        time_series_list = self.getTimeSeries(self.nwbfile)
+        time_series_list = NWBModelInterpreter.get_timeseries(self.nwbfile)
         self.assertEqual(len(time_series_list), 10)
 
-    def getTimeSeries(self, node):
-        time_series_list = []
-        for child in node.children:
-            if isinstance(child, TimeSeries):
-                time_series_list.append(child)
-            else:
-                time_series_list += self.getTimeSeries(child)
-        return time_series_list
+    # def getTimeSeries(self, node):
+    #     time_series_list = []
+    #     for child in node.children:
+    #         if isinstance(child, TimeSeries):
+    #             time_series_list.append(child)
+    #         else:
+    #             time_series_list += self.getTimeSeries(child)
+    #     return time_series_list

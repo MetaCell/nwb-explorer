@@ -2,13 +2,20 @@
 netpyne_model_interpreter.py
 Model interpreter for NWB. This class creates a geppetto type
 """
+import collections
 import logging
 import pygeppetto.model as pygeppetto
 from pygeppetto.model.services.model_interpreter import ModelInterpreter
 from pygeppetto.model.model_factory import GeppettoModelFactory
 from pygeppetto.model.values import Point, ArrayElement, ArrayValue
 from pygeppetto.model.variables import Variable
-from pynwb import NWBHDF5IO
+from pynwb import NWBHDF5IO, TimeSeries
+import numpy as np
+from pynwb.icephys import CurrentClampSeries, CurrentClampStimulusSeries, PatchClampSeries
+from pynwb.image import IndexSeries
+from pynwb.misc import AnnotationSeries
+from pynwb.ogen import OptogeneticSeries
+from pynwb.ophys import RoiResponseSeries
 
 
 class NWBModelInterpreter(ModelInterpreter):
@@ -27,32 +34,32 @@ class NWBModelInterpreter(ModelInterpreter):
         io = NWBHDF5IO(url, 'r')
         nwbfile = io.read()
 
-        # get the processing module
+        #TODO: This need to be deleted
         mod = nwbfile.get_processing_module('ophys_module')
-
-        # get the RoiResponseSeries from the Fluorescence data interface
-        # get the data...
         rrs = mod['dff_interface'].get_roi_response_series()
-        rrs_data = rrs.data
         rrs_timestamps = rrs.timestamps
-
-        stimulus = nwbfile.get_stimulus('locally_sparse_noise_4deg')
-        stimulus_data = [float(i) for i in stimulus.data]
-        stimulus_timestamps = stimulus.timestamps[()]
-
-        nwbType = pygeppetto.CompositeType(id=str('nwb'), name=str('nwb'), abstract= False)
-        dff_val1 = self.factory.createTimeSeries('myTimeSeriesValue', rrs_data[()][0].tolist(), 'V')
-        nwbType.variables.append(self.factory.createStateVariable('DfOverF_1', dff_val1))
-        dff_val2 = self.factory.createTimeSeries('myTimeSeriesValue', rrs_data[()][1].tolist(), 'V')
-        nwbType.variables.append(self.factory.createStateVariable('DfOverF_2', dff_val2))
         time = self.factory.createTimeSeries('myTimeSeriesValue', rrs_timestamps[()].tolist(), 's')
         geppetto_model.variables.append(self.factory.createStateVariable('time', time))
 
-        stimulus_value = self.factory.createTimeSeries('myTimeSeriesValue', stimulus_data, 'V')
-        nwbType.variables.append(self.factory.createStateVariable('Stimulus', stimulus_value)) 
-        stimulus_time = self.factory.createTimeSeries('myTimeSeriesValue', stimulus_timestamps.tolist(), 's')
-        geppetto_model.variables.append(self.factory.createStateVariable('stimulus_time', stimulus_time))
-        
+        nwbType = pygeppetto.CompositeType(id=str('nwb'), name=str('nwb'), abstract= False)
+        time_series_list = NWBModelInterpreter.get_timeseries(nwbfile)
+        for time_series in time_series_list:
+            if isinstance(time_series, RoiResponseSeries): #TODO: just focus on numerical time series for now
+                unit = time_series.unit
+                metatype = time_series.name
+                mono_dimensional_timeseries_list = NWBModelInterpreter.get_mono_dimensional_timeseries(time_series.data[()])
+                index = 0
+                stimulus_value = self.factory.createTimeSeries('myTimeSeriesValue3', mono_dimensional_timeseries_list[0], 'V')
+                nwbType.variables.append(self.factory.createStateVariable('Stimulus', stimulus_value))
+
+
+        # for index, mono_dimensional_timeseries in enumerate(mono_dimensional_timeseries_list, start=len(mono_dimensional_timeseries_list)-3):
+                #     mono_dimensional_timeseries_data = [float(i) for i in mono_dimensional_timeseries]
+                #     #print(mono_dimensional_timeseries_data)
+                #     time_series_variable = self.factory.createTimeSeries(metatype+str(index), mono_dimensional_timeseries_data, unit)
+                #     nwbType.variables.append(self.factory.createStateVariable(metatype, time_series_variable))
+                #     index += 1
+
         # add type to nwb
         nwb_geppetto_library.types.append(nwbType)
 
@@ -73,3 +80,24 @@ class NWBModelInterpreter(ModelInterpreter):
     def getDependentModels(self):
         return []
 
+    @staticmethod
+    def get_timeseries(node):
+        time_series_list = []
+        for child in node.children:
+            if isinstance(child, TimeSeries):
+                time_series_list.append(child)
+            else:
+                time_series_list += NWBModelInterpreter.get_timeseries(child)
+        return time_series_list
+
+    @staticmethod
+    def get_mono_dimensional_timeseries(values):
+        mono_time_series_list = []
+        if isinstance(values, collections.Iterable):
+            try:
+                data = [float(i) for i in values]
+                mono_time_series_list.append(data)
+            except:
+                for inner_list in values:
+                    mono_time_series_list += NWBModelInterpreter.get_mono_dimensional_timeseries(inner_list)
+        return mono_time_series_list
