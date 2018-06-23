@@ -16,6 +16,7 @@ from pynwb.image import IndexSeries
 from pynwb.misc import AnnotationSeries
 from pynwb.ogen import OptogeneticSeries
 from pynwb.ophys import RoiResponseSeries
+import time
 
 
 class NWBModelInterpreter(ModelInterpreter):
@@ -34,26 +35,45 @@ class NWBModelInterpreter(ModelInterpreter):
         io = NWBHDF5IO(url, 'r')
         nwbfile = io.read()
 
-        #TODO: This need to be deleted
+        time_series_list = NWBModelInterpreter.get_timeseries(nwbfile)
+        variables = []
+
+        nwbType = pygeppetto.CompositeType(id=str('nwb'), name=str('nwb'), abstract= False)
+
+        for i, time_series in enumerate(time_series_list):
+            if isinstance(time_series, RoiResponseSeries): #TODO: just focus on numerical time series for now
+                group = "group" + str(i)
+                group_variable = Variable(id=group)
+                group_type = pygeppetto.CompositeType(id=group, name=group, abstract= False)
+
+                unit = time_series.unit
+                timestamps_unit = time_series.timestamps_unit
+                metatype = time_series.name
+
+                mono_dimensional_timeseries_list = NWBModelInterpreter.get_mono_dimensional_timeseries(time_series.data[()])
+                timestamps = [float(i) for i in time_series.timestamps[()]]
+
+                time_series_time_variable = self.factory.createTimeSeries("time"+str(i), timestamps, timestamps_unit)
+                group_type.variables.append(self.factory.createStateVariable("time", time_series_time_variable))
+
+                for index, mono_dimensional_timeseries in enumerate(mono_dimensional_timeseries_list[:10]): #TODO: remove [:10] -> importTypes
+                    name = metatype + str(index)
+                    time_series_variable = self.factory.createTimeSeries(name+"variable", mono_dimensional_timeseries, unit)
+                    group_type.variables.append(self.factory.createStateVariable(name, time_series_variable))
+
+                group_variable.types.append(group_type)
+                variables.append(group_variable)
+                nwb_geppetto_library.types.append(group_type)
+
+                nwbType.variables.append(self.factory.createStateVariable(group))
+
+
+    #TODO: This need to be deleted
         mod = nwbfile.get_processing_module('ophys_module')
         rrs = mod['dff_interface'].get_roi_response_series()
         rrs_timestamps = rrs.timestamps
-        time = self.factory.createTimeSeries('myTimeSeriesValue', rrs_timestamps[()].tolist(), 's')
-        geppetto_model.variables.append(self.factory.createStateVariable('time', time))
-
-        nwbType = pygeppetto.CompositeType(id=str('nwb'), name=str('nwb'), abstract= False)
-        #timeType = pygeppetto.CompositeType(id=str('time'), name=str('time'), abstract= False)
-        time_series_list = NWBModelInterpreter.get_timeseries(nwbfile)
-        for time_series in time_series_list:
-            if isinstance(time_series, RoiResponseSeries): #TODO: just focus on numerical time series for now
-                unit = time_series.unit
-                metatype = time_series.name
-                mono_dimensional_timeseries_list = NWBModelInterpreter.get_mono_dimensional_timeseries(time_series.data[()])
-                print(len(mono_dimensional_timeseries_list))
-                for index, mono_dimensional_timeseries in enumerate(mono_dimensional_timeseries_list[:10]): #TODO: remove [:10] -> importTypes
-                    name = metatype + str(index)
-                    time_series_variable = self.factory.createTimeSeries(name+"variable", mono_dimensional_timeseries, unit) #TODO add scaling factor?
-                    nwbType.variables.append(self.factory.createStateVariable(name, time_series_variable))
+        time2 = self.factory.createTimeSeries('myTimeSeriesValue', rrs_timestamps[()].tolist(), 's')
+        geppetto_model.variables.append(self.factory.createStateVariable('time', time2))
 
         # add type to nwb
         nwb_geppetto_library.types.append(nwbType)
@@ -62,7 +82,8 @@ class NWBModelInterpreter(ModelInterpreter):
         nwb_variable = Variable(id='nwb')
         nwb_variable.types.append(nwbType)
         geppetto_model.variables.append(nwb_variable)
-
+        for variable in variables:
+            geppetto_model.variables.append(variable)
 
         return geppetto_model
 
