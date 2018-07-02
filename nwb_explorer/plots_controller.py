@@ -4,6 +4,8 @@ Model interpreter for NWB. This class creates a geppetto type
 """
 import logging
 import pygeppetto.model as pygeppetto
+import uuid
+import json
 from pygeppetto.model.services.model_interpreter import ModelInterpreter
 from pygeppetto.model.model_factory import GeppettoModelFactory
 from pygeppetto.model.values import Point, ArrayElement, ArrayValue
@@ -13,10 +15,13 @@ import os
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
+import holoviews as hv
+hv.extension('bokeh')
 sns.set_style('whitegrid')
 
 
-class PlotsController():
+class PlotsController:
+    holoviews_plots_path = "static/org.geppetto.frontend/src/main/webapp/extensions/geppetto-nwbexplorer/holoviews_plots/"
 
     def __init__(self, geppetto_model):
         self.geppetto_model = geppetto_model
@@ -52,8 +57,8 @@ class PlotsController():
             ax.fill_between(times, trace + sem, trace - sem, alpha=0.5, color=color)
 
             xticks, xticklabels = self.get_xticks_xticklabels(trace, interval_sec)
-            ax.set_xticks([int(x) for x in xticks]);
-            ax.set_xticklabels([int(x) for x in xticklabels]);
+            ax.set_xticks([int(x) for x in xticks])
+            ax.set_xticklabels([int(x) for x in xticklabels])
             ax.set_xlabel('time after change (s)')
             ax.set_ylabel('dF/F')
         sns.despine(ax=ax)
@@ -72,13 +77,26 @@ class PlotsController():
 
             traces = []
             window = 1 #seconds around flash time to take trace snippet
-            for flash_time in flash_times: 
+            for flash_time in flash_times:
                 trace, timepoints = self.get_trace_around_timepoint(flash_time, cell_trace, timestamps, window)
                 traces.append(trace)
             traces = np.asarray(traces)
 
             self.plot_mean_trace(traces,label=image_name,color=colors[i],interval_sec=1,ax=ax)
             ax.set_title('roi '+str(cell))
-            
+
         plt.legend(bbox_to_anchor=(1.,1))
         return plt
+
+    def plot_holoviews(self):
+        macro_df = pd.read_csv('http://assets.holoviews.org/macro.csv', '\t')
+        key_dimensions = [('year', 'Year'), ('country', 'Country')]
+        value_dimensions = [('unem', 'Unemployment'), ('capmob', 'Capital Mobility'),
+                            ('gdp', 'GDP Growth'), ('trade', 'Trade')]
+        macro = hv.Table(macro_df, key_dimensions, value_dimensions)
+        gdp_unem_scatter = macro.to.scatter('Year', ['GDP Growth', 'Unemployment'])
+        gdp_unem_scatter.overlay('Country')
+        uuid_plot = self.holoviews_plots_path+str(uuid.uuid4())
+        hv.renderer('bokeh').save(gdp_unem_scatter, uuid_plot)
+        data = {'url': '/' + uuid_plot + ".html"}
+        return json.dumps(data)

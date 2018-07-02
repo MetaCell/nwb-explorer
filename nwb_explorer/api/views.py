@@ -27,6 +27,17 @@ def load(request):
     elif request.method == 'POST':
         return Response("Post model")
 
+#curl -X POST http://localhost:8000/api/holoviews
+@api_view(['GET','POST'])
+@permission_classes((AllowAny, ))
+def holoviews(request):
+    if request.method == 'GET':
+        geppetto_model = settings.GEPPETTO_MODEL
+        plot_controller = PlotsController(geppetto_model)
+        return Response(plot_controller.plot_holoviews())
+    elif request.method == 'POST':
+        return Response("Post Response")
+
 #curl -X POST http://localhost:8000/api/plot
 @api_view(['GET','POST'])
 @permission_classes((AllowAny, ))
