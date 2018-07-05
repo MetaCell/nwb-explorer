@@ -38,6 +38,7 @@ def holoviews(request):
     elif request.method == 'POST':
         return Response("Post Response")
 
+
 #curl -X POST http://localhost:8000/api/plot
 @api_view(['GET','POST'])
 @permission_classes((AllowAny, ))

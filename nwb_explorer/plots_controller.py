@@ -2,20 +2,15 @@
 netpyne_model_interpreter.py
 Model interpreter for NWB. This class creates a geppetto type
 """
-import logging
-import pygeppetto.model as pygeppetto
-import uuid
 import json
-from pygeppetto.model.services.model_interpreter import ModelInterpreter
-from pygeppetto.model.model_factory import GeppettoModelFactory
-from pygeppetto.model.values import Point, ArrayElement, ArrayValue
-from pygeppetto.model.variables import Variable
-import numpy as np
-import os
-import pandas as pd
-import matplotlib.pyplot as plt
-import seaborn as sns
+
 import holoviews as hv
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+import pygeppetto.ui
+import seaborn as sns
+
 hv.extension('bokeh')
 sns.set_style('whitegrid')
 
@@ -96,7 +91,5 @@ class PlotsController:
         macro = hv.Table(macro_df, key_dimensions, value_dimensions)
         gdp_unem_scatter = macro.to.scatter('Year', ['GDP Growth', 'Unemployment'])
         gdp_unem_scatter.overlay('Country')
-        uuid_plot = self.holoviews_plots_path+str(uuid.uuid4())
-        hv.renderer('bokeh').save(gdp_unem_scatter, uuid_plot)
-        data = {'url': '/' + uuid_plot + ".html"}
+        data = pygeppetto.ui.get_url(gdp_unem_scatter, self.holoviews_plots_path)
         return json.dumps(data)
