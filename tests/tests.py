@@ -178,12 +178,16 @@ class PyNWBGenericReadTestCase(TestCase):
         time_series_list = self.nwb_utils.get_timeseries()
         self.assertEqual(len(time_series_list), 10)
 
-# class RequirementsTestCase(TestCase):
-#     def setUp(self):
-#         file_path = './test_data/brain_observatory.nwb'
-#         # read data back in
-#         io = NWBHDF5IO(file_path, 'r')
-#         self.nwbfile = io.read()
-#         self.nwb_utils = nwb_utils.NWBUtils(self.nwbfile)
-#
-#     def test_has_all_requirements(self):
+class RequirementsTestCase(TestCase):
+    def setUp(self):
+        file_path = './test_data/brain_observatory.nwb'
+        # read data back in
+        io = NWBHDF5IO(file_path, 'r')
+        self.nwbfile = io.read()
+        self.nwb_utils = nwb_utils.NWBUtils(self.nwbfile)
+
+    def test_has_all_requirements_true(self):
+        self.assertTrue(self.nwb_utils.has_all_requirements(["DfOverF", "ImageSeries"]))
+
+    def test_has_all_requirements_false(self):
+        self.assertTrue(not self.nwb_utils.has_all_requirements(["df_over_f"]))
