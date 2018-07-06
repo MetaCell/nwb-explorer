@@ -187,7 +187,7 @@ class RequirementsTestCase(TestCase):
         self.nwb_utils = nwb_utils.NWBUtils(self.nwbfile)
 
     def test_has_all_requirements_true(self):
-        self.assertTrue(self.nwb_utils.has_all_requirements(["DfOverF", "ImageSeries"]))
+        self.assertTrue(self.nwb_utils.has_all_requirements(["DfOverF", "ImageSeries", "acquisition.TimeSeries", "processing.<ProcessingModule>.DfOverF"]))
 
     def test_has_all_requirements_false(self):
         self.assertTrue(not self.nwb_utils.has_all_requirements(["df_over_f"]))
