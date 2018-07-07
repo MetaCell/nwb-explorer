@@ -34,7 +34,7 @@ class NWBModelInterpreter(ModelInterpreter):
         time_series_list = self.nwb_utils.get_timeseries()
         variables = []
 
-        nwbType = pygeppetto.CompositeType(id=str('nwb'), name=str('nwb'), abstract= False)
+        nwbType = pygeppetto.CompositeType(id=str('nwb'), name=str('nwb'), abstract=False)
 
         for i, time_series in enumerate(time_series_list):
             """
@@ -50,10 +50,10 @@ class NWBModelInterpreter(ModelInterpreter):
             
             where each group entry contains the corresponding data from the nwb file. 
             """
-            if isinstance(time_series, RoiResponseSeries): #TODO: just focus on numerical time series for now
+            if isinstance(time_series, RoiResponseSeries):  # Assuming numerical time series only (Todo: for now)
                 group = "group" + str(i)
                 group_variable = Variable(id=group)
-                group_type = pygeppetto.CompositeType(id=group, name=group, abstract= False)
+                group_type = pygeppetto.CompositeType(id=group, name=group, abstract=False)
 
                 unit = time_series.unit
                 timestamps_unit = time_series.timestamps_unit
@@ -62,12 +62,14 @@ class NWBModelInterpreter(ModelInterpreter):
                 mono_dimensional_timeseries_list = self.nwb_utils.get_mono_dimensional_timeseries(time_series.data[()])
                 timestamps = [float(i) for i in time_series.timestamps[()]]
 
-                time_series_time_variable = self.factory.createTimeSeries("time"+str(i), timestamps, timestamps_unit)
+                time_series_time_variable = self.factory.createTimeSeries("time" + str(i), timestamps, timestamps_unit)
                 group_type.variables.append(self.factory.createStateVariable("time", time_series_time_variable))
 
-                for index, mono_dimensional_timeseries in enumerate(mono_dimensional_timeseries_list[:3]): #TODO: remove [:3] -> importTypes
+                # Todo: add importTypes
+                for index, mono_dimensional_timeseries in enumerate(mono_dimensional_timeseries_list[:3]):
                     name = metatype + str(index)
-                    time_series_variable = self.factory.createTimeSeries(name+"variable", mono_dimensional_timeseries, unit)
+                    time_series_variable = self.factory.createTimeSeries(name + "variable", mono_dimensional_timeseries,
+                                                                         unit)
                     group_type.variables.append(self.factory.createStateVariable(name, time_series_variable))
 
                 group_variable.types.append(group_type)
@@ -86,7 +88,8 @@ class NWBModelInterpreter(ModelInterpreter):
         for variable in variables:
             geppetto_model.variables.append(variable)
 
-        return geppetto_model, nwbfile  # Todo: Make sure this is necessary
+        return geppetto_model, nwbfile
+        # Todo - Review: The geppetto_model and the nwbfile are needed under similar circunstances, would it be acceptable/interesting to have the second inside the first?
 
     def importValue(self, importValue):
         pass

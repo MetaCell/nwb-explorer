@@ -7,8 +7,6 @@ from rest_framework.response import Response
 from ..nwb_model_interpreter import NWBModelInterpreter
 from ..plots_controller import PlotsController
 
-import json
-
 geppetto_model = None
 nwb_utils = None
 
@@ -22,7 +20,7 @@ def load(request):
         geppetto_model, nwbfile = model_interpreter.importType('./test_data/brain_observatory.nwb','','','')
         serialized_model = GeppettoModelSerializer().serialize(geppetto_model)
 
-        # TODO serialise and store geppetto model and nwb_file in session (temporary stored in settings)
+        # Todo: serialise and store geppetto model and nwb_file in session (temporary stored in settings)
         settings.GEPPETTO_MODEL = geppetto_model
         settings.NWB_FILE = nwbfile
 
@@ -30,15 +28,17 @@ def load(request):
     elif request.method == 'POST':
         return Response("Post model")
 
+# Todo - Review: Both plot and plots_available assumes that load happens first. Should we do something to force that behaviour?
+
 # curl -X POST http://localhost:8000/api/plot
 @api_view(['GET','POST'])
 @permission_classes((AllowAny, ))
 def plot(request):
     if request.method == 'GET':
-        id = request.GET.get('plot')
+        plot_id = request.GET.get('plot')
         geppetto_model = settings.GEPPETTO_MODEL
         plot_controller = PlotsController(geppetto_model)
-        return Response(plot_controller.plot(id))
+        return Response(plot_controller.plot(plot_id))
     elif request.method == 'POST':
         return Response("Post Response")
 
@@ -47,7 +47,7 @@ def plot(request):
 @permission_classes((AllowAny, ))
 def plots_available(request):
     if request.method == 'GET':
-        geppetto_model = settings.GEPPETTO_MODEL  # Assuming load happens first
+        geppetto_model = settings.GEPPETTO_MODEL
         nwbfile = settings.NWB_FILE
         plot_controller = PlotsController(geppetto_model)
         return Response(plot_controller.get_available_plots(nwbfile))

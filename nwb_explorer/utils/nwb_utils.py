@@ -18,7 +18,6 @@ class NWBUtils:
             self.nwb_data_interfaces_list = self._get_data_interfaces(self.nwbfile)
             self.time_series_list = self._get_timeseries()
 
-
     def _get_data_interfaces(self, node):
         """Given a NWBHDF5IO returns all the data_interfaces objects presents on it."""
         data_interfaces_list = []
@@ -51,11 +50,11 @@ class NWBUtils:
                     mono_time_series_list += self.get_mono_dimensional_timeseries(inner_list)
         return mono_time_series_list
 
-    # TODO: Add other types beside NWBDataInterfaces (Epochs, http://nwb-schema.readthedocs.io/en/latest/format.html#type-hierarchy)
-    # Assuming requirements are
-    # NWBDataInterfaces provided by the API and NWB specification
+    # Todo - Review: Does this make sense?
+    # Assuming requirements are NWBDataInterfaces provided by the API and NWB specification
     # http://pynwb.readthedocs.io/en/latest/overview_nwbfile.html#processing-modules
     def has_all_requirements(self, requirements):
+        """Given a list of requirements verifies if all are meet ."""
         return all(self._check_requirement(requirement) for requirement in requirements)
 
     def _check_requirement(self, requirement):
@@ -63,7 +62,9 @@ class NWBUtils:
         return self._check_requirement_full_path(list_string) if len(
             list_string) > 1 else self._check_requirement_data_interfaces(requirement)
 
-    def _check_requirement_full_path(self, path_list): # TODO: might not work with epochs
+    def _check_requirement_full_path(self, path_list):
+        """Given a full_path requirement gets the initial group and expands it blindly in search of the last path
+        element """  # Todo: Needs revision
         group = NWBUtils.nwb_map_id_api.get(path_list[0])
         if group is not None:
             nodes = [getattr(self.nwbfile, group)]
@@ -83,6 +84,7 @@ class NWBUtils:
         return False
 
     def _check_requirement_data_interfaces(self, requirement):
+        """Given a requirement looks for a match in all the nwb_data_interfaces of the nwb file """
         for data_interfaces in self.nwb_data_interfaces_list:
             if data_interfaces.neurodata_type == requirement:
                 return True
