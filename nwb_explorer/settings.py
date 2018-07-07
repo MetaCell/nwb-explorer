@@ -148,3 +148,5 @@ STATICFILES_DIRS = [
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.PickleSerializer'
 
 GEPPETTO_MODEL = {}
+
+NWB_FILE = {}

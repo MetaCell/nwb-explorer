@@ -86,7 +86,7 @@ class NWBModelInterpreter(ModelInterpreter):
         for variable in variables:
             geppetto_model.variables.append(variable)
 
-        return geppetto_model
+        return geppetto_model, nwbfile  # Todo: Make sure this is necessary
 
     def importValue(self, importValue):
         pass

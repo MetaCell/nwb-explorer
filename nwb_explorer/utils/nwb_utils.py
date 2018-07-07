@@ -1,6 +1,6 @@
 import collections
 
-from pynwb import TimeSeries
+from pynwb import TimeSeries, NWBFile
 from pynwb.core import NWBDataInterface
 
 
@@ -13,9 +13,11 @@ class NWBUtils:
                       }
 
     def __init__(self, nwbfile):
-        self.nwbfile = nwbfile
-        self.nwb_data_interfaces_list = self._get_data_interfaces(self.nwbfile)
-        self.time_series_list = self._get_timeseries()
+        if isinstance(nwbfile, NWBFile):
+            self.nwbfile = nwbfile
+            self.nwb_data_interfaces_list = self._get_data_interfaces(self.nwbfile)
+            self.time_series_list = self._get_timeseries()
+
 
     def _get_data_interfaces(self, node):
         """Given a NWBHDF5IO returns all the data_interfaces objects presents on it."""
