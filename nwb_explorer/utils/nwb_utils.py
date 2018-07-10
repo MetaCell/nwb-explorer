@@ -13,10 +13,12 @@ class NWBUtils:
                       }
 
     def __init__(self, nwbfile):
-        if isinstance(nwbfile, NWBFile):
-            self.nwbfile = nwbfile
-            self.nwb_data_interfaces_list = self._get_data_interfaces(self.nwbfile)
-            self.time_series_list = self._get_timeseries()
+        if not isinstance(nwbfile, NWBFile):
+            raise ValueError('Cannot invoke init without a valid file')
+
+        self.nwbfile = nwbfile
+        self.nwb_data_interfaces_list = self._get_data_interfaces(self.nwbfile)
+        self.time_series_list = self._get_timeseries()
 
     def _get_data_interfaces(self, node):
         """Given a NWBHDF5IO returns all the data_interfaces objects presents on it."""

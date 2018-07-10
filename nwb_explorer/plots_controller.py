@@ -7,8 +7,6 @@ import json
 from os import listdir, path
 
 import holoviews as hv
-import matplotlib.pyplot as plt
-import numpy as np
 import pygeppetto.ui
 import seaborn as sns
 
@@ -95,14 +93,19 @@ class PlotsController:
             imported_module = importlib.import_module(plot_path)
             method_to_call = getattr(imported_module, plot_id)
             plot = method_to_call()  # Todo: Pass the requirements
-            data = pygeppetto.ui.get_url(plot, self.holoviews_plots_path)
-            return json.dumps(data)
         except ImportError:
-            return None
+            empty_data = {'url': ''}
+            return json.dumps(empty_data)
+        data = pygeppetto.ui.get_url(plot, self.holoviews_plots_path)
+        return json.dumps(data)
+
 
     def get_available_plots(self, nwbfile):
         """Given a nwbfile looks under public_plots_path to verify which plots can be draw """
-        nwb_utils = NWBUtils(nwbfile)
+        try:
+            nwb_utils = NWBUtils(nwbfile)
+        except ValueError:
+            return json.dumps([])
         plots = self._get_public_plots()
         available_plots = [{'name': plot['name'], 'id': plot['id']} for plot in plots if
                            nwb_utils.has_all_requirements(plot["requirements"])]
