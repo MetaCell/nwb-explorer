@@ -6,6 +6,7 @@ from rest_framework.response import Response
 
 from ..nwb_model_interpreter import NWBModelInterpreter
 from ..plots_controller import PlotsController
+import json
 
 geppetto_model = None
 nwb_utils = None
@@ -20,10 +21,9 @@ def load(request):
         geppetto_model, nwbfile = model_interpreter.importType('./test_data/brain_observatory.nwb','','','')
         serialized_model = GeppettoModelSerializer().serialize(geppetto_model)
 
-        # Todo: serialise and store geppetto model and nwb_file in session (temporary stored in settings)
-        settings.GEPPETTO_MODEL = geppetto_model
+        request.session['geppetto_model'] = serialized_model
+        # Todo: serialise and store nwb_file in session (temporary stored in settings)
         settings.NWB_FILE = nwbfile
-
         return Response(serialized_model)
     elif request.method == 'POST':
         return Response("Post model")
@@ -36,7 +36,12 @@ def load(request):
 def plot(request):
     if request.method == 'GET':
         plot_id = request.GET.get('plot')
-        geppetto_model = settings.GEPPETTO_MODEL
+        serialized_model = request.session.get('geppetto_model')
+        if serialized_model is not None:
+            geppetto_model = json.loads(serialized_model)
+        else:
+            geppetto_model = None
+            print("Geppetto Model not in session")
         plot_controller = PlotsController(geppetto_model)
         return Response(plot_controller.plot(plot_id))
     elif request.method == 'POST':
@@ -47,7 +52,12 @@ def plot(request):
 @permission_classes((AllowAny, ))
 def plots_available(request):
     if request.method == 'GET':
-        geppetto_model = settings.GEPPETTO_MODEL
+        serialized_model = request.session.get('geppetto_model')
+        if serialized_model is not None:
+            geppetto_model = json.loads(serialized_model)
+        else:
+            geppetto_model = None
+            print("Geppetto Model not in session")
         nwbfile = settings.NWB_FILE
         plot_controller = PlotsController(geppetto_model)
         return Response(plot_controller.get_available_plots(nwbfile))

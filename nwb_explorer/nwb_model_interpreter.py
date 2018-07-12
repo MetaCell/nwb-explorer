@@ -9,6 +9,7 @@ from pygeppetto.model.model_factory import GeppettoModelFactory
 from pygeppetto.model.services.model_interpreter import ModelInterpreter
 from pygeppetto.model.variables import Variable
 from pynwb import NWBHDF5IO
+from pynwb.image import IndexSeries
 from pynwb.ophys import RoiResponseSeries
 import nwb_explorer.utils.nwb_utils as nwb_utils
 
@@ -50,7 +51,8 @@ class NWBModelInterpreter(ModelInterpreter):
             
             where each group entry contains the corresponding data from the nwb file. 
             """
-            if isinstance(time_series, RoiResponseSeries):  # Assuming numerical time series only (Todo: for now)
+            if isinstance(time_series,
+                          (RoiResponseSeries, IndexSeries)):  # Assuming numerical time series only (Todo: for now)
                 group = "group" + str(i)
                 group_variable = Variable(id=group)
                 group_type = pygeppetto.CompositeType(id=group, name=group, abstract=False)

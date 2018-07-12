@@ -99,7 +99,6 @@ class PlotsController:
         data = pygeppetto.ui.get_url(plot, self.holoviews_plots_path)
         return json.dumps(data)
 
-
     def get_available_plots(self, nwbfile):
         """Given a nwbfile looks under public_plots_path to verify which plots can be draw """
         try:
