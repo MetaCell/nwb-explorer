@@ -2,7 +2,7 @@ import json
 import pandas as pd
 import holoviews as hv
 
-def plot_holoviews_2():
+def plot_holoviews_2(requirements_list):
         macro_df = pd.read_csv('http://assets.holoviews.org/macro.csv', '\t')
         key_dimensions = [('year', 'Year'), ('country', 'Country')]
         value_dimensions = [('unem', 'Unemployment'), ('capmob', 'Capital Mobility'),

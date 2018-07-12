@@ -38,12 +38,13 @@ def plot(request):
         plot_id = request.GET.get('plot')
         serialized_model = request.session.get('geppetto_model')
         if serialized_model is not None:
-            geppetto_model = json.loads(serialized_model)
+            geppetto_model = json.loads(serialized_model) # Todo - Review: Is there a better way to deserialize?
         else:
             geppetto_model = None
             print("Geppetto Model not in session")
+        nwbfile = settings.NWB_FILE
         plot_controller = PlotsController(geppetto_model)
-        return Response(plot_controller.plot(plot_id))
+        return Response(plot_controller.plot(plot_id, nwbfile))
     elif request.method == 'POST':
         return Response("Post Response")
 

@@ -23,6 +23,7 @@ class PlotsController:
 
     def __init__(self, geppetto_model=None):
         self.geppetto_model = geppetto_model
+        self.plots = self._get_public_plots() # Todo - Review: PlotsController could implement singleton? what do you think?
 
     # def get_nearest_frame(self, timepoint, timestamps):
     #     return None  # int(np.nanargmin(abs(timestamps - timepoint)))
@@ -86,13 +87,19 @@ class PlotsController:
     #     plt.legend(bbox_to_anchor=(1., 1))
     #     return plt
 
-    def plot(self, plot_id):
+    def plot(self, plot_id, nwbfile):
         """Given a valid plot_id dynamically imports the module and calls the method responsible for plotting """
-        plot_path = self.public_plots_dict[plot_id]
+        try:
+            nwb_utils = NWBUtils(nwbfile)
+        except ValueError:
+            return json.dumps([])
+        plot_data = self.public_plots_dict[plot_id]
+        plot_path = plot_data['path']
+        plot_requirements = nwb_utils.get_all_requirements(plot_data['requirements'])
         try:
             imported_module = importlib.import_module(plot_path)
             method_to_call = getattr(imported_module, plot_id)
-            plot = method_to_call()  # Todo: Pass the requirements
+            plot = method_to_call(plot_requirements)
         except ImportError:
             empty_data = {'url': ''}
             return json.dumps(empty_data)
@@ -105,13 +112,12 @@ class PlotsController:
             nwb_utils = NWBUtils(nwbfile)
         except ValueError:
             return json.dumps([])
-        plots = self._get_public_plots()
-        available_plots = [{'name': plot['name'], 'id': plot['id']} for plot in plots if
+        available_plots = [{'name': plot['name'], 'id': plot['id']} for plot in self.plots if
                            nwb_utils.has_all_requirements(plot["requirements"])]
         return json.dumps(available_plots)
 
     def _get_public_plots(
-            self):  # Todo - Review: We probably just need to call this once an save the result somewhere, what do you think?
+            self):
         """Looks under public_plots_path and expects to find folders containing each one
         2 files with the same base name as the first; one a json file containing name, id and requirements as fields
         and other a python module where the method's name responsible to return the plot should be the same
@@ -124,6 +130,6 @@ class PlotsController:
             if path.isfile(json_filepath):
                 with open(json_filepath) as file:
                     data = json.load(file)
-                    self.public_plots_dict[data["id"]] = python_filepath
+                    self.public_plots_dict[data["id"]] = {'path': python_filepath, 'requirements': data["requirements"]}
                     plots.append(data)
         return plots
