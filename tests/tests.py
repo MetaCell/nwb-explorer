@@ -6,9 +6,7 @@ from pygeppetto.model.model_factory import GeppettoModelFactory
 from pynwb import NWBFile, TimeSeries, NWBHDF5IO
 from pynwb.ophys import TwoPhotonSeries, OpticalChannel, ImageSegmentation, Fluorescence
 
-from nwb_explorer.nwb_model_interpreter import NWBModelInterpreter
 import nwb_explorer.utils.nwb_utils as nwb_utils
-from nwb_explorer.plots_controller import PlotsController
 
 
 class PyNWBTestCase(TestCase):
@@ -175,8 +173,8 @@ class PyNWBGenericReadTestCase(TestCase):
         self.nwb_utils = nwb_utils.NWBUtils(self.nwbfile)
 
     def test_open_NWB_file_and_read_all_time_series_data(self):
-        time_series_list = self.nwb_utils.get_timeseries()
-        self.assertEqual(len(time_series_list), 10)
+        self.time_series_list = self.nwb_utils.get_timeseries()
+        self.assertEqual(len(self.time_series_list), 10)
 
 
 class RequirementsTestCase(TestCase):

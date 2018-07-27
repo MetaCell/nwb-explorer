@@ -2,7 +2,8 @@ import collections
 
 from pynwb import TimeSeries, NWBFile
 from pynwb.core import NWBDataInterface
-
+from pynwb.image import ImageSeries
+import numpy as np
 
 class NWBUtils:
     nwb_map_id_api = {'acquisition': 'acquisition',
@@ -40,8 +41,19 @@ class NWBUtils:
     def get_timeseries(self):
         return self.time_series_list
 
-    def get_mono_dimensional_timeseries(self, values):
-        """Given a timeseries object returns all mono dimensional timeseries presents on it."""
+    def get_plottable_timeseries(self, time_series):
+        if isinstance(time_series, ImageSeries):
+            return self.get_raw_data(time_series.data)
+        return self.get_mono_dimensional_timeseries_aux(time_series.data[()])
+
+    def get_raw_data(self, image_series_data):
+        """Given a image_series data object returns a NumPy array with the raw data."""
+        arr = np.zeros(image_series_data.shape, dtype=image_series_data.dtype)
+        image_series_data.read_direct(arr)
+        return arr
+
+    def get_mono_dimensional_timeseries_aux(self, values):
+        """Given a timeseries data object returns all mono dimensional timeseries presents on it."""
         mono_time_series_list = []
         if isinstance(values, collections.Iterable):
             try:
@@ -49,7 +61,7 @@ class NWBUtils:
                 mono_time_series_list.append(data)
             except:
                 for inner_list in values:
-                    mono_time_series_list += self.get_mono_dimensional_timeseries(inner_list)
+                    mono_time_series_list += self.get_mono_dimensional_timeseries_aux(inner_list)
         return mono_time_series_list
 
     # Todo - Review: Does this make sense?

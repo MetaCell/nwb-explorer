@@ -9,7 +9,7 @@ from pygeppetto.model.model_factory import GeppettoModelFactory
 from pygeppetto.model.services.model_interpreter import ModelInterpreter
 from pygeppetto.model.variables import Variable
 from pynwb import NWBHDF5IO
-from pynwb.image import IndexSeries
+from pynwb.image import IndexSeries, ImageSeries
 from pynwb.ophys import RoiResponseSeries
 import nwb_explorer.utils.nwb_utils as nwb_utils
 
@@ -52,7 +52,7 @@ class NWBModelInterpreter(ModelInterpreter):
             where each group entry contains the corresponding data from the nwb file. 
             """
             if isinstance(time_series,
-                          (RoiResponseSeries, IndexSeries)):  # Assuming numerical time series only (Todo: for now)
+                          (RoiResponseSeries, ImageSeries)):  # Assuming numerical or image time series only TODO: Check what more can we plot
                 group = "group" + str(i)
                 group_variable = Variable(id=group)
                 group_type = pygeppetto.CompositeType(id=group, name=group, abstract=False)
@@ -61,18 +61,22 @@ class NWBModelInterpreter(ModelInterpreter):
                 timestamps_unit = time_series.timestamps_unit
                 metatype = time_series.name
 
-                mono_dimensional_timeseries_list = self.nwb_utils.get_mono_dimensional_timeseries(time_series.data[()])
                 timestamps = [float(i) for i in time_series.timestamps[()]]
-
                 time_series_time_variable = self.factory.createTimeSeries("time" + str(i), timestamps, timestamps_unit)
                 group_type.variables.append(self.factory.createStateVariable("time", time_series_time_variable))
 
+                plottable_timeseries = self.nwb_utils.get_plottable_timeseries(time_series)
+
                 # Todo: add importTypes
-                for index, mono_dimensional_timeseries in enumerate(mono_dimensional_timeseries_list[:3]):
-                    name = metatype + str(index)
-                    time_series_variable = self.factory.createTimeSeries(name + "variable", mono_dimensional_timeseries,
-                                                                         unit)
-                    group_type.variables.append(self.factory.createStateVariable(name, time_series_variable))
+
+                if isinstance(time_series, ImageSeries):
+                    print("createMDTimeSeries")
+                else:
+                    for index, mono_dimensional_timeseries in enumerate(plottable_timeseries[:3]):
+                        name = metatype + str(index)
+                        time_series_variable = self.factory.createTimeSeries(name + "variable", mono_dimensional_timeseries,
+                                                                             unit)
+                        group_type.variables.append(self.factory.createStateVariable(name, time_series_variable))
 
                 group_variable.types.append(group_type)
                 variables.append(group_variable)
