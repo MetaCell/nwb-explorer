@@ -7,11 +7,13 @@ import logging
 import pygeppetto.model as pygeppetto
 from pygeppetto.model.model_factory import GeppettoModelFactory
 from pygeppetto.model.services.model_interpreter import ModelInterpreter
+from pygeppetto.model.values import Image
 from pygeppetto.model.variables import Variable
 from pynwb import NWBHDF5IO
 from pynwb.image import IndexSeries, ImageSeries
 from pynwb.ophys import RoiResponseSeries
 import nwb_explorer.utils.nwb_utils as nwb_utils
+import numpy as np
 
 
 class NWBModelInterpreter(ModelInterpreter):
@@ -70,7 +72,12 @@ class NWBModelInterpreter(ModelInterpreter):
                 # Todo: add importTypes
 
                 if isinstance(time_series, ImageSeries):
-                    print("createMDTimeSeries")
+                    print("CreateMDTimeseries")
+                    # Todo: Might be useful to use something easily reversed in javascript
+                    data_str = np.array2string(plottable_timeseries, separator=',')
+                    values = [Image(data=data_str)]
+                    md_time_series_variable = self.factory.createMDTimeSeries(metatype + "variable", values)
+                    group_type.variables.append(self.factory.createStateVariable(metatype, md_time_series_variable))
                 else:
                     for index, mono_dimensional_timeseries in enumerate(plottable_timeseries[:3]):
                         name = metatype + str(index)
