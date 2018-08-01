@@ -2,18 +2,21 @@
 netpyne_model_interpreter.py
 Model interpreter for NWB. This class creates a geppetto type
 """
+import base64
 import logging
+from io import BytesIO
 
 import pygeppetto.model as pygeppetto
+from PIL import Image as Img
 from pygeppetto.model.model_factory import GeppettoModelFactory
 from pygeppetto.model.services.model_interpreter import ModelInterpreter
 from pygeppetto.model.values import Image
 from pygeppetto.model.variables import Variable
 from pynwb import NWBHDF5IO
-from pynwb.image import IndexSeries, ImageSeries
+from pynwb.image import ImageSeries
 from pynwb.ophys import RoiResponseSeries
+
 import nwb_explorer.utils.nwb_utils as nwb_utils
-import numpy as np
 
 
 class NWBModelInterpreter(ModelInterpreter):
@@ -54,7 +57,7 @@ class NWBModelInterpreter(ModelInterpreter):
             where each group entry contains the corresponding data from the nwb file. 
             """
             if isinstance(time_series,
-                          (RoiResponseSeries, ImageSeries)):  # Assuming numerical or image time series only TODO: Check what more can we plot
+                          (RoiResponseSeries, ImageSeries)):  # Assuming numerical or image time series only TODO: Check what else can we plot
                 group = "group" + str(i)
                 group_variable = Variable(id=group)
                 group_type = pygeppetto.CompositeType(id=group, name=group, abstract=False)
@@ -72,14 +75,17 @@ class NWBModelInterpreter(ModelInterpreter):
                 # Todo: add importTypes
 
                 if isinstance(time_series, ImageSeries):
-                    print("CreateMDTimeseries")
-                    # Todo: Might be useful to use something easily reversed in javascript
-                    data_str = np.array2string(plottable_timeseries, separator=',')
+                    # Todo: Make sure this is correct
+                    img = Img.fromarray(plottable_timeseries, 'RGB')
+                    data_bytes = BytesIO()
+                    img.save(data_bytes, 'PNG')
+                    data_str = base64.b64encode(data_bytes.getvalue()).decode('utf8')
                     values = [Image(data=data_str)]
                     md_time_series_variable = self.factory.createMDTimeSeries(metatype + "variable", values)
                     group_type.variables.append(self.factory.createStateVariable(metatype, md_time_series_variable))
                 else:
-                    for index, mono_dimensional_timeseries in enumerate(plottable_timeseries[:3]):
+                    for index, mono_dimensional_timeseries in enumerate(plottable_timeseries[:3]): # Fixme: [:3] for
+                        # development purposes while importTypes not implemented
                         name = metatype + str(index)
                         time_series_variable = self.factory.createTimeSeries(name + "variable", mono_dimensional_timeseries,
                                                                              unit)

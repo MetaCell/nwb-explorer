@@ -25,6 +25,7 @@ or
 * Pynwb. ```git clone https://github.com/NeurodataWithoutBorders/pynwb.git && cd pynwb && git checkout dev && pip install -e . ```
 * Seaborn (0.8.1). `pip install seaborn`
 * Holoviews (1.10.6). `pip install holoviews`
+* Pillow (5.2.0). `pip install Pillow`
  
 ### Installing
 

@@ -5,3 +5,4 @@ pyecore==0.8.1
 -e git+https://github.com/NeurodataWithoutBorders/pynwb.git@dev#egg=pynwb
 seaborn==0.8.1
 holoviews==1.10.6
+Pillow==5.2.0
