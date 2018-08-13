@@ -9,6 +9,7 @@ from os import listdir, path
 import holoviews as hv
 import pygeppetto.ui
 import seaborn as sns
+from pynwb import NWBHDF5IO
 
 from nwb_explorer.utils.nwb_utils import NWBUtils
 
@@ -23,7 +24,7 @@ class PlotsController:
 
     def __init__(self, geppetto_model=None):
         self.geppetto_model = geppetto_model
-        self.plots = self._get_public_plots() # Todo - Review: PlotsController could implement singleton? what do you think?
+        self.plots = self._get_public_plots()
 
     # def get_nearest_frame(self, timepoint, timestamps):
     #     return None  # int(np.nanargmin(abs(timestamps - timepoint)))
@@ -87,10 +88,10 @@ class PlotsController:
     #     plt.legend(bbox_to_anchor=(1., 1))
     #     return plt
 
-    def plot(self, plot_id, nwbfile):
+    def plot(self, plot_id, nwbfile_path):
         """Given a valid plot_id dynamically imports the module and calls the method responsible for plotting """
         try:
-            nwb_utils = NWBUtils(nwbfile)
+            nwb_utils = NWBUtils(nwbfile_path)
         except ValueError:
             return json.dumps([])
         plot_data = self.public_plots_dict[plot_id]
@@ -106,10 +107,10 @@ class PlotsController:
         data = pygeppetto.ui.get_url(plot, self.holoviews_plots_path)
         return json.dumps(data)
 
-    def get_available_plots(self, nwbfile):
+    def get_available_plots(self, nwbfile_path):
         """Given a nwbfile looks under public_plots_path to verify which plots can be draw """
         try:
-            nwb_utils = NWBUtils(nwbfile)
+            nwb_utils = NWBUtils(nwbfile_path)
         except ValueError:
             return json.dumps([])
         available_plots = [{'name': plot['name'], 'id': plot['id']} for plot in self.plots if

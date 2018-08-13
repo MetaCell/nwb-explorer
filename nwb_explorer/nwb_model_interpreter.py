@@ -25,7 +25,7 @@ class NWBModelInterpreter(ModelInterpreter):
         self.factory = GeppettoModelFactory()
         self.nwb_utils = None
 
-    def importType(self, url, typeName, library, commonLibraryAccess):
+    def importType(self, nwbfile_path, typeName, library, commonLibraryAccess):
         logging.debug('Creating a Geppetto Model')
 
         geppetto_model = self.factory.createGeppettoModel('GepettoModel')
@@ -33,9 +33,10 @@ class NWBModelInterpreter(ModelInterpreter):
         geppetto_model.libraries.append(nwb_geppetto_library)
 
         # read data
-        io = NWBHDF5IO(url, 'r')
-        nwbfile = io.read()
-        self.nwb_utils = nwb_utils.NWBUtils(nwbfile)
+        try:
+            self.nwb_utils = nwb_utils.NWBUtils(nwbfile_path)
+        except ValueError:
+            return None
 
         time_series_list = self.nwb_utils.get_timeseries()
         variables = []
@@ -57,7 +58,7 @@ class NWBModelInterpreter(ModelInterpreter):
             where each group entry contains the corresponding data from the nwb file. 
             """
             if isinstance(time_series,
-                          (RoiResponseSeries, ImageSeries)):  # Assuming numerical or image time series only TODO: Check what else can we plot
+                          (RoiResponseSeries, ImageSeries)):  # Assuming numerical or image time series only for now
                 group = "group" + str(i)
                 group_variable = Variable(id=group)
                 group_type = pygeppetto.CompositeType(id=group, name=group, abstract=False)
@@ -75,7 +76,6 @@ class NWBModelInterpreter(ModelInterpreter):
                 # Todo: add importTypes
 
                 if isinstance(time_series, ImageSeries):
-                    # Todo: Make sure this is correct
                     img = Img.fromarray(plottable_timeseries, 'RGB')
                     data_bytes = BytesIO()
                     img.save(data_bytes, 'PNG')
@@ -84,8 +84,7 @@ class NWBModelInterpreter(ModelInterpreter):
                     md_time_series_variable = self.factory.createMDTimeSeries(metatype + "variable", values)
                     group_type.variables.append(self.factory.createStateVariable(metatype, md_time_series_variable))
                 else:
-                    for index, mono_dimensional_timeseries in enumerate(plottable_timeseries[:3]): # Fixme: [:3] for
-                        # development purposes while importTypes not implemented
+                    for index, mono_dimensional_timeseries in enumerate(plottable_timeseries[:3]): #Todo: [:3] for development purposes while importTypes not implemented
                         name = metatype + str(index)
                         time_series_variable = self.factory.createTimeSeries(name + "variable", mono_dimensional_timeseries,
                                                                              unit)
@@ -107,8 +106,7 @@ class NWBModelInterpreter(ModelInterpreter):
         for variable in variables:
             geppetto_model.variables.append(variable)
 
-        return geppetto_model, nwbfile
-        # Todo - Review: The geppetto_model and the nwbfile are needed under similar circunstances, would it be acceptable/interesting to have the second inside the first?
+        return geppetto_model
 
     def importValue(self, importValue):
         pass

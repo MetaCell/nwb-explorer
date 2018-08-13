@@ -1,6 +1,6 @@
 import collections
 
-from pynwb import TimeSeries, NWBFile
+from pynwb import TimeSeries, NWBFile, NWBHDF5IO
 from pynwb.core import NWBDataInterface
 from pynwb.image import ImageSeries
 import numpy as np
@@ -13,9 +13,12 @@ class NWBUtils:
                       'stimulus': 'stimulus',
                       }
 
-    def __init__(self, nwbfile):
-        if not isinstance(nwbfile, NWBFile):
-            raise ValueError('Cannot invoke init without a valid file')
+    def __init__(self, nwbfile_path):
+        try:
+            io = NWBHDF5IO(nwbfile_path, 'r')
+            nwbfile = io.read()
+        except:
+            raise ValueError('Cannot invoke init without a valid path file')
 
         self.nwbfile = nwbfile
         self.nwb_data_interfaces_list = self._get_data_interfaces(self.nwbfile)
