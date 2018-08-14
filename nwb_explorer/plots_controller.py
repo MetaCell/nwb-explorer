@@ -93,8 +93,11 @@ class PlotsController:
         try:
             nwb_utils = NWBUtils(nwbfile_path)
         except ValueError:
-            return json.dumps([])
-        plot_data = self.public_plots_dict[plot_id]
+            raise ValueError("File not found")
+        try:
+            plot_data = self.public_plots_dict[plot_id]
+        except KeyError:
+            raise KeyError("Invalid plot id")
         plot_path = plot_data['path']
         plot_requirements = nwb_utils.get_all_requirements(plot_data['requirements'])
         try:
@@ -102,8 +105,7 @@ class PlotsController:
             method_to_call = getattr(imported_module, plot_id)
             plot = method_to_call(plot_requirements)
         except ImportError:
-            empty_data = {'url': ''}
-            return json.dumps(empty_data)
+            raise ImportError
         data = pygeppetto.ui.get_url(plot, self.holoviews_plots_path)
         return json.dumps(data)
 
@@ -112,7 +114,7 @@ class PlotsController:
         try:
             nwb_utils = NWBUtils(nwbfile_path)
         except ValueError:
-            return json.dumps([])
+            raise ValueError("Invalid nwbfile")
         available_plots = [{'name': plot['name'], 'id': plot['id']} for plot in self.plots if
                            nwb_utils.has_all_requirements(plot["requirements"])]
         return json.dumps(available_plots)

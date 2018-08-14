@@ -36,7 +36,7 @@ class NWBModelInterpreter(ModelInterpreter):
         try:
             self.nwb_utils = nwb_utils.NWBUtils(nwbfile_path)
         except ValueError:
-            return None
+            raise ValueError("File not found")
 
         time_series_list = self.nwb_utils.get_timeseries()
         variables = []

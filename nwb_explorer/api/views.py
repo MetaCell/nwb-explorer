@@ -1,4 +1,6 @@
-from django.conf import settings
+import json
+
+from django.http import HttpResponseBadRequest, HttpResponseNotFound
 from pygeppetto.model.model_serializer import GeppettoModelSerializer
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
@@ -6,7 +8,6 @@ from rest_framework.response import Response
 
 from ..nwb_model_interpreter import NWBModelInterpreter
 from ..plots_controller import PlotsController
-import json
 
 geppetto_model = None
 nwb_utils = None
@@ -20,14 +21,16 @@ def load(request):
         nwbfile = request.GET.get('nwbfile')
         if nwbfile is not None:
             model_interpreter = NWBModelInterpreter()
-            geppetto_model = model_interpreter.importType(nwbfile, '', '', '')
+            try:
+                geppetto_model = model_interpreter.importType(nwbfile, '', '', '')
+            except ValueError:
+                return HttpResponseNotFound("File not found")
             serialized_model = GeppettoModelSerializer().serialize(geppetto_model)
             request.session['geppetto_model'] = serialized_model
             request.session['nwbfile'] = nwbfile
+            return Response(serialized_model)
         else:
-            serialized_model = None
-            print("nwbfile not found")
-        return Response(serialized_model)
+            return HttpResponseBadRequest("File path missing")
     elif request.method == 'POST':
         return Response("Post model")
 
@@ -42,11 +45,15 @@ def plot(request):
         if serialized_model is not None:
             geppetto_model = json.loads(serialized_model)  # Todo - Review: Is there a better way to deserialize?
         else:
-            geppetto_model = None
-            print("Geppetto Model not in session")
-        nwbfile = request.session.get('nwbfile')
+            return HttpResponseBadRequest("Geppetto Model not in session")
         plot_controller = PlotsController(geppetto_model)
-        return Response(plot_controller.plot(plot_id, nwbfile))
+        nwbfile = request.session.get('nwbfile')
+        if nwbfile is None:
+            return HttpResponseBadRequest("Nwbfile not in session")
+        try:
+            return Response(plot_controller.plot(plot_id, nwbfile))
+        except Exception as e:
+            return HttpResponseBadRequest(e)
     elif request.method == 'POST':
         return Response("Post Response")
 
@@ -60,10 +67,14 @@ def plots_available(request):
         if serialized_model is not None:
             geppetto_model = json.loads(serialized_model)
         else:
-            geppetto_model = None
-            print("Geppetto Model not in session")
-        nwbfile = request.session.get('nwbfile')
+            return HttpResponseBadRequest("Geppetto Model not in session")
         plot_controller = PlotsController(geppetto_model)
-        return Response(plot_controller.get_available_plots(nwbfile))
+        nwbfile = request.session.get('nwbfile')
+        if nwbfile is None:
+            return HttpResponseBadRequest("Nwbfile not in session")
+        try:
+            return Response(plot_controller.get_available_plots(nwbfile))
+        except Exception as e:
+            return HttpResponseBadRequest(e)
     elif request.method == 'POST':
         return Response("Post Response")
