@@ -99,11 +99,10 @@ class PlotsController:
         except KeyError:
             raise KeyError("Invalid plot id")
         plot_path = plot_data['path']
-        plot_requirements = nwb_utils.get_all_requirements(plot_data['requirements'])
         try:
             imported_module = importlib.import_module(plot_path)
-            method_to_call = getattr(imported_module, plot_id)
-            plot = method_to_call(plot_requirements)
+            method_to_call = getattr(imported_module, 'plot')
+            plot = method_to_call(nwb_utils.get_nwbfile())
         except ImportError:
             raise ImportError
         data = pygeppetto.ui.get_url(plot, self.holoviews_plots_path)

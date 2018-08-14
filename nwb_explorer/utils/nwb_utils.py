@@ -44,6 +44,9 @@ class NWBUtils:
     def get_timeseries(self):
         return self.time_series_list
 
+    def get_nwbfile(self):
+        return self.nwbfile
+
     def get_plottable_timeseries(self, time_series):
         if isinstance(time_series, ImageSeries):
             return self.get_raw_data(time_series.data)
@@ -67,16 +70,11 @@ class NWBUtils:
                     mono_time_series_list += self.get_mono_dimensional_timeseries_aux(inner_list)
         return mono_time_series_list
 
-    # Todo - Review: Does this make sense?
     # Assuming requirements are NWBDataInterfaces provided by the API and NWB specification
     # http://pynwb.readthedocs.io/en/latest/overview_nwbfile.html#processing-modules
     def has_all_requirements(self, requirements):
         """Given a list of requirements verifies if all are meet ."""
-        return all(self._check_requirement(requirement)[0] for requirement in requirements)
-
-    def get_all_requirements(self, requirements):
-        """Given a list of requirements if meet returns the correspondent node from the nwbfile ."""
-        return [self._check_requirement(requirement)[1] for requirement in requirements]
+        return all(self._check_requirement(requirement) for requirement in requirements)
 
     def _check_requirement(self, requirement):
         list_string = requirement.split('.')
@@ -95,18 +93,18 @@ class NWBUtils:
                         if isinstance(node, dict):
                             for value in list(node.values()):
                                 if value.neurodata_type == remaining_path:
-                                    return True, value
+                                    return True
                         else:
                             for child in node.children:
                                 if child.neurodata_type == remaining_path:
-                                    return True, child
+                                    return True
                     else:
                         nodes = list(node.values()) if isinstance(node, dict) else node.children
-        return False, None
+        return False
 
     def _check_requirement_data_interfaces(self, requirement):
         """Given a requirement looks for a match in all the nwb_data_interfaces of the nwb file """
         for data_interfaces in self.nwb_data_interfaces_list:
             if data_interfaces.neurodata_type == requirement:
-                return True, data_interfaces
-        return False, None
+                return True
+        return False
