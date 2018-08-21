@@ -43,7 +43,7 @@ def plot(request):
         plot_id = request.GET.get('plot')
         serialized_model = request.session.get('geppetto_model')
         if serialized_model is not None:
-            geppetto_model = json.loads(serialized_model)  # Todo - Review: Is there a better way to deserialize?
+            geppetto_model = GeppettoModelSerializer().deserialize(serialized_model)
         else:
             return HttpResponseBadRequest("Geppetto Model not in session")
         plot_controller = PlotsController(geppetto_model)
@@ -65,7 +65,7 @@ def plots_available(request):
     if request.method == 'GET':
         serialized_model = request.session.get('geppetto_model')
         if serialized_model is not None:
-            geppetto_model = json.loads(serialized_model)
+            geppetto_model = GeppettoModelSerializer().deserialize(serialized_model)
         else:
             return HttpResponseBadRequest("Geppetto Model not in session")
         plot_controller = PlotsController(geppetto_model)
