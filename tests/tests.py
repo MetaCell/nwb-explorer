@@ -1,15 +1,15 @@
-from django.test import TestCase
 from datetime import datetime
-import pygeppetto.model as pygeppetto
-from pygeppetto.model.model_factory import GeppettoModelFactory
 
 import numpy as np
-
+from django.test import TestCase
+from pygeppetto.model.model_factory import GeppettoModelFactory
 from pynwb import NWBFile, TimeSeries, NWBHDF5IO
 from pynwb.ophys import TwoPhotonSeries, OpticalChannel, ImageSegmentation, Fluorescence
 
-class PyNWBTestCase(TestCase):
+import nwb_explorer.utils.nwb_utils as nwb_utils
 
+
+class PyNWBTestCase(TestCase):
     nwbfile = None
 
     def setUp(self):
@@ -17,7 +17,7 @@ class PyNWBTestCase(TestCase):
         create_date = datetime(2017, 4, 15, 12, 0, 0)
 
         self.nwbfile = NWBFile('PyNWB tutorial', 'demonstrate NWBFile basics', 'NWB123', start_time,
-                        file_create_date=create_date)
+                               file_create_date=create_date)
 
     def test_add_NWB_time_series(self):
         data = list(range(100, 200, 10))
@@ -31,8 +31,8 @@ class PyNWBTestCase(TestCase):
         self.assertIsNotNone(self.nwbfile.get_acquisition('test_timeseries_1'))
         self.assertIsNotNone(self.nwbfile.get_acquisition('test_timeseries_2'))
 
-class PyNWBAnotherTestCase(TestCase):
 
+class PyNWBAnotherTestCase(TestCase):
     factory = GeppettoModelFactory()
 
     def setUp(self):
@@ -41,31 +41,31 @@ class PyNWBAnotherTestCase(TestCase):
 
         # create your NWBFile object
         nwbfile = NWBFile('PyNWB Sample File', 'A simple NWB file', 'NWB_test', start_time,
-                        file_create_date=create_date)
-        
+                          file_create_date=create_date)
+
         # create acquisition metadata
         optical_channel = OpticalChannel('test_optical_channel', 'optical channel source',
-                                        'optical channel description', 3.14)
+                                         'optical channel description', 3.14)
         imaging_plane = nwbfile.create_imaging_plane('test_imaging_plane',
-                                                    'ophys integration tests',
-                                                    optical_channel,
-                                                    'imaging plane description',
-                                                    'imaging_device_1',
-                                                    6.28, '2.718', 'GFP', 'somewhere in the brain',
-                                                    (1, 2, 1, 2, 3), 4.0, 'manifold unit', 'A frame to refer to')
+                                                     'ophys integration tests',
+                                                     optical_channel,
+                                                     'imaging plane description',
+                                                     'imaging_device_1',
+                                                     6.28, '2.718', 'GFP', 'somewhere in the brain',
+                                                     (1, 2, 1, 2, 3), 4.0, 'manifold unit', 'A frame to refer to')
 
         # create acquisition data
         image_series = TwoPhotonSeries(name='test_iS', source='a hypothetical source', dimension=[2],
-                                    external_file=['images.tiff'], imaging_plane=imaging_plane,
-                                    starting_frame=[1, 2, 3], format='tiff', timestamps=list())
+                                       external_file=['images.tiff'], imaging_plane=imaging_plane,
+                                       starting_frame=[1, 2, 3], format='tiff', timestamps=list())
         nwbfile.add_acquisition(image_series)
 
-
-        mod = nwbfile.create_processing_module('img_seg_example', 'ophys demo', 'an example of writing Ca2+ imaging data')
+        mod = nwbfile.create_processing_module('img_seg_example', 'ophys demo',
+                                               'an example of writing Ca2+ imaging data')
         img_seg = ImageSegmentation('a toy image segmentation container')
         mod.add_data_interface(img_seg)
         ps = img_seg.create_plane_segmentation('integration test PlaneSegmentation', 'plane segmentation description',
-                                            imaging_plane, 'test_plane_seg_name', image_series)
+                                               imaging_plane, 'test_plane_seg_name', image_series)
         # add two ROIs
         # - first argument is the pixel mask i.e. a list of pixels and their weights
         # - second argument is the image mask
@@ -115,9 +115,9 @@ class PyNWBAnotherTestCase(TestCase):
 
         self.assertTrue(np.array_equal(rrs_data, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]))
         self.assertTrue(np.array_equal(rrs_timestamps, [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]))
-        
+
         io.close()
-    
+
     def test_open_static_NWB_file_and_fish_time_series_data(self):
         file_path = './test_data/brain_observatory.nwb'
         # read data back in
@@ -141,8 +141,8 @@ class PyNWBAnotherTestCase(TestCase):
         print(stimulus_timestamps[()])
 
         io.close()
-    
-    #def test_open_big_static_NWB_file(self):
+
+    # def test_open_big_static_NWB_file(self):
     #    file_path = './test_data/mem_potential_real.nwb'
     #    # read data back in
     #    io = NWBHDF5IO(file_path, 'r')
@@ -159,3 +159,36 @@ class PyNWBAnotherTestCase(TestCase):
     #    geppetto_model.variables.append(self.factory.createStateVariable('time', time))
 
     #    io.close()
+
+
+class PyNWBGenericReadTestCase(TestCase):
+    factory = GeppettoModelFactory()
+    nwbfile = None
+
+    def setUp(self):
+        file_path = './test_data/brain_observatory.nwb'
+        # read data back in
+        io = NWBHDF5IO(file_path, 'r')
+        self.nwbfile = io.read()
+        self.nwb_utils = nwb_utils.NWBUtils(self.nwbfile)
+
+    def test_open_NWB_file_and_read_all_time_series_data(self):
+        self.time_series_list = self.nwb_utils.get_timeseries()
+        self.assertEqual(len(self.time_series_list), 10)
+
+
+class RequirementsTestCase(TestCase):
+    def setUp(self):
+        file_path = './test_data/brain_observatory.nwb'
+        # read data back in
+        io = NWBHDF5IO(file_path, 'r')
+        self.nwbfile = io.read()
+        self.nwb_utils = nwb_utils.NWBUtils(self.nwbfile)
+
+    def test_has_all_requirements_true(self):
+        self.assertTrue(self.nwb_utils.has_all_requirements(
+            ["DfOverF", "ImageSeries", "acquisition.TimeSeries", "processing.<ProcessingModule>.DfOverF"]))
+
+    def test_has_all_requirements_false(self):
+        self.assertTrue(not self.nwb_utils.has_all_requirements(["df_over_f"]))
+
