@@ -1,9 +1,10 @@
 import collections
 
-from pynwb import TimeSeries, NWBFile, NWBHDF5IO
+import numpy as np
+from pynwb import TimeSeries, NWBHDF5IO
 from pynwb.core import NWBDataInterface
 from pynwb.image import ImageSeries
-import numpy as np
+
 
 class NWBUtils:
     nwb_map_id_api = {'acquisition': 'acquisition',

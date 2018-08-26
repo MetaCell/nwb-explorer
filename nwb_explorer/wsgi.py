@@ -1,5 +1,5 @@
 """
-WSGI config for nwb_explorer project.
+WSGI config for pygeppetto_template project.
 
 It exposes the WSGI callable as a module-level variable named ``application``.
 
@@ -12,7 +12,7 @@ import channels.asgi
 
 from django.core.wsgi import get_wsgi_application
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "nwb_explorer.settings")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "pygeppetto_template.settings")
 
 channel_layer = channels.asgi.get_channel_layer()
 application = get_wsgi_application()
