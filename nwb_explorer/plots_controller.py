@@ -4,12 +4,12 @@ Model interpreter for NWB. This class creates a geppetto type
 """
 import importlib
 import json
+import uuid
 from os import listdir, path
 
 import holoviews as hv
 import pygeppetto.ui
 import seaborn as sns
-from pynwb import NWBHDF5IO
 
 from nwb_explorer.utils.nwb_utils import NWBUtils
 
@@ -105,7 +105,7 @@ class PlotsController:
             plot = method_to_call(nwb_utils.get_nwbfile())
         except ImportError:
             raise ImportError
-        data = pygeppetto.ui.get_url(plot, self.holoviews_plots_path)
+        data = self.get_url(plot, self.holoviews_plots_path)
         return json.dumps(data)
 
     def get_available_plots(self, nwbfile_path):
@@ -135,3 +135,14 @@ class PlotsController:
                     self.public_plots_dict[data["id"]] = {'path': python_filepath, 'requirements': data["requirements"]}
                     plots.append(data)
         return plots
+
+    @staticmethod
+    def get_url(obj, path_):
+        """Saves obj in path and returns an object with the url."""
+        uuid_plot = path_ + str(uuid.uuid4())
+        try:
+            hv.renderer('bokeh').save(obj, uuid_plot)
+            data = {'url': '/' + uuid_plot + ".html"}
+        except:
+            data = {'url': ''}
+        return data
