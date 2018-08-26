@@ -13,26 +13,16 @@ Below you will find the software you need to install to use nwb explorer (and th
 * Node (9.11.1) and npm (6.0.0).
 * Redis-Server (4.0.9).
 * Python 3 (3.6.5), pip (10.0.1) and Python3-tk.
-#### Python Dependencies
- `pip install -r requirements.txt`
 
-or
+  
 
-* Django (1.9). `pip install django`
-* Pygeppeto_server. ```git clone https://github.com/MetaCell/pygeppetto-django.git && cd pygeppetto-django && git checkout development && pip install -e . ```
-* Pygeppeto_model.```git clone https://github.com/openworm/pygeppetto.git && cd pygeppetto && git checkout manager && pip install -e . ```
-* Pyecore (0.8.1). `pip install pyecore`
-* Pynwb. ```git clone https://github.com/NeurodataWithoutBorders/pynwb.git && cd pynwb && git checkout dev && pip install -e . ```
-* Seaborn (0.8.1). `pip install seaborn`
-* Holoviews (1.10.6). `pip install holoviews`
-* Pillow (5.2.0). `pip install Pillow`
  
 ### Installing
 
 A step by step instructions to get a development env running
 
 ```
-git clone https://github.com/tarelli/nwb-explorer
+git clone -b development https://github.com/tarelli/nwb-explorer
 cd nwb-explorer
 mkdir static
 cd static
@@ -44,6 +34,28 @@ cd ..
 npm install
 npm run build-dev-noTest
 ```
+
+#### Adding a local nwb file folder:
+
+```
+mkdir test_data <- In the nwb-explorer folder
+cd test_data/
+wget http://ec2-34-229-132-127.compute-1.amazonaws.com/api/v1/item/5ae9f7896664c640660400b5/download -O brain_observatory.nwb
+
+```
+
+#### Python Dependencies
+
+We recommend the use of a new python virtual environment: 
+
+```
+python3 -m venv new_venv_folder
+source new_venv_folder/bin/activate
+pip install -r requirements.txt
+```
+
+
+
 ## Deployment
 
 Run the redis-server manually:
