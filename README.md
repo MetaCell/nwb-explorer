@@ -18,7 +18,7 @@ Below you will find the software you need to install to use nwb explorer (and th
 
 or
 
-* Django (1.9). `pip install django`
+* Django (1.11.7). `pip install django`
 * Pygeppeto_server. ```git clone https://github.com/MetaCell/pygeppetto-django.git && cd pygeppetto-django && git checkout development && pip install -e . ```
 * Pygeppeto_model.```git clone https://github.com/openworm/pygeppetto.git && cd pygeppetto && git checkout manager && pip install -e . ```
 * Pyecore (0.8.1). `pip install pyecore`
