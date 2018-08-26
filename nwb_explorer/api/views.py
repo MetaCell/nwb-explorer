@@ -1,5 +1,3 @@
-import json
-
 from django.http import HttpResponseBadRequest, HttpResponseNotFound
 from pygeppetto.model.model_serializer import GeppettoModelSerializer
 from rest_framework.decorators import api_view, permission_classes

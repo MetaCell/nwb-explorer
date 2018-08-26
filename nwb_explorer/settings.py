@@ -53,15 +53,6 @@ MIDDLEWARE_CLASSES = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-CHANNEL_LAYERS = {
-    "default": {
-        "BACKEND": "asgi_redis.RedisChannelLayer",
-        "CONFIG": {
-            "hosts": [os.environ.get('REDIS_URL', 'redis://localhost:6379')],
-        },
-        "ROUTING": "nwb_explorer.routing.channel_routing",
-    },
-}
 
 REST_FRAMEWORK = {
     # Use Django's standard `django.contrib.auth` permissions,
@@ -90,6 +81,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'nwb_explorer.wsgi.application'
+ASGI_APPLICATION = 'nwb_explorer.routing.application'
 
 
 # Database
@@ -147,4 +139,4 @@ STATICFILES_DIRS = [
 
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.PickleSerializer'
 
-NWB_FILE = {}
+GEPPETTO_SOCKET_URL = 'org.geppetto.frontend/GeppettoServlet'
