@@ -26,7 +26,7 @@ git clone -b development https://github.com/tarelli/nwb-explorer
 cd nwb-explorer
 mkdir static
 cd static
-git clone https://github.com/openworm/org.geppetto.frontend
+git clone -b development https://github.com/openworm/org.geppetto.frontend
 cd org.geppetto.frontend/src/main/webapp/extensions
 git clone https://github.com/tarelli/geppetto-nwbexplorer
 cd ..
