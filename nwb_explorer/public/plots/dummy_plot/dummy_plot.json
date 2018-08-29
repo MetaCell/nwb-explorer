@@ -1,5 +1,5 @@
 {
-  "name": "Dummy Plot",
+  "name": "Stimulus",
   "id": "plot_holoviews",
   "requirements": ["DfOverF", "ImageSeries"]
 }
