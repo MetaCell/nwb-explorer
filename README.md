@@ -86,6 +86,7 @@ python manage.py test
 
 * Matteo Cantarelli ([MetaCell](http://metacell.us))
 * Giovanni Idili ([MetaCell](http://metacell.us))
+* Afonso Pinto 
 
 See also the list of [contributors](https://github.com/tarelli/nwb-explorer/contributors) who participated in this project.
 
