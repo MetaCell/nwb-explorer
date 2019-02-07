@@ -1,6 +1,10 @@
 .idea/
 .vscode/
 *pyc
-static/org.geppetto.frontend/
+/static/
+/dependencies/
+test_data/
 .DS_Store
+*.egg-info/
 *.nwb
+.ipynb_checkpoints

@@ -33,10 +33,8 @@ class NWBModelInterpreter(ModelInterpreter):
         geppetto_model.libraries.append(nwb_geppetto_library)
 
         # read data
-        try:
-            self.nwb_utils = nwb_utils.NWBUtils(nwbfile_path)
-        except ValueError:
-            raise ValueError("File not found")
+
+        self.nwb_utils = nwb_utils.NWBReader(nwbfile_path)
 
         time_series_list = self.nwb_utils.get_timeseries()
         variables = []

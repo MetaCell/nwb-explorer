@@ -1,1 +1,0 @@
-from pygeppetto_server.routing import application

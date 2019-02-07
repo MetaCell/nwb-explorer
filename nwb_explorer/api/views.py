@@ -5,7 +5,7 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
 from ..nwb_model_interpreter import NWBModelInterpreter
-from ..plots_controller import PlotsController
+from ..plots_controller import PlotManager
 
 geppetto_model = None
 nwb_utils = None
@@ -44,12 +44,12 @@ def plot(request):
             geppetto_model = GeppettoModelSerializer().deserialize(serialized_model)
         else:
             return HttpResponseBadRequest("Geppetto Model not in session")
-        plot_controller = PlotsController(geppetto_model)
+        plot_manager = PlotManager(geppetto_model)
         nwbfile = request.session.get('nwbfile')
         if nwbfile is None:
             return HttpResponseBadRequest("Nwbfile not in session")
         try:
-            return Response(plot_controller.plot(plot_id, nwbfile))
+            return Response(plot_manager.plot(plot_id, nwbfile))
         except Exception as e:
             return HttpResponseBadRequest(e)
     elif request.method == 'POST':
@@ -66,12 +66,12 @@ def plots_available(request):
             geppetto_model = GeppettoModelSerializer().deserialize(serialized_model)
         else:
             return HttpResponseBadRequest("Geppetto Model not in session")
-        plot_controller = PlotsController(geppetto_model)
+        plot_manager = PlotManager(geppetto_model)
         nwbfile = request.session.get('nwbfile')
         if nwbfile is None:
             return HttpResponseBadRequest("Nwbfile not in session")
         try:
-            return Response(plot_controller.get_available_plots(nwbfile))
+            return Response(plot_manager.get_available_plots(nwbfile))
         except Exception as e:
             return HttpResponseBadRequest(e)
     elif request.method == 'POST':

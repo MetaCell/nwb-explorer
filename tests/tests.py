@@ -168,7 +168,7 @@ class PyNWBGenericReadTestCase(TestCase):
     def setUp(self):
         file_path = './test_data/brain_observatory.nwb'
         # read data back in
-        self.nwb_utils = nwb_utils.NWBUtils(file_path)
+        self.nwb_utils = nwb_utils.NWBReader(file_path)
 
     def test_open_NWB_file_and_read_all_time_series_data(self):
         self.time_series_list = self.nwb_utils.get_timeseries()
@@ -179,7 +179,7 @@ class RequirementsTestCase(TestCase):
     def setUp(self):
         file_path = './test_data/brain_observatory.nwb'
         # read data back in
-        self.nwb_utils = nwb_utils.NWBUtils(file_path)
+        self.nwb_utils = nwb_utils.NWBReader(file_path)
 
     def test_has_all_requirements_true(self):
         self.assertTrue(self.nwb_utils.has_all_requirements(

@@ -6,7 +6,7 @@ from pynwb.core import NWBDataInterface
 from pynwb.image import ImageSeries
 
 
-class NWBUtils:
+class NWBReader:
     nwb_map_id_api = {'acquisition': 'acquisition',
                       'analysis': 'analysis',
                       'epochs': 'epochs',
@@ -18,8 +18,8 @@ class NWBUtils:
         try:
             io = NWBHDF5IO(nwbfile_path, 'r')
             nwbfile = io.read()
-        except:
-            raise ValueError('Cannot invoke init without a valid path file')
+        except Exception  as e:
+            raise ValueError('Error reading the NWB file.', e.args)
 
         self.nwbfile = nwbfile
         self.nwb_data_interfaces_list = self._get_data_interfaces(self.nwbfile)
@@ -85,7 +85,7 @@ class NWBUtils:
     def _check_requirement_full_path(self, path_list):
         """Given a full_path requirement gets the initial group and expands it blindly in search of the last path
         element """
-        group = NWBUtils.nwb_map_id_api.get(path_list[0])
+        group = NWBReader.nwb_map_id_api.get(path_list[0])
         if group is not None:
             nodes = [getattr(self.nwbfile, group)]
             for index, remaining_path in enumerate(path_list[1:]):
