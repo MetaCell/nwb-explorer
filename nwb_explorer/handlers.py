@@ -112,7 +112,8 @@ class PlotsAvailableHandler(JupyterGeppettoHandler):
         try:
             self.finish(plot_manager.get_available_plots(nwbfile))
         except Exception as e:
-            raise Exception("Error creating plot" + e)
+            e.args += ["Error creating plot"]
+            raise e
 
     def post(self):
         self.finish("Post Response")

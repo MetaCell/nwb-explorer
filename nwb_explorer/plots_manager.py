@@ -18,7 +18,7 @@ sns.set_style('whitegrid')
 
 
 class PlotManager:
-    holoviews_plots_path = "static/org.geppetto.frontend/src/main/webapp/extensions/geppetto-nwbexplorer/holoviews_plots/"
+    holoviews_plots_path = "webapp/holoviews_plots/"
     public_plots_path = "nwb_explorer/public/plots"
     public_plots_dict = {}
 
