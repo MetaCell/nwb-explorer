@@ -142,8 +142,8 @@ class PlotManager:
         uuid_plot = path_ + str(uuid.uuid4())
         try:
             hv.renderer('bokeh').save(obj, uuid_plot)
-            plot_path = '/geppetto/{}.html'.format(uuid_plot.split('/webapp/')[1])
-            data = {'url':  plot_path}
-        except:
-            data = {'url': ''}
-        return data
+            plot_path = '/geppetto/{}.html'.format(uuid_plot.split('webapp/')[1])
+            return {'url':  plot_path}
+        except Exception as e:
+            e.args = ["Error saving plot"] + list(e.args)
+            raise e

@@ -9,3 +9,4 @@ test_data/
 *.egg-info/
 *.nwb
 .ipynb_checkpoints
+*log
