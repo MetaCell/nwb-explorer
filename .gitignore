@@ -2,6 +2,7 @@
 .vscode/
 *pyc
 /static/
+*.ipynb
 /dependencies/
 /webapp/
 test_data/
@@ -9,5 +10,5 @@ test_data/
 *.egg-info/
 *.nwb
 .ipynb_checkpoints
-*log
-*.pynwb
+*.log
+
