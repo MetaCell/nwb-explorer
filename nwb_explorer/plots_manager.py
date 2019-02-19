@@ -105,6 +105,8 @@ class PlotManager:
             plot = method_to_call(nwb_utils.get_nwbfile())
         except ImportError:
             raise ImportError
+
+        # TODO we should return the file content here, not the url at some point
         data = self.get_url(plot, self.holoviews_plots_path)
         return json.dumps(data)
 
