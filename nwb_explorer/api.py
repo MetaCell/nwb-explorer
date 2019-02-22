@@ -4,6 +4,8 @@ from jupyter_geppetto.webapi import get, RouteManager
 
 from nwb_explorer.nwb_model_interpreter import NWBModelInterpreter
 from nwb_explorer.plots_manager import PlotManager
+from nwb_explorer.utils import get_file_from_url
+import logging
 
 # TODO this is still a really distant relative of the RuntimeProject in the Java backend. Remove when a sensible implementation of the flow is available on pygeppetto
 class RuntimeProject:
@@ -37,9 +39,9 @@ class NWBController:
     @staticmethod
     def load_nwb_model(nwbfile):
         import os
-        cached_file = nwbfile + '.json'
-        if os.path.exists(cached_file):
-            with open(cached_file, 'rb') as f:
+        cached_model_file = nwbfile + '.json'
+        if os.path.exists(cached_model_file):
+            with open(cached_model_file, 'rb') as f:
                 serialized_model = f.read()
                 geppetto_model = GeppettoModelSerializer().deserialize(serialized_model)
 
@@ -53,16 +55,19 @@ class NWBController:
                 raise Exception("File error", e)
             serialized_model = GeppettoModelSerializer().serialize(geppetto_model)
 
-            with open(cached_file, 'wb') as f:
+            with open(cached_model_file, 'wb') as f:
                 f.write(serialized_model)
 
         return geppetto_model, serialized_model
 
     @get('/api/load')
     def loadFile(self, nwbfile):
-
+        logging.info('Loading nwb file: {}'.format(nwbfile))
         if nwbfile:
-
+            if 'http' in nwbfile:
+                logging.info('Downloading nwb file: {}'.format(nwbfile))
+                nwbfile = get_file_from_url(nwbfile)
+                logging.info('Downloaded file to: {}'.format(nwbfile))
             geppetto_model, serialized_model = NWBController.load_nwb_model(nwbfile)
 
             RuntimeProject.set_geppetto_model(geppetto_model)

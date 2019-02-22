@@ -15,31 +15,36 @@ from pygeppetto.model.variables import Variable
 from pynwb import NWBHDF5IO
 from pynwb.image import ImageSeries
 from pynwb.ophys import RoiResponseSeries
+from pynwb import TimeSeries
 
 import nwb_explorer.utils.nwb_utils as nwb_utils
+
+TMP_MAX_TIMESERIES_LOADED = 3
+
+SUPPORTED_TIME_SERIES_TYPES = (RoiResponseSeries, ImageSeries, TimeSeries) # Assuming numerical or image time series only for now
 
 
 class NWBModelInterpreter(ModelInterpreter):
 
     def __init__(self):
         self.factory = GeppettoModelFactory()
-        self.nwb_utils = None
+        self.nwb_reader = None
 
     def importType(self, nwbfile_path, typeName, library, commonLibraryAccess):
         logging.debug('Creating a Geppetto Model')
 
-        geppetto_model = self.factory.createGeppettoModel('GepettoModel')
+        geppetto_model = self.factory.createGeppettoModel('GeppettoModel')
         nwb_geppetto_library = pygeppetto.GeppettoLibrary(name='nwblib', id='nwblib')
         geppetto_model.libraries.append(nwb_geppetto_library)
 
         # read data
 
-        self.nwb_utils = nwb_utils.NWBReader(nwbfile_path)
+        self.nwb_reader = nwb_utils.NWBReader(nwbfile_path)
 
-        time_series_list = self.nwb_utils.get_timeseries()
+        time_series_list = self.nwb_reader.get_timeseries()
         variables = []
 
-        nwbType = pygeppetto.CompositeType(id=str('nwb'), name=str('nwb'), abstract=False)
+        nwbType = pygeppetto.CompositeType(id='nwb', name='nwb', abstract=False)
 
         for i, time_series in enumerate(time_series_list):
             """
@@ -55,9 +60,8 @@ class NWBModelInterpreter(ModelInterpreter):
             
             where each group entry contains the corresponding data from the nwb file. 
             """
-            if isinstance(time_series,
-                          (RoiResponseSeries, ImageSeries)):  # Assuming numerical or image time series only for now
-                group = "group" + str(i)
+            if isinstance(time_series, SUPPORTED_TIME_SERIES_TYPES):
+                group = "group{}".format(i)
                 group_variable = Variable(id=group)
                 group_type = pygeppetto.CompositeType(id=group, name=group, abstract=False)
 
@@ -69,20 +73,15 @@ class NWBModelInterpreter(ModelInterpreter):
                 time_series_time_variable = self.factory.createTimeSeries("time" + str(i), timestamps, timestamps_unit)
                 group_type.variables.append(self.factory.createStateVariable("time", time_series_time_variable))
 
-                plottable_timeseries = self.nwb_utils.get_plottable_timeseries(time_series)
+                plottable_timeseries = self.nwb_reader.get_plottable_timeseries(time_series)
 
-                # Todo: add importTypes
+                # TODO: add lazy fetching through importTypes
 
                 if isinstance(time_series, ImageSeries):
-                    img = Img.fromarray(plottable_timeseries, 'RGB')
-                    data_bytes = BytesIO()
-                    img.save(data_bytes, 'PNG')
-                    data_str = base64.b64encode(data_bytes.getvalue()).decode('utf8')
-                    values = [Image(data=data_str)]
-                    md_time_series_variable = self.factory.createMDTimeSeries(metatype + "variable", values)
+                    md_time_series_variable = self.extract_image_variable(metatype, plottable_timeseries)
                     group_type.variables.append(self.factory.createStateVariable(metatype, md_time_series_variable))
                 else:
-                    for index, mono_dimensional_timeseries in enumerate(plottable_timeseries[:3]): #Todo: [:3] for development purposes while importTypes not implemented
+                    for index, mono_dimensional_timeseries in enumerate(plottable_timeseries[:TMP_MAX_TIMESERIES_LOADED]): #TODO: [:3] for development purposes while importTypes not implemented
                         name = metatype + str(index)
                         time_series_variable = self.factory.createTimeSeries(name + "variable", mono_dimensional_timeseries,
                                                                              unit)
@@ -105,6 +104,15 @@ class NWBModelInterpreter(ModelInterpreter):
             geppetto_model.variables.append(variable)
 
         return geppetto_model
+
+    def extract_image_variable(self, metatype, plottable_timeseries):
+        img = Img.fromarray(plottable_timeseries, 'RGB')
+        data_bytes = BytesIO()
+        img.save(data_bytes, 'PNG')
+        data_str = base64.b64encode(data_bytes.getvalue()).decode('utf8')
+        values = [Image(data=data_str)]
+        md_time_series_variable = self.factory.createMDTimeSeries(metatype + "variable", values)
+        return md_time_series_variable
 
     def importValue(self, importValue):
         pass

@@ -1,7 +1,7 @@
-from nwb_explorer import handlers
+from nwb_explorer import api
 from jupyter_geppetto.webapi import RouteManager
 
-RouteManager.add_controller(handlers.NWBController)
+RouteManager.add_controller(api.NWBController)
 
 
 

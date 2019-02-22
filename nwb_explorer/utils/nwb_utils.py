@@ -6,6 +6,7 @@ from pynwb.core import NWBDataInterface
 from pynwb.image import ImageSeries
 
 
+
 class NWBReader:
     nwb_map_id_api = {'acquisition': 'acquisition',
                       'analysis': 'analysis',
