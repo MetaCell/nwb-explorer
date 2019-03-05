@@ -6,7 +6,6 @@ from pynwb.core import NWBDataInterface
 from pynwb.image import ImageSeries
 
 
-
 class NWBReader:
     nwb_map_id_api = {'acquisition': 'acquisition',
                       'analysis': 'analysis',
@@ -14,6 +13,44 @@ class NWBReader:
                       'processing': 'modules',  # this dictionary is needed mainly because of this
                       'stimulus': 'stimulus',
                       }
+
+    @staticmethod
+    def get_plottable_timeseries(time_series, resampling_size=None):
+
+        if time_series.timestamps:
+            timestamps = time_series.timestamps
+            data_size = timestamps.size
+            step = data_size // resampling_size if (resampling_size and data_size > resampling_size) else 1
+            timestamps = timestamps[::step].astype(float).tolist()
+        else:
+            raise NotImplementedError('Still implicit timestamps are not supported')  # TODO
+
+        time_series_array = NWBReader.get_mono_dimensional_timeseries_aux(time_series.data[::step])
+        assert len(time_series_array[0]) == len(
+            timestamps), "Length of time series is different from timestamps: something wrong is happening while unpacking the timeseries"
+        return timestamps, time_series_array
+
+    @staticmethod
+    def get_timeseries_image_array(time_series):
+        assert isinstance(time_series, ImageSeries)
+        return NWBReader.get_raw_data(time_series.data)
+
+    @staticmethod
+    def get_raw_data(image_series_data):
+        """Given a image_series data object returns a NumPy array with the raw data."""
+        arr = np.zeros(image_series_data.shape, dtype=image_series_data.dtype)
+        image_series_data.read_direct(arr)
+        return arr
+
+    @staticmethod
+    def get_mono_dimensional_timeseries_aux(values):
+        """Given a timeseries data object returns all mono dimensional timeserieses presents on it."""
+        assert isinstance(values, np.ndarray), "This function is supposed to work with numpy array data"
+        # Convert NaN to zeros FIXME if using data for anything else than plotting
+        mono_time_series_list = np.nan_to_num(values.transpose(), copy=False).astype(float, copy=False).tolist()
+        if len(values.shape) == 1:
+            mono_time_series_list = [mono_time_series_list]
+        return mono_time_series_list
 
     def __init__(self, nwbfile_path):
         try:
@@ -23,8 +60,13 @@ class NWBReader:
             raise ValueError('Error reading the NWB file.', e.args)
 
         self.nwbfile = nwbfile
-        self.nwb_data_interfaces_list = self._get_data_interfaces(self.nwbfile)
-        self.time_series_list = self._get_timeseries()
+        self.__data_interfaces = None
+        self.__time_series_list = None
+
+    def get_data_interfaces(self):
+        if not self.__data_interfaces:
+            self.__data_interfaces = self._get_data_interfaces(self.nwbfile)
+        return self.__data_interfaces
 
     def _get_data_interfaces(self, node):
         """Given a NWBHDF5IO returns all the data_interfaces objects presents on it."""
@@ -38,39 +80,18 @@ class NWBReader:
     def _get_timeseries(self):
         """Given all the nwb_data_interfaces returns all of those that are timeseries objects."""
         time_series_list = []
-        for data_interface in self.nwb_data_interfaces_list:
+        for data_interface in self.get_data_interfaces():
             if isinstance(data_interface, TimeSeries):
                 time_series_list.append(data_interface)
         return time_series_list
 
     def get_timeseries(self):
-        return self.time_series_list
+        if not self.__time_series_list:
+            self.__time_series_list = self._get_timeseries()
+        return self.__time_series_list
 
     def get_nwbfile(self):
         return self.nwbfile
-
-    def get_plottable_timeseries(self, time_series):
-        if isinstance(time_series, ImageSeries):
-            return self.get_raw_data(time_series.data)
-        return self.get_mono_dimensional_timeseries_aux(time_series.data[()])
-
-    def get_raw_data(self, image_series_data):
-        """Given a image_series data object returns a NumPy array with the raw data."""
-        arr = np.zeros(image_series_data.shape, dtype=image_series_data.dtype)
-        image_series_data.read_direct(arr)
-        return arr
-
-    def get_mono_dimensional_timeseries_aux(self, values):
-        """Given a timeseries data object returns all mono dimensional timeseries presents on it."""
-        mono_time_series_list = []
-        if isinstance(values, collections.Iterable):
-            try:
-                data = [float(i) for i in values]
-                mono_time_series_list.append(data)
-            except:
-                for inner_list in values:
-                    mono_time_series_list += self.get_mono_dimensional_timeseries_aux(inner_list)
-        return mono_time_series_list
 
     # Assuming requirements are NWBDataInterfaces provided by the API and NWB specification
     # http://pynwb.readthedocs.io/en/latest/overview_nwbfile.html#processing-modules
@@ -106,7 +127,7 @@ class NWBReader:
 
     def _check_requirement_data_interfaces(self, requirement):
         """Given a requirement looks for a match in all the nwb_data_interfaces of the nwb file """
-        for data_interfaces in self.nwb_data_interfaces_list:
+        for data_interfaces in self.get_data_interfaces():
             if data_interfaces.neurodata_type == requirement:
                 return True
         return False

@@ -8,10 +8,9 @@ import uuid
 from os import listdir, path
 
 import holoviews as hv
-import pygeppetto.ui
 import seaborn as sns
 
-from nwb_explorer.utils.nwb_utils import NWBReader
+from nwb_explorer.nwb_model_interpreter.nwb_reader import NWBReader
 
 hv.extension('bokeh')
 sns.set_style('whitegrid')
