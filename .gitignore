@@ -4,3 +4,7 @@
 static/org.geppetto.frontend/
 .DS_Store
 *.nwb
+*.log
+*.ipynb
+dependencies/
+webapp/
