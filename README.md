@@ -16,25 +16,6 @@ Below you will find the software you need to install to use nwb explorer (and th
 
   
 
- 
-### Installing
-
-A step by step instructions to get a development env running
-
-```
-git clone -b development https://github.com/tarelli/nwb-explorer
-cd nwb-explorer
-mkdir static
-cd static
-git clone -b development https://github.com/openworm/org.geppetto.frontend
-cd org.geppetto.frontend/src/main/webapp/extensions
-git clone https://github.com/tarelli/geppetto-nwbexplorer
-cd ..
-/bin/cp -rf ../../../../../GeppettoConfiguration.json .
-npm install
-npm run build-dev-noTest
-```
-
 #### Adding a local nwb file folder:
 
 ```
@@ -54,45 +35,51 @@ source new_venv_folder/bin/activate
 pip install -r requirements.txt
 ```
 
+### Installing
+
+A step by step instructions to get a development env running.
+
+```
+git clone -b development https://github.com/tarelli/nwb-explorer
+cd nwb-explorer
+cd utilities
+python install.py
+cd ..
+```
 
 
-## Deployment
+## How to run
 
-Run the redis-server manually:
+After the installation is complete, just run the script:
+```bash
+cd [PROJECT_ROOT]
+./NWBE
+```
 
-OSX
-```
-nohup redis-server &
-```
-Linux
-```
-redis-server &
-```
-Then, on the nwb-explorer folder, run :
-```
-python manage.py runserver
-```
 
 ## How to use
 
 ![Real plots](https://github.com/NeurodataWithoutBorders/nwb_hackathons/raw/master/HCK04_2018_Seattle/Projects/NWBExplorer/nwbexplorer.gif)
 ## How to develop
+The application is built as a Jupyter notebook extension by means of the jupyter-geppetto extension (https://github.com/openworm/org.geppetto.frontend.jupyter).
+The Jupyter notebook web application is hance used as a backend, the application pages, the web resources and apis are served by Tornado handlers.
 
-Any change you make in the python code will be automatically redeployed by the Django server.
+### Python code
+In order to have all the python files redeployed, the application and the dependencies must be installed in development mode, i.e. with the command
+```
+pip install -e .
+```
+### Javascript code
+To check if a dependency is installed in development mode, run pip list.
 
 JS/HTML code can be found inside `static/org.geppetto.frontend/src/main/webapp/`. The code needs to be rebuilt with webpack everytime there is a change. The recommended way is to run in `/static/org.geppetto.frontend/src/main/webapp/` this command:
 ```
 npm run build-dev-noTest:watch
 ```
 
-## Running the tests
-
-```
-python manage.py test
-```
 ## Built With
 
-* [Django](https://www.djangoproject.com/) - The web framework used
+* [Jupyter notebook](https://jupyter.org/) - The Jupyter notebook web application is used as a backend.
 * [Geppetto](http://www.geppetto.org/) - Used to build a web-based application to visualize and simulate the NWB 2.0 files.
 
 

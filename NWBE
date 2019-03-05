@@ -1,0 +1,2 @@
+#!/bin/sh
+exec jupyter notebook --NotebookApp.default_url=/geppetto --NotebookApp.token='' --library=nwb_explorer
