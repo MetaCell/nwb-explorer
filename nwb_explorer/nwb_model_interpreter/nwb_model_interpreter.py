@@ -15,13 +15,16 @@ from pygeppetto.model.variables import Variable
 from pynwb.image import ImageSeries
 from pynwb.ophys import RoiResponseSeries
 from pynwb import TimeSeries
+import string
 
 from .nwb_reader import NWBReader
 
 TMP_MAX_TIMESERIES_LOADED = 3
 
-SUPPORTED_TIME_SERIES_TYPES = (RoiResponseSeries, ImageSeries, TimeSeries) # Assuming numerical or image time series only for now
+SUPPORTED_TIME_SERIES_TYPES = (
+    RoiResponseSeries, ImageSeries, TimeSeries)  # Assuming numerical or image time series only for now
 MAX_SAMPLES = 1000
+
 
 class NWBModelInterpreter(ModelInterpreter):
 
@@ -67,7 +70,7 @@ class NWBModelInterpreter(ModelInterpreter):
                 unit = time_series.unit
                 timestamps_unit = time_series.timestamps_unit
                 metatype = time_series.name
-
+                metatype_name = ''.join(c for c in metatype.replace(' ', '_') if c.isalnum())
                 try:
 
                     # TODO: add lazy fetching through importTypes
@@ -77,16 +80,16 @@ class NWBModelInterpreter(ModelInterpreter):
                         md_time_series_variable = self.extract_image_variable(metatype, plottable_timeseries)
                         group_type.variables.append(self.factory.createStateVariable(metatype, md_time_series_variable))
                     else:
-                        timestamps, plottable_timeseries = self.nwb_reader.get_plottable_timeseries(time_series,
-                                                                                                    MAX_SAMPLES)
+                        timestamps, plottable_timeseries = NWBReader.get_plottable_timeseries(time_series, MAX_SAMPLES)
 
-                        time_series_time_variable = self.factory.createTimeSeries("time" + str(i), timestamps,
+                        time_series_time_variable = self.factory.createTimeSeries("time" + str(i),
+                                                                                  timestamps,
                                                                                   timestamps_unit)
                         group_type.variables.append(self.factory.createStateVariable("time", time_series_time_variable))
 
                         for index, mono_dimensional_timeseries in enumerate(
-                                plottable_timeseries):  # TODO: [:3] for development purposes while importTypes not implemented
-                            name = metatype + str(index)
+                                plottable_timeseries):
+                            name = metatype_name + str(index)
                             time_series_value = self.factory.createTimeSeries(name + "variable",
                                                                               mono_dimensional_timeseries,
                                                                               unit)
@@ -100,11 +103,14 @@ class NWBModelInterpreter(ModelInterpreter):
 
                     nwbType.variables.append(self.factory.createStateVariable(group))
 
-                except Exception as e:
+                except ValueError as e:
                     logging.error("Error loading timeseries: " + " -- ".join(e.args))
                     import traceback
                     traceback.print_exc()
-                    # FIXME from pynwb documentation: Alternatively (i.e. when timestamps are not given), if your recordings are sampled at a uniform rate, you can supply starting_time and rate.
+                except NotImplementedError as e:
+                    logging.error("Unsupported feature: " + " -- ".join(e.args))
+                    import traceback
+                    traceback.print_exc()
 
         # add type to nwb
         nwb_geppetto_library.types.append(nwbType)

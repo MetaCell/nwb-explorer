@@ -16,18 +16,23 @@ class NWBReader:
 
     @staticmethod
     def get_plottable_timeseries(time_series, resampling_size=None):
+        data_size = time_series.data.size
+        step = data_size // resampling_size if (resampling_size and data_size > resampling_size) else 1
 
         if time_series.timestamps:
             timestamps = time_series.timestamps
-            data_size = timestamps.size
-            step = data_size // resampling_size if (resampling_size and data_size > resampling_size) else 1
             timestamps = timestamps[::step].astype(float).tolist()
         else:
-            raise NotImplementedError('Still implicit timestamps are not supported')  # TODO
+
+            timestamps = (time_series.rate * step) * np.arange(0, data_size // step) + time_series.starting_time
+            timestamps = timestamps.tolist()
+            # raise NotImplementedError('Still implicit timestamps are not supported')  # TODO
+            # FIXME from pynwb documentation: Alternatively (i.e. when timestamps are not given), if your recordings are sampled at a uniform rate, you can supply starting_time and rate.
 
         time_series_array = NWBReader.get_mono_dimensional_timeseries_aux(time_series.data[::step])
-        assert len(time_series_array[0]) == len(
-            timestamps), "Length of time series is different from timestamps: something wrong is happening while unpacking the timeseries"
+        if len(time_series_array[0]) != len(timestamps):
+            raise ValueError("Length of time series ({}) is different from timestamps ({}): "
+                             .format(len(time_series_array[0]), len(timestamps)))
         return timestamps, time_series_array
 
     @staticmethod
