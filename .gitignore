@@ -11,4 +11,5 @@ test_data/
 *.nwb
 .ipynb_checkpoints
 *.log
+nwb_files_cache
 

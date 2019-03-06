@@ -98,7 +98,7 @@ def main(argv):
     subprocess.call(['npm', 'run', 'build-dev'], cwd=JUPYTER_EXTENSION_PATH + 'js')
 
     if not os.path.exists(WEBAPP_PATH):
-        clone('https://github.com/tarelli/geppetto-nwbexplorer', branches, destination_folder=WEBAPP_PATH)
+        clone('https://github.com/MetaCell/geppetto-nwbexplorer.git', branches, destination_folder=WEBAPP_PATH)
         print("NPM Install and build for Geppetto Frontend  ...")
         subprocess.call(['npm', 'install'], cwd=WEBAPP_PATH)
     subprocess.call(['npm', 'run', 'build-dev'], cwd=WEBAPP_PATH)
