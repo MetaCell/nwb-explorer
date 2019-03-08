@@ -19,6 +19,7 @@ DEPS_DIR = os.path.join(ROOT_DIR, 'dependencies')
 
 def cprint(string):
     print(f"\033[35;4m\U0001f560 {string} \033[0m \n")
+    sys.stdout.flush()
 
 # by default clones branch (which can be passed as a parameter python install.py branch test_branch)
 # if branch doesnt exist clones the default_branch

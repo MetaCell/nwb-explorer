@@ -8,7 +8,7 @@ ENV GIT_URL=https://github.com/MetaCell/nwb-explorer/tarball/${BRANCH} \
 RUN /bin/echo -e "\e[1;93mDownloading branch $BRANCH for nwb-explorer \e[0m"
 
 RUN mkdir ${FOLDER} &&\
-  wget -O - ${GIT_URL} | tar xz -C ${FOLDER} --strip-components 1 &&\
+  wget --no-verbose -O - ${GIT_URL} | tar xz -C ${FOLDER} --strip-components 1 &&\
   cd ${FOLDER}/utilities &&\
   python install.py branch ${BRANCH}
 
