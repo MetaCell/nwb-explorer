@@ -5,6 +5,15 @@ ARG BRANCH=feature/jupyter-backend
 ENV GIT_URL=https://github.com/MetaCell/nwb-explorer/tarball/${BRANCH} \
   FOLDER=nwb
 
+USER root
+RUN apt-get update -qq &&\
+  apt-get install python3-tk -qq
+USER $NB_UID
+
+RUN /bin/echo -e "\e[1;93m Installing python requirements\e[0m"
+COPY requirements.txt requirements.txt
+RUN pip install -r requirements.txt
+
 RUN /bin/echo -e "\e[1;93mDownloading branch $BRANCH for nwb-explorer \e[0m"
 
 RUN mkdir ${FOLDER} &&\
