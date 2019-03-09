@@ -5,7 +5,6 @@
 *.ipynb
 /dependencies/
 /webapp/
-test_data/
 .DS_Store
 *.egg-info/
 *.nwb
