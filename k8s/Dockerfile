@@ -10,6 +10,10 @@ RUN apt-get update -qq &&\
   apt-get install python3-tk -qq
 USER $NB_UID
 
+RUN jupyter labextension disable @jupyterlab/hub-extension
+  # jupyter labextension uninstall @jupyterlab/hub-extension &&\
+  # conda remove jupyterlab
+
 RUN /bin/echo -e "\e[1;93m Installing python requirements\e[0m"
 COPY requirements.txt requirements.txt
 RUN pip install -r requirements.txt
