@@ -77,7 +77,9 @@ class NWBReader:
 
     @staticmethod
     def find_from_key_recursive(dict_or_nwbobj, key, parents=()):
-        if dict_or_nwbobj and not isinstance(dict_or_nwbobj, dict):
+        if dict_or_nwbobj is not None and not isinstance(dict_or_nwbobj, dict):
+            if hasattr(dict_or_nwbobj, 'data_interfaces'):
+                return NWBReader.find_from_key_recursive(dict_or_nwbobj.data_interfaces, key, parents)
             if hasattr(dict_or_nwbobj, 'fields'):
                 return NWBReader.find_from_key_recursive(dict_or_nwbobj.fields, key, parents)
 
@@ -92,13 +94,15 @@ class NWBReader:
                 return allparents, item
         return (), None
 
-    def __init__(self, nwbfile_path):
-        try:
-            io = NWBHDF5IO(nwbfile_path, 'r')
-            nwbfile = io.read()
-        except Exception  as e:
-            raise ValueError('Error reading the NWB file.', e.args)
-
+    def __init__(self, nwbfile_or_path):
+        if isinstance(nwbfile_or_path, str):
+            try:
+                io = NWBHDF5IO(nwbfile_or_path, 'r')
+                nwbfile = io.read()
+            except Exception  as e:
+                raise ValueError('Error reading the NWB file.', e.args)
+        else:
+            nwbfile = nwbfile_or_path
         self.nwbfile = nwbfile
         self.__data_interfaces = None
         self.__time_series_list = None
@@ -131,9 +135,10 @@ class NWBReader:
         return self.__time_series_list
 
     def extract_time_series_path(self, time_series):
-        # There not seems to exist an obvious way to traverse hierarchically the
+
         name = time_series.name
-        # parents = NWBReader.get_all_parents(time_series.parent)
+
+        # This seems a little too custom but not seems to exist an obvious way to traverse the file hierarchically
         path, v = NWBReader.find_from_key_recursive(self.nwbfile.fields, name)
         assert v == time_series, 'Same name error searching the time series path. Review the implementation of ' \
                                  + NWBReader.find_from_key_recursive.__name__

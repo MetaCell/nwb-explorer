@@ -32,7 +32,7 @@ class NWBModelInterpreter(ModelInterpreter):
         self.factory = GeppettoModelFactory()
         self.nwb_reader = None
 
-    def importType(self, nwbfile_path, typeName, library, commonLibraryAccess):
+    def importType(self, nwbfile_or_path, typeName, library, commonLibraryAccess):
         logging.debug('Creating a Geppetto Model')
 
         geppetto_model = self.factory.createGeppettoModel('GeppettoModel')
@@ -41,7 +41,7 @@ class NWBModelInterpreter(ModelInterpreter):
 
         # read data
 
-        self.nwb_reader = NWBReader(nwbfile_path)
+        self.nwb_reader = NWBReader(nwbfile_or_path)
 
         time_series_list = self.nwb_reader.get_all_timeseries()
         variables = []
