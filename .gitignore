@@ -11,4 +11,5 @@ test_data/
 *.nwb
 .ipynb_checkpoints
 *.log
+holoviews_plots
 

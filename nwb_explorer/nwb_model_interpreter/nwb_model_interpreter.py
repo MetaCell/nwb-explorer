@@ -23,7 +23,7 @@ TMP_MAX_TIMESERIES_LOADED = 3
 
 SUPPORTED_TIME_SERIES_TYPES = (
     RoiResponseSeries, ImageSeries, TimeSeries)  # Assuming numerical or image time series only for now
-MAX_SAMPLES = 1000
+MAX_SAMPLES = 5000
 
 
 class NWBModelInterpreter(ModelInterpreter):
@@ -43,7 +43,7 @@ class NWBModelInterpreter(ModelInterpreter):
 
         self.nwb_reader = NWBReader(nwbfile_path)
 
-        time_series_list = self.nwb_reader.get_timeseries()
+        time_series_list = self.nwb_reader.get_all_timeseries()
         variables = []
 
         nwbType = pygeppetto.CompositeType(id='nwb', name='nwb', abstract=False)
@@ -63,22 +63,25 @@ class NWBModelInterpreter(ModelInterpreter):
             where each group entry contains the corresponding data from the nwb file. 
             """
             if isinstance(time_series, SUPPORTED_TIME_SERIES_TYPES):
-                group = "group{}".format(i)
-                group_variable = Variable(id=group)
-                group_type = pygeppetto.CompositeType(id=group, name=group, abstract=False)
+
+                group_path = self.nwb_reader.extract_time_series_path(time_series)  # e.g. acquisition_[timeseriesname]
+                group_name = '_'.join(group_path)
+                group_name_clean = ''.join(c for c in group_name.replace(' ', '_') if c.isalnum() or c in '_')
+
+                group_variable = Variable(id=group_name_clean)
+                group_type = pygeppetto.CompositeType(id=group_name_clean, name=group_name_clean, abstract=False)
 
                 unit = time_series.unit
                 timestamps_unit = time_series.timestamps_unit
-                metatype = time_series.name
-                metatype_name = ''.join(c for c in metatype.replace(' ', '_') if c.isalnum())
+
                 try:
 
                     # TODO: add lazy fetching through importTypes
 
                     if isinstance(time_series, ImageSeries):
                         plottable_timeseries = NWBReader.get_timeseries_image_array(time_series)
-                        md_time_series_variable = self.extract_image_variable(metatype, plottable_timeseries)
-                        group_type.variables.append(self.factory.createStateVariable(metatype, md_time_series_variable))
+                        md_time_series_variable = self.extract_image_variable('image', plottable_timeseries)
+                        group_type.variables.append(self.factory.createStateVariable('image', md_time_series_variable))
                     else:
                         timestamps, plottable_timeseries = NWBReader.get_plottable_timeseries(time_series, MAX_SAMPLES)
 
@@ -87,21 +90,30 @@ class NWBModelInterpreter(ModelInterpreter):
                                                                                   timestamps_unit)
                         group_type.variables.append(self.factory.createStateVariable("time", time_series_time_variable))
 
-                        for index, mono_dimensional_timeseries in enumerate(
-                                plottable_timeseries):
-                            name = metatype_name + str(index)
+                        if len(plottable_timeseries) == 1:
+                            name = time_series.name
+                            mono_dimensional_timeseries = plottable_timeseries[0]
                             time_series_value = self.factory.createTimeSeries(name + "variable",
                                                                               mono_dimensional_timeseries,
                                                                               unit)
 
                             # Use ImportValue here instead than TimeSeries here for lazy loading
                             group_type.variables.append(self.factory.createStateVariable(name, time_series_value))
+                        else:
+                            for index, mono_dimensional_timeseries in enumerate(plottable_timeseries):
+                                name = time_series.name + '_x' + str(index)
+                                time_series_value = self.factory.createTimeSeries(name + "variable",
+                                                                                  mono_dimensional_timeseries,
+                                                                                  unit)
+
+                                # Use ImportValue here instead than TimeSeries here for lazy loading
+                                group_type.variables.append(self.factory.createStateVariable(name, time_series_value))
 
                     group_variable.types.append(group_type)
                     variables.append(group_variable)
                     nwb_geppetto_library.types.append(group_type)
 
-                    nwbType.variables.append(self.factory.createStateVariable(group))
+                    nwbType.variables.append(self.factory.createStateVariable(group_name_clean))
 
                 except ValueError as e:
                     logging.error("Error loading timeseries: " + " -- ".join(e.args))

@@ -7,6 +7,8 @@ from nwb_explorer.plots_manager import PlotManager
 from nwb_explorer.utils import get_file_from_url
 import logging
 
+cache_model = False
+
 # TODO this is still a really distant relative of the RuntimeProject in the Java backend. Remove when a sensible implementation of the flow is available on pygeppetto
 class RuntimeProject:
     __geppetto_model = None
@@ -40,7 +42,7 @@ class NWBController:
     def load_nwb_model(nwbfile):
         import os
         cached_model_file = nwbfile + '.json'
-        if os.path.exists(cached_model_file):
+        if cache_model and os.path.exists(cached_model_file):
             with open(cached_model_file, 'rb') as f:
                 serialized_model = f.read()
                 geppetto_model = GeppettoModelSerializer().deserialize(serialized_model)

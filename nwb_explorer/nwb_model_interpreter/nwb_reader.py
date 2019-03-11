@@ -1,9 +1,11 @@
 import collections
 
 import numpy as np
-from pynwb import TimeSeries, NWBHDF5IO
+from pynwb import TimeSeries, NWBHDF5IO, ProcessingModule
 from pynwb.core import NWBDataInterface
 from pynwb.image import ImageSeries
+
+NWB_ROOT_NAME = 'root'
 
 
 class NWBReader:
@@ -29,7 +31,9 @@ class NWBReader:
             # raise NotImplementedError('Still implicit timestamps are not supported')  # TODO
             # FIXME from pynwb documentation: Alternatively (i.e. when timestamps are not given), if your recordings are sampled at a uniform rate, you can supply starting_time and rate.
 
+        # TODO we may need to rearrange that when dealing with spatial series: a different type of plot (3D or else) may me more adequate than what we're doing (i.e. splitting in multiple mono dimensional timeseries)
         time_series_array = NWBReader.get_mono_dimensional_timeseries_aux(time_series.data[::step])
+
         if len(time_series_array[0]) != len(timestamps):
             raise ValueError("Length of time series ({}) is different from timestamps ({}): "
                              .format(len(time_series_array[0]), len(timestamps)))
@@ -56,6 +60,37 @@ class NWBReader:
         if len(values.shape) == 1:
             mono_time_series_list = [mono_time_series_list]
         return mono_time_series_list
+
+    @staticmethod
+    def get_all_parents(element):
+        parents = []
+        while hasattr(element, 'parent'):
+            if (not element) or element.name == NWB_ROOT_NAME:
+                break
+            parents.insert(0, element)
+            element = element.parent
+
+        parentsnames = [p.name for p in parents]
+        if isinstance(parents[0], ProcessingModule):
+            parentsnames.insert(0, 'processing')
+        return parents
+
+    @staticmethod
+    def find_from_key_recursive(dict_or_nwbobj, key, parents=()):
+        if dict_or_nwbobj and not isinstance(dict_or_nwbobj, dict):
+            if hasattr(dict_or_nwbobj, 'fields'):
+                return NWBReader.find_from_key_recursive(dict_or_nwbobj.fields, key, parents)
+
+        if not isinstance(dict_or_nwbobj, dict):
+            return (), None
+        if key in dict_or_nwbobj:
+            return parents, dict_or_nwbobj[key]
+
+        for k, v in dict_or_nwbobj.items():
+            allparents, item = NWBReader.find_from_key_recursive(v, key, parents + (k,))
+            if item is not None:
+                return allparents, item
+        return (), None
 
     def __init__(self, nwbfile_path):
         try:
@@ -90,10 +125,19 @@ class NWBReader:
                 time_series_list.append(data_interface)
         return time_series_list
 
-    def get_timeseries(self):
+    def get_all_timeseries(self):
         if not self.__time_series_list:
             self.__time_series_list = self._get_timeseries()
         return self.__time_series_list
+
+    def extract_time_series_path(self, time_series):
+        # There not seems to exist an obvious way to traverse hierarchically the
+        name = time_series.name
+        # parents = NWBReader.get_all_parents(time_series.parent)
+        path, v = NWBReader.find_from_key_recursive(self.nwbfile.fields, name)
+        assert v == time_series, 'Same name error searching the time series path. Review the implementation of ' \
+                                 + NWBReader.find_from_key_recursive.__name__
+        return path
 
     def get_nwbfile(self):
         return self.nwbfile
