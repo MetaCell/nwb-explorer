@@ -2,7 +2,6 @@
 .vscode/
 *pyc
 /static/
-*.ipynb
 /dependencies/
 /webapp/
 .DS_Store
