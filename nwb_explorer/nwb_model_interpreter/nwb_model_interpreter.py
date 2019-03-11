@@ -23,7 +23,7 @@ TMP_MAX_TIMESERIES_LOADED = 3
 
 SUPPORTED_TIME_SERIES_TYPES = (
     RoiResponseSeries, ImageSeries, TimeSeries)  # Assuming numerical or image time series only for now
-MAX_SAMPLES = 5000
+MAX_SAMPLES = 1000
 
 
 class NWBModelInterpreter(ModelInterpreter):
@@ -65,7 +65,7 @@ class NWBModelInterpreter(ModelInterpreter):
             if isinstance(time_series, SUPPORTED_TIME_SERIES_TYPES):
 
                 group_path = self.nwb_reader.extract_time_series_path(time_series)  # e.g. acquisition_[timeseriesname]
-                group_name = '_'.join(group_path)
+                group_name = '_'.join(group_path) + '_{}'.format(time_series.name)
                 group_name_clean = ''.join(c for c in group_name.replace(' ', '_') if c.isalnum() or c in '_')
 
                 group_variable = Variable(id=group_name_clean)
@@ -91,7 +91,7 @@ class NWBModelInterpreter(ModelInterpreter):
                         group_type.variables.append(self.factory.createStateVariable("time", time_series_time_variable))
 
                         if len(plottable_timeseries) == 1:
-                            name = time_series.name
+                            name = unit
                             mono_dimensional_timeseries = plottable_timeseries[0]
                             time_series_value = self.factory.createTimeSeries(name + "variable",
                                                                               mono_dimensional_timeseries,
@@ -101,7 +101,7 @@ class NWBModelInterpreter(ModelInterpreter):
                             group_type.variables.append(self.factory.createStateVariable(name, time_series_value))
                         else:
                             for index, mono_dimensional_timeseries in enumerate(plottable_timeseries):
-                                name = time_series.name + '_x' + str(index)
+                                name = unit + '_x' + str(index)
                                 time_series_value = self.factory.createTimeSeries(name + "variable",
                                                                                   mono_dimensional_timeseries,
                                                                                   unit)
