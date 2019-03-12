@@ -2,14 +2,13 @@
 .vscode/
 *pyc
 /static/
-*.ipynb
 /dependencies/
 /webapp/
-test_data/
 .DS_Store
 *.egg-info/
 *.nwb
 .ipynb_checkpoints
 *.log
 holoviews_plots
+nwb_files_cache
 

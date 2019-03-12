@@ -3,8 +3,8 @@ holoviews==1.10.6
 msgpack-python==0.5.6
 nose==1.3.7
 Pillow==5.2.0
--e git+https://github.com/openworm/pygeppetto.git@708f520cb09c3dadfe3a840ce2720763a6ac4194#egg=pygeppetto
--e git+https://github.com/NeurodataWithoutBorders/pynwb.git@4ceb7e958e532d21fba0b85975f6aaf5c9f1d16b#egg=pynwb
+-e git+https://github.com/openworm/pygeppetto.git@development#egg=pygeppetto
+-e git+https://github.com/NeurodataWithoutBorders/pynwb.git@dev#egg=pynwb
 -e git+https://github.com/afonsobspinto/pyecore.git@0.8.1_changed#egg=pyecore
 redis==2.10.6
 seaborn==0.8.1
