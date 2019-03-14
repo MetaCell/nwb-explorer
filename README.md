@@ -35,15 +35,23 @@ source new_venv_folder/bin/activate
 pip install -r requirements.txt
 ```
 
+Or, with conda
+
+```bash
+conda create -n nwb python=3.7
+source activate nwb
+```
 ### Installing
 
-A step by step instructions to get a development env running.
+Step by step instructions to get a development env running.
 
-```
+
+### Clone nwb explorer
+```bash
 git clone -b development https://github.com/tarelli/nwb-explorer
 cd nwb-explorer
 cd utilities
-python install.py
+python install.py [branch MYBRANCH]
 cd ..
 ```
 

@@ -59,63 +59,68 @@ def main(argv):
 if __name__ == "__main__":
     main(sys.argv[1:])
 
-os.mkdir(DEPS_DIR)
-os.chdir(DEPS_DIR)
+    if not os.path.exists(DEPS_DIR):
+        os.mkdir(DEPS_DIR)
+    os.chdir(DEPS_DIR)
 
-# install pygeppetto
-cprint("Installing pygeppetto")
-clone(repository=PYGEPPETTO,
-    folder='pygeppetto',
-    default_branch='development'
-)
-subprocess.call(['pip', 'install', '-e', '.'], cwd='pygeppetto')
+    # install requirements
+    cprint("Installing requirements")
+    subprocess.call(['pip', 'install', '-r', 'requirements.txt'], cwd=ROOT_DIR)
 
-
-
-# install pynwb
-cprint("Installing pynwb")
-clone(repository=PYNWB,
-    folder='pynwb',
-    default_branch='dev'
-)
-subprocess.call(['pip', 'install', '-e', '.'], cwd='pynwb')
+    # install pygeppetto
+    cprint("Installing pygeppetto")
+    clone(repository=PYGEPPETTO,
+        folder='pygeppetto',
+        default_branch='development'
+    )
+    subprocess.call(['pip', 'install', '-e', '.'], cwd='pygeppetto')
 
 
 
-# install jupyter notebook
-cprint("Installing org.geppetto.frontend.jupyter")
-clone(repository=JUPYTER, 
-    folder='org.geppetto.frontend.jupyter',
-    default_branch='development'
-)
-subprocess.call(['npm', 'install'], cwd=os.path.join(JUPYTER_DIR, 'js'))
-subprocess.call(['npm', 'run', 'build-dev'], cwd=os.path.join(JUPYTER_DIR, 'js'))
+    # install pynwb
+    cprint("Installing pynwb")
+    clone(repository=PYNWB,
+        folder='pynwb',
+        default_branch='dev'
+    )
+    subprocess.call(['pip', 'install', '-e', '.'], cwd='pynwb')
 
 
 
-# install nwb explorer
-os.chdir(ROOT_DIR)
-cprint("Installing nwb-explorer")
-clone(repository=NWBEXP,
-    folder=WEBAPP_DIR,
-    destination_folder=WEBAPP_DIR,
-    default_branch='development'
-)
-subprocess.call(['npm', 'install'], cwd=WEBAPP_DIR)
-subprocess.call(['npm', 'run', 'build-dev'], cwd=WEBAPP_DIR)
+    # install jupyter notebook
+    cprint("Installing org.geppetto.frontend.jupyter")
+    clone(repository=JUPYTER,
+        folder='org.geppetto.frontend.jupyter',
+        default_branch='development'
+    )
+    subprocess.call(['npm', 'install'], cwd=os.path.join(JUPYTER_DIR, 'js'))
+    subprocess.call(['npm', 'run', 'build-dev'], cwd=os.path.join(JUPYTER_DIR, 'js'))
 
 
 
-# back to finish jupyter installation
-cprint("Installing extensions")
-subprocess.call(['pip', 'install', '-e', '.'], cwd=os.path.join(DEPS_DIR, JUPYTER_DIR))
-subprocess.call(['jupyter', 'nbextension', 'install', '--py', '--symlink', '--sys-prefix', 'jupyter_geppetto'])
-subprocess.call(['jupyter', 'nbextension', 'enable', '--py', '--sys-prefix', 'jupyter_geppetto'])
-subprocess.call(['jupyter', 'nbextension', 'enable', '--py', '--sys-prefix', 'widgetsnbextension'])
-subprocess.call(['jupyter', 'serverextension', 'enable', '--py', '--sys-prefix', 'jupyter_geppetto'])
+    # install nwb explorer
+    os.chdir(ROOT_DIR)
+    cprint("Installing nwb-explorer")
+    clone(repository=NWBEXP,
+        folder=WEBAPP_DIR,
+        destination_folder=WEBAPP_DIR,
+        default_branch='development'
+    )
+    subprocess.call(['npm', 'install'], cwd=WEBAPP_DIR)
+    subprocess.call(['npm', 'run', 'build-dev'], cwd=WEBAPP_DIR)
 
 
 
-# install app
-cprint("Installing UI python package...")
-subprocess.call(['pip', 'install', '-e', '.', '--no-deps'])
+    # back to finish jupyter installation
+    cprint("Installing extensions")
+    subprocess.call(['pip', 'install', '-e', '.'], cwd=os.path.join(DEPS_DIR, JUPYTER_DIR))
+    subprocess.call(['jupyter', 'nbextension', 'install', '--py', '--symlink', '--sys-prefix', 'jupyter_geppetto'])
+    subprocess.call(['jupyter', 'nbextension', 'enable', '--py', '--sys-prefix', 'jupyter_geppetto'])
+    subprocess.call(['jupyter', 'nbextension', 'enable', '--py', '--sys-prefix', 'widgetsnbextension'])
+    subprocess.call(['jupyter', 'serverextension', 'enable', '--py', '--sys-prefix', 'jupyter_geppetto'])
+
+
+
+    # install app
+    cprint("Installing UI python package...")
+    subprocess.call(['pip', 'install', '-e', '.', '--no-deps'])
