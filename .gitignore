@@ -12,3 +12,4 @@
 holoviews_plots
 nwb_files_cache
 test_data
+*.pynwb
