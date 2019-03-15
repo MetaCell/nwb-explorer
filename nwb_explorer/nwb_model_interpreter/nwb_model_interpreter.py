@@ -19,7 +19,6 @@ import string
 
 from .nwb_reader import NWBReader
 
-TMP_MAX_TIMESERIES_LOADED = 3
 
 SUPPORTED_TIME_SERIES_TYPES = (
     RoiResponseSeries, ImageSeries, TimeSeries)  # Assuming numerical or image time series only for now
@@ -31,6 +30,10 @@ class NWBModelInterpreter(ModelInterpreter):
     def __init__(self):
         self.factory = GeppettoModelFactory()
         self.nwb_reader = None
+
+
+    def get_nwbfile(self):
+        return self.nwb_reader.nwbfile
 
     def importType(self, nwbfile_or_path, typeName, library, commonLibraryAccess):
         logging.debug('Creating a Geppetto Model')
