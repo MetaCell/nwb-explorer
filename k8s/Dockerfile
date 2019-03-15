@@ -7,7 +7,7 @@ ENV GIT_URL=https://github.com/MetaCell/nwb-explorer/tarball/${BRANCH} \
 
 USER root
 RUN apt-get update -qq &&\
-  apt-get install python3-tk -qq
+  apt-get install python3-tk vim nano -qq
 USER $NB_UID
 
 RUN jupyter labextension disable @jupyterlab/hub-extension
