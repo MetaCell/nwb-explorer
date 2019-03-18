@@ -7,9 +7,9 @@ from datetime import datetime
 from dateutil.tz import tzlocal
 import pynwb
 import os
-from nwb_explorer.utils import get_file_from_url
+from nwb_explorer.service import get_file_from_url
 from nwb_explorer.nwb_model_interpreter import NWBModelInterpreter
-
+from nwb_explorer import nwb_model_interpreter
 from .utils import create_nwb_file
 
 
@@ -55,11 +55,12 @@ class TestModelInterpreter(unittest.TestCase):
         if fails:
             self.fail('Some file failed: {}'.format('; '.join(fails)))
 
-    def _test_big_file(self):
+    def test_big_file(self):
         '''
                Here only for dev/debug purpose. Do not use as a standard unit test
                :return:
         '''
+        nwb_model_interpreter.MAX_SAMPLES = 100000
         file_path = "/home/user/nwb-explorer-jupyter/test_data/pynwb/YutaMouse41-150903.nwb"
         self._single_file_test(file_path)
 

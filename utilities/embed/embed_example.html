@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>NWB explorer embedding example</title>
+    <script>
+
+        function updateFile(){
+            console.log("Update called");
+            let frame = document.getElementById("nwb-explorer");
+            let fileName = "https://github.com/OpenSourceBrain/NWBShowcase/raw/master/NWB/time_series_data.nwb";
+            frame.contentWindow.postMessage(fileName, '*');
+            // if(updateFileFn == undefined) return; //We still are inside jupyter hub. Wait next redirect.
+            //
+            // console.log("Update function", updateFileFn);
+            // updateFileFn(fileName);
+        }
+    </script>
+</head>
+
+<body>
+    <iframe id="nwb-explorer" src="jupyterhub_emulate.html" style="width:100%; min-height: 800px" onLoad="updateFile();"></iframe>
+</body>
+</html>
