@@ -34,15 +34,18 @@ class RuntimeProject:
 
 
 class NWBController:
+    model_interpreter = NWBModelInterpreter()
 
-    @staticmethod
-    def load_nwb_model(nwbfilename):
+    @classmethod
+    def get_model_interpreter(cls):
+        return cls.model_interpreter
 
-        model_interpreter = NWBModelInterpreter()
+    @classmethod
+    def load_nwb_model(cls, nwbfilename):
 
         try:
 
-            geppetto_model = model_interpreter.importType(nwbfilename, '', '', '')
+            geppetto_model = cls.get_model_interpreter().importType(nwbfilename, '', '', '')
         except ValueError as e:
             raise Exception("File error", e)
         serialized_model = GeppettoModelSerializer().serialize(geppetto_model)
@@ -61,6 +64,16 @@ class NWBController:
             return serialized_model
         else:
             raise Exception("File path missing")
+
+    @get('/api/lazyloading')
+    def load_file(self, path):
+        logging.info('Loading value: {}'.format(path))
+        if path:
+            value = self.get_model_interpreter().importValue(path)
+
+            return GeppettoModelSerializer().serialize(geppetto_model)
+        else:
+            raise Exception("Value path missing")
 
     @get('/api/plot')
     def get_plot(self, plot):
