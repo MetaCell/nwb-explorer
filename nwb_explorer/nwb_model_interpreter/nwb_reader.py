@@ -76,23 +76,24 @@ class NWBReader:
         return parents
 
     @staticmethod
-    def find_from_key_recursive(dict_or_nwbobj, key, parents=()):
+    def find_from_key_recursive(dict_or_nwbobj, obj_to_find, parents=()):
         if dict_or_nwbobj is not None and not isinstance(dict_or_nwbobj, dict):
             if hasattr(dict_or_nwbobj, 'data_interfaces'):
-                return NWBReader.find_from_key_recursive(dict_or_nwbobj.data_interfaces, key, parents)
+                return NWBReader.find_from_key_recursive(dict_or_nwbobj.data_interfaces, obj_to_find, parents)
             if hasattr(dict_or_nwbobj, 'fields'):
-                return NWBReader.find_from_key_recursive(dict_or_nwbobj.fields, key, parents)
+                return NWBReader.find_from_key_recursive(dict_or_nwbobj.fields, obj_to_find, parents)
 
         if not isinstance(dict_or_nwbobj, dict):
-            return (), None
-        if key in dict_or_nwbobj:
-            return parents, dict_or_nwbobj[key]
+            return None
+        if obj_to_find.name in dict_or_nwbobj:
+            if(dict_or_nwbobj[obj_to_find.name] == obj_to_find):
+                return parents
 
         for k, v in dict_or_nwbobj.items():
-            allparents, item = NWBReader.find_from_key_recursive(v, key, parents + (k,))
-            if item is not None:
-                return allparents, item
-        return (), None
+            allparents = NWBReader.find_from_key_recursive(v, obj_to_find, parents + (k,))
+            if allparents is not None:
+                return allparents
+        return None
 
     @staticmethod
     def get_timeseries_dimensions(time_series):
@@ -140,12 +141,9 @@ class NWBReader:
 
     def extract_time_series_path(self, time_series):
 
-        name = time_series.name
-
         # This seems a little too custom but not seems to exist an obvious way to traverse the file hierarchically
-        path, v = NWBReader.find_from_key_recursive(self.nwbfile.fields, name)
-        assert v == time_series, 'Same name error searching the time series path. Review the implementation of ' \
-                                 + NWBReader.find_from_key_recursive.__name__
+        path = NWBReader.find_from_key_recursive(self.nwbfile.fields, time_series)
+
         return path
 
     def get_nwbfile(self):

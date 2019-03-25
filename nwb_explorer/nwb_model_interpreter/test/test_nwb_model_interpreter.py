@@ -78,6 +78,7 @@ class TestModelInterpreter(unittest.TestCase):
         try:
             geppetto_model = self.uut.importType(file_path, '', '', '')
             print('File read correctly:', name)
+
         except Exception as e:
             print('Error', e.args)
             traceback.print_exc()
