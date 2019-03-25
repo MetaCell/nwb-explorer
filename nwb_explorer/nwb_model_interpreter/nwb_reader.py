@@ -94,6 +94,10 @@ class NWBReader:
                 return allparents, item
         return (), None
 
+    @staticmethod
+    def get_timeseries_dimensions(time_series):
+        return 1 if len(time_series.data.shape) == 1 else time_series.data.shape[0]
+
     def __init__(self, nwbfile_or_path):
         if isinstance(nwbfile_or_path, str):
             try:
@@ -185,3 +189,6 @@ class NWBReader:
             if data_interfaces.neurodata_type == requirement:
                 return True
         return False
+
+
+
