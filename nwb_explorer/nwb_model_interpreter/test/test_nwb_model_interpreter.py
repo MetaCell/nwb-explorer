@@ -64,7 +64,7 @@ class TestModelInterpreter(unittest.TestCase):
         file_path = "/home/user/nwb-explorer-jupyter/test_data/pynwb/YutaMouse41-150903.nwb"
         self._single_file_test(file_path)
 
-    def _test_ferguson(self):
+    def test_ferguson(self):
         '''
                Here only for dev/debug purpose. Do not use as a standard unit test
                :return:
@@ -78,6 +78,7 @@ class TestModelInterpreter(unittest.TestCase):
         try:
             geppetto_model = self.uut.importType(file_path, '', '', '')
             print('File read correctly:', name)
+
         except Exception as e:
             print('Error', e.args)
             traceback.print_exc()
