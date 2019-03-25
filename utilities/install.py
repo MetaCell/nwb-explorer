@@ -71,7 +71,7 @@ if __name__ == "__main__":
     cprint("Installing pygeppetto")
     clone(repository=PYGEPPETTO,
         folder='pygeppetto',
-        default_branch='development'
+        default_branch='experiment/no_check'
     )
     subprocess.call(['pip', 'install', '-e', '.'], cwd='pygeppetto')
 
