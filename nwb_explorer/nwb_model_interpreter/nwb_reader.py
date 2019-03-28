@@ -18,26 +18,30 @@ class NWBReader:
 
     @staticmethod
     def get_plottable_timeseries(time_series, resampling_size=None):
-        data_size = time_series.data.size
-        step = data_size // resampling_size if (resampling_size and data_size > resampling_size) else 1
+        step = NWBReader.calc_resampling_step(time_series.data.size, resampling_size)
 
-        if time_series.timestamps:
+        # TODO we may need to rearrange that when dealing with spatial series: a different type of plot (3D or else)
+        #  may me more adequate than what we're doing (i.e. splitting in multiple mono dimensional timeseries)
+        time_series_array = NWBReader.get_mono_dimensional_timeseries_aux(time_series.data[::step])
+        return time_series_array
+
+    @staticmethod
+    def get_timeseries_timestamps(time_series, resampling_size):
+        data_size = time_series.data.size
+        step = NWBReader.calc_resampling_step(data_size, resampling_size)
+        if time_series.timestamps is not None:
             timestamps = time_series.timestamps
             timestamps = timestamps[::step].astype(float).tolist()
         else:
 
             timestamps = (time_series.rate * step) * np.arange(0, data_size // step) + time_series.starting_time
             timestamps = timestamps.tolist()
-            # raise NotImplementedError('Still implicit timestamps are not supported')  # TODO
-            # FIXME from pynwb documentation: Alternatively (i.e. when timestamps are not given), if your recordings are sampled at a uniform rate, you can supply starting_time and rate.
+        return timestamps
 
-        # TODO we may need to rearrange that when dealing with spatial series: a different type of plot (3D or else) may me more adequate than what we're doing (i.e. splitting in multiple mono dimensional timeseries)
-        time_series_array = NWBReader.get_mono_dimensional_timeseries_aux(time_series.data[::step])
+    @staticmethod
+    def calc_resampling_step(data_size, resampling_size):
+        return data_size // resampling_size if (resampling_size and data_size > resampling_size) else 1
 
-        if len(time_series_array[0]) != len(timestamps):
-            raise ValueError("Length of time series ({}) is different from timestamps ({}): "
-                             .format(len(time_series_array[0]), len(timestamps)))
-        return timestamps, time_series_array
 
     @staticmethod
     def get_timeseries_image_array(time_series):
@@ -99,6 +103,10 @@ class NWBReader:
     def get_timeseries_dimensions(time_series):
         return 1 if len(time_series.data.shape) == 1 else time_series.data.shape[0]
 
+
+
+
+
     def __init__(self, nwbfile_or_path):
         if isinstance(nwbfile_or_path, str):
             try:
@@ -111,6 +119,28 @@ class NWBReader:
         self.nwbfile = nwbfile
         self.__data_interfaces = None
         self.__time_series_list = None
+
+
+    def retrieve_from_path(self, path_pieces):
+        '''Finds paths as extracted by `extract_time_series_path`'''
+
+        context = self.nwbfile
+        for name in path_pieces:
+            if isinstance(context, dict) and name in context:
+                context = context[name]
+            elif hasattr(context, 'fields') and name in context.fields:
+                context = context.fields[name]
+            elif hasattr(context, 'data_interfaces'):
+                context = context.data_interfaces[name]
+            else:
+                raise Exception(f'{name} not found in {context}')
+        return context
+
+    def extract_time_series_path(self, time_series):
+        # This seems a little too custom but not seems to exist an obvious way to traverse the file hierarchically
+        path = NWBReader.find_from_key_recursive(self.nwbfile.fields, time_series)
+        return path
+
 
     def get_data_interfaces(self):
         if not self.__data_interfaces:
@@ -139,12 +169,6 @@ class NWBReader:
             self.__time_series_list = self._get_timeseries()
         return self.__time_series_list
 
-    def extract_time_series_path(self, time_series):
-
-        # This seems a little too custom but not seems to exist an obvious way to traverse the file hierarchically
-        path = NWBReader.find_from_key_recursive(self.nwbfile.fields, time_series)
-
-        return path
 
     def get_nwbfile(self):
         return self.nwbfile
@@ -187,6 +211,8 @@ class NWBReader:
             if data_interfaces.neurodata_type == requirement:
                 return True
         return False
+
+
 
 
 
