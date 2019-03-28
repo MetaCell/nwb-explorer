@@ -84,8 +84,31 @@ class TestModelInterpreter(unittest.TestCase):
             traceback.print_exc()
 
     def test_importType(self):
-        geppetto_model = self.uut.importType(self.nwbfile, '', '', '')
+        geppetto_model = self.uut.importType(self.nwbfile, 'typename', '', '')
+
+        self.assertEqual(len(geppetto_model.variables), 1)
+        self.assertEqual(geppetto_model.variables[0].types[0].name, 'typename')
+        self.assertEqual(len(geppetto_model.variables[0].types[0].variables), 2)
+        self.assertEqual(len(geppetto_model.variables[0].types[0].variables[0].types[0].variables), 2)
         # TODO let's write the test on the new object structure directly
+
+    def test_importValue(self):
+        geppetto_model = self.uut.importType(self.nwbfile, '', '', '')
+        value = self.uut.importValue('acquisition.t1.data')
+        from pygeppetto.model.values import TimeSeries
+        self.assertEqual(type(value), TimeSeries)
+        self.assertEqual(len(value.value), 1)
+        self.assertEqual(len(value.value[0]), 100)
+        self.assertEqual(value.value[0][0], 0.0)
+        self.assertEqual(value.value[0][1], 2.0)
+
+        value = self.uut.importValue('acquisition.t1.time')
+        from pygeppetto.model.values import TimeSeries
+        self.assertEqual(type(value), TimeSeries)
+        self.assertEqual(len(value.value), 100)
+        self.assertEqual(value.value[0], 0.0)
+        self.assertEqual(value.value[1], 1.0)
+
 
 
 

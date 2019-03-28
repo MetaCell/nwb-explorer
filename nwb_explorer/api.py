@@ -66,12 +66,12 @@ class NWBController:
             raise Exception("File path missing")
 
     @get('/api/lazyloading')
-    def load_file(self, path):
+    def load_value(self, path):
         logging.info('Loading value: {}'.format(path))
         if path:
             value = self.get_model_interpreter().importValue(path)
-
-            return GeppettoModelSerializer().serialize(geppetto_model)
+            serialized_value = GeppettoModelSerializer().serialize_value(value, path)
+            return serialized_value
         else:
             raise Exception("Value path missing")
 

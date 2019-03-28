@@ -13,15 +13,10 @@ from pygeppetto.model.services.model_interpreter import ModelInterpreter
 from pygeppetto.model.values import Image
 from pygeppetto.model.variables import Variable
 from pynwb.image import ImageSeries
-from pynwb.ophys import RoiResponseSeries
-from pynwb import TimeSeries
-import string
 
 from .nwb_reader import NWBReader
 
-SUPPORTED_TIME_SERIES_TYPES = (
-    RoiResponseSeries, ImageSeries, TimeSeries)  # Assuming numerical or image time series only for now
-MAX_SAMPLES = 1000
+from .settings import *
 
 
 class NWBModelInterpreter(ModelInterpreter):
@@ -30,113 +25,138 @@ class NWBModelInterpreter(ModelInterpreter):
         self.factory = GeppettoModelFactory()
         self.nwb_reader = None
 
+    @staticmethod
+    def clean_name_to_variable(group_name):
+        return ''.join(c for c in group_name.replace(' ', '_') if c.isalnum() or c in '_')
+
     def get_nwbfile(self):
         return self.nwb_reader.nwbfile
 
-    def importType(self, nwbfile_or_path, typeName, library, commonLibraryAccess):
-        logging.debug('Creating a Geppetto Model')
+    def importType(self, nwbfile_or_path, typeName='nwb', library='nwblib', commonLibraryAccess=None):
+        '''
+        Create the Geppetto Model for a nwb file.
+
+        reates a group structure such as
+        nwbfile.acquisition.[TIMESERIESNAME1]
+        nwbfile.acquisition.[TIMESERIESNAME2]
+        nwbfile.stimulus.[TIMESERIESNAME1]
+
+        acquisition.[TIMESERIESNAME1].data
+        acquisition.[TIMESERIESNAME1].time
+
+        where each group entry contains the corresponding data from the nwb file.
+
+        :param nwbfile_or_path:
+        :param typeName: unused
+        :param library: unused
+        :param commonLibraryAccess:
+        :return:
+        '''
+
+        logging.debug(f'Creating a Geppetto Model from {nwbfile_or_path}')
 
         geppetto_model = self.factory.createGeppettoModel('GeppettoModel')
-        nwb_geppetto_library = pygeppetto.GeppettoLibrary(name='nwblib', id='nwblib')
+        nwb_geppetto_library = pygeppetto.GeppettoLibrary(name=library, id=library)
         geppetto_model.libraries.append(nwb_geppetto_library)
 
-        nwbType = pygeppetto.CompositeType(id='nwb', name='nwb', abstract=False)
+        # add top level type
+        nwbType = pygeppetto.CompositeType(id=typeName, name=typeName, abstract=False)
         nwb_geppetto_library.types.append(nwbType)
 
-        # add top level variables
-        nwb_variable = Variable(id='nwb')
-        nwb_variable.types.append(nwbType)
-        geppetto_model.variables.append(nwb_variable)
-        # read data
+        # add top level variable
+        nwb_file_variable = Variable(id='nwbfile')
+        nwb_file_variable.types.append(nwbType)
+        geppetto_model.variables.append(nwb_file_variable)
 
+        # read data
         self.nwb_reader = NWBReader(nwbfile_or_path)
 
         time_series_list = self.nwb_reader.get_all_timeseries()
-        variables = []
+
+        # Create type to reuse for all time series
+        timeseries_type = pygeppetto.CompositeType(id='timeseries', name='timeseries', abstract=False)
+        timeseries_type.variables.append(self.factory.createStateVariable("time", self.factory.createImportValue()))
+        timeseries_type.variables.append(self.factory.createStateVariable('data', self.factory.createImportValue()))
+        nwb_geppetto_library.types.append(timeseries_type)
 
         for time_series in time_series_list:
-            """
-            Creates a group structure such as
-            nwb.group1
-            nwb.group2
-            
-            group1.time
-            group1.stimulus
-            
-            group2.time
-            group2.stimulus
-            
-            where each group entry contains the corresponding data from the nwb file. 
-            """
-            if isinstance(time_series, SUPPORTED_TIME_SERIES_TYPES):
 
-                timeseries_path = self.nwb_reader.extract_time_series_path(
-                    time_series)  # e.g. acquisition_[timeseriesname]
-                group_name = '_'.join(timeseries_path) + '_{}'.format(time_series.name)
-                group_name_clean = ''.join(c for c in group_name.replace(' ', '_') if c.isalnum() or c in '_')
+            if not isinstance(time_series, SUPPORTED_TIME_SERIES_TYPES):
+                logging.warning(f"Unsupported time series type: {type(time_series)}. Cannot import {time_series.name}")
+                continue
 
-                group_type = pygeppetto.CompositeType(id=group_name_clean, name=group_name_clean, abstract=False)
-                nwb_geppetto_library.types.append(group_type)
+            timeseries_path = self.nwb_reader.extract_time_series_path(time_series)
 
-                timeseries_variable = Variable(id=group_name_clean)
-                timeseries_variable.types.append(group_type)
-                variables.append(timeseries_variable)
+            current_variable_type = nwbType
+            for path_element in timeseries_path:
+                current_group_name = self.clean_name_to_variable(path_element)
+                parent_type = current_variable_type
 
-                nwbType.variables.append(self.factory.createStateVariable(group_name_clean))
+                # Me may already have added the current type previously
+                current_variable_types = [variable.types[0] for variable in parent_type.variables if current_group_name == variable.name]
+                if current_variable_types:
+                    current_variable_type = current_variable_types[0]
+                    continue
 
+                current_variable_type = pygeppetto.CompositeType(id=current_group_name, name=current_group_name, abstract=False)
+                nwb_geppetto_library.types.append(current_variable_type)
 
-                try:
+                current_variable = Variable(id=current_group_name, name=current_group_name)
+                current_variable.types.append(current_variable_type)
+                # geppetto_model.variables.append(group_variable) # This should not be needed
 
-                    # TODO: add lazy fetching through importTypes
+                parent_type.variables.append(current_variable)
 
-                    if isinstance(time_series, ImageSeries):
-                        plottable_timeseries = NWBReader.get_timeseries_image_array(time_series)
-                        md_time_series_variable = self.extract_image_variable('image', plottable_timeseries)
-                        group_type.variables.append(self.factory.createStateVariable('image', md_time_series_variable))
-                    else:
+            try:
 
-
-
-                        group_type.variables.append(self.factory.createStateVariable("time", self.factory.createImportValue()))
-
-                        for index in range(NWBReader.get_timeseries_dimensions(time_series)):
-                            name = 'data_' + str(index)
+                if isinstance(time_series, ImageSeries):
+                    # TODO lazy fetching with importValue
+                    plottable_image = NWBReader.get_timeseries_image_array(time_series)
+                    md_time_series_variable = self.extract_image_variable('image', plottable_image)
+                    current_variable_type.variables.append(self.factory.createStateVariable('image', md_time_series_variable))
+                else:
+                    variable_name = self.clean_name_to_variable(time_series.name)
+                    time_series_variable = Variable(id=variable_name, name=variable_name)
+                    time_series_variable.types.append(timeseries_type)
+                    current_variable_type.variables.append(time_series_variable)
 
 
-                            # Use ImportValue here instead than TimeSeries here for lazy loading
-                            group_type.variables.append(self.factory.createStateVariable(name, self.factory.createImportValue()))
 
-                except ValueError as e:
-                    logging.error("Error loading timeseries: " + " -- ".join(e.args))
-                    import traceback
-                    traceback.print_exc()
-                except NotImplementedError as e:
-                    logging.error("Unsupported feature: " + " -- ".join(e.args))
-                    import traceback
-                    traceback.print_exc()
+            except ValueError as e:
+                logging.error("Error loading timeseries: " + " -- ".join(e.args))
+                import traceback
+                traceback.print_exc()
+            except NotImplementedError as e:
+                logging.error("Unsupported feature: " + " -- ".join(e.args))
+                import traceback
+                traceback.print_exc()
 
         # add type to nwb
 
-        for variable in variables:
-            geppetto_model.variables.append(variable)
-
         return geppetto_model
 
-    def importValue(self, importValue):
+    def importValue(self, import_value_path):
+        path_pieces = import_value_path.split(path_separator)
+        var_to_extract = path_pieces[-1]
+        time_series = self.nwb_reader.retrieve_from_path(path_pieces[0:-1])
+        # Geppetto timeseries does not include the time axe; we are using the last path piece to determine whether we
+        # are looking for time or data
 
-        time_series = None # TODO retrieve the time series from the importValue path
-        timestamps, plottable_timeseries = NWBReader.get_plottable_timeseries(time_series, MAX_SAMPLES)
+        if var_to_extract == 'time':
+            timestamps = NWBReader.get_timeseries_timestamps(time_series, MAX_SAMPLES)
+            timestamps_unit = time_series.timestamps_unit
+            return self.factory.createTimeSeries("time_" + time_series.name,
+                                                 timestamps,
+                                                 timestamps_unit)
+        else:
 
-        unit = time_series.unit
-        timestamps_unit = time_series.timestamps_unit
-        # time_series_time_variable = self.factory.createTimeSeries("time_" + time_series.name,
-        #                                                           timestamps,
-        #                                                           timestamps_unit)
-        #
-        # time_series_value = self.factory.createTimeSeries(name + "variable",
-        #                                                   mono_dimensional_timeseries,
-        #                                                   unit)
+            plottable_timeseries = NWBReader.get_plottable_timeseries(time_series, MAX_SAMPLES)
 
+            unit = time_series.unit
+            time_series_value = self.factory.createTimeSeries("data_" + time_series.name,
+                                                              plottable_timeseries,
+                                                              unit)
+            return time_series_value
 
     def extract_image_variable(self, metatype, plottable_timeseries):
         img = Img.fromarray(plottable_timeseries, 'RGB')
@@ -146,8 +166,6 @@ class NWBModelInterpreter(ModelInterpreter):
         values = [Image(data=data_str)]
         md_time_series_variable = self.factory.createMDTimeSeries(metatype + "variable", values)
         return md_time_series_variable
-
-
 
     def getName(self):
         return "NWB Model Interpreter"
