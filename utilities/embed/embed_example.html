@@ -10,10 +10,6 @@
             let frame = document.getElementById("nwb-explorer");
             let fileName = "https://github.com/OpenSourceBrain/NWBShowcase/raw/master/NWB/time_series_data.nwb";
             frame.contentWindow.postMessage(fileName, '*');
-            // if(updateFileFn == undefined) return; //We still are inside jupyter hub. Wait next redirect.
-            //
-            // console.log("Update function", updateFileFn);
-            // updateFileFn(fileName);
         }
     </script>
 </head>

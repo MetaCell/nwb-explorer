@@ -2,17 +2,16 @@
 hnn_geppetto.py
 Initialise Geppetto, this class contains methods to connect the application with the Geppetto based UI
 """
-import importlib
-import json
 import logging
 import os
 import sys
 from contextlib import redirect_stdout
-from . import service
-from .nwb_model_interpreter.nwb_reader import NWBReader
-from jupyter_geppetto import synchronization, utils
 
-from pygeppetto.model.model_serializer import GeppettoModelSerializer
+from jupyter_geppetto import synchronization
+
+from . import nwb_data_manager
+from .nwb_model_interpreter.nwb_reader import NWBReader
+
 
 # Note: this is not needed until we make use of data synchronization.
 class NWBGeppetto():
@@ -35,7 +34,7 @@ class NWBGeppetto():
     def set_nwb_file(self, nwbfilename):
         main = __import__('__main__')
         import pynwb
-        main.nwbfilename = service.get_file_path(nwbfilename)
+        main.nwbfilename = nwb_data_manager.get_file_path(nwbfilename)
         main.pynwb = pynwb
         self.nwb_reader = NWBReader(main.nwbfilename)
         main.nwb_reader = self.nwb_reader

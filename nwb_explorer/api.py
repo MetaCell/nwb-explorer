@@ -1,9 +1,11 @@
-from pygeppetto.model.model_serializer import GeppettoModelSerializer
+import logging
+
 from jupyter_geppetto.webapi import get
+from pygeppetto.model.model_serializer import GeppettoModelSerializer
+
 from nwb_explorer.nwb_model_interpreter import NWBModelInterpreter
 from nwb_explorer.plots_manager import PlotManager
-import logging
-from . import service
+from . import nwb_data_manager
 
 cache_model = False
 
@@ -37,15 +39,11 @@ class NWBController:
     model_interpreter = NWBModelInterpreter()
 
     @classmethod
-    def get_model_interpreter(cls):
-        return cls.model_interpreter
-
-    @classmethod
     def load_nwb_model(cls, nwbfilename):
 
         try:
 
-            geppetto_model = cls.get_model_interpreter().importType(nwbfilename, '', '', '')
+            geppetto_model = cls.model_interpreter.createModel(nwbfilename)
         except ValueError as e:
             raise Exception("File error", e)
         serialized_model = GeppettoModelSerializer().serialize(geppetto_model)
@@ -55,7 +53,7 @@ class NWBController:
     def load_file(self, nwbfile):
         logging.info('Loading nwb file: {}'.format(nwbfile))
         if nwbfile:
-            nwbfile = service.get_file_path(nwbfile)
+            nwbfile = nwb_data_manager.get_file_path(nwbfile)
             geppetto_model, serialized_model = NWBController.load_nwb_model(nwbfile)
 
             RuntimeProject.set_geppetto_model(geppetto_model)
@@ -65,11 +63,23 @@ class NWBController:
         else:
             raise Exception("File path missing")
 
-    @get('/api/lazyloading')
-    def load_value(self, path):
+    @get('/api/importvalue')
+    def import_value(self, path):
         logging.info('Loading value: {}'.format(path))
         if path:
-            value = self.get_model_interpreter().importValue(path)
+            value = NWBController.model_interpreter.importValue(path)
+            model = ''  # TODO
+            serialized_value = GeppettoModelSerializer().serialize_value(value, path)
+            # TODO implement
+            return serialized_value
+        else:
+            raise Exception("Value path missing")
+
+    @get('/api/resolvevalue')
+    def resolve_value(self, path):
+        logging.info('Loading value: {}'.format(path))
+        if path:
+            value = NWBController.model_interpreter.importValue(path)
             serialized_value = GeppettoModelSerializer().serialize_value(value, path)
             return serialized_value
         else:

@@ -1,17 +1,12 @@
-import unittest
-import requests
-import math
-import os.path
 import traceback
-from datetime import datetime
-from dateutil.tz import tzlocal
-import pynwb
-import os
-from nwb_explorer.service import get_file_from_url
-from nwb_explorer.nwb_model_interpreter import NWBModelInterpreter
-from nwb_explorer import nwb_model_interpreter
-from .utils import create_nwb_file
+import unittest
 
+import pynwb
+
+from nwb_explorer import nwb_model_interpreter
+from nwb_explorer.nwb_data_manager import get_file_from_url
+from nwb_explorer.nwb_model_interpreter import NWBModelInterpreter
+from .utils import create_nwb_file
 
 
 def write_nwb_file(nwbfile, nwb_file_name):
@@ -90,11 +85,11 @@ class TestModelInterpreter(unittest.TestCase):
         self.assertEqual(geppetto_model.variables[0].types[0].name, 'typename')
         self.assertEqual(len(geppetto_model.variables[0].types[0].variables), 2)
         self.assertEqual(len(geppetto_model.variables[0].types[0].variables[0].types[0].variables), 2)
-        # TODO let's write the test on the new object structure directly
+
 
     def test_importValue(self):
-        geppetto_model = self.uut.importType(self.nwbfile, '', '', '')
-        value = self.uut.importValue('acquisition.t1.data')
+        geppetto_model = self.uut.importType(self.nwbfile, 'typename', '', '')
+        value = self.uut.importValue('typename.acquisition.t1.data')
         from pygeppetto.model.values import TimeSeries
         self.assertEqual(type(value), TimeSeries)
         self.assertEqual(len(value.value), 1)
@@ -102,7 +97,7 @@ class TestModelInterpreter(unittest.TestCase):
         self.assertEqual(value.value[0][0], 0.0)
         self.assertEqual(value.value[0][1], 2.0)
 
-        value = self.uut.importValue('acquisition.t1.time')
+        value = self.uut.importValue('typename.acquisition.t1.time')
         from pygeppetto.model.values import TimeSeries
         self.assertEqual(type(value), TimeSeries)
         self.assertEqual(len(value.value), 100)

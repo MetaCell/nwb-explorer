@@ -9,17 +9,16 @@ from io import BytesIO
 import pygeppetto.model as pygeppetto
 from PIL import Image as Img
 from pygeppetto.model.model_factory import GeppettoModelFactory
-from pygeppetto.model.services.model_interpreter import ModelInterpreter
 from pygeppetto.model.values import Image
 from pygeppetto.model.variables import Variable
-from pynwb.image import ImageSeries
+from pygeppetto.services.model_interpreter import ModelInterpreter
+from pygeppetto.utils import Singleton
 
 from .nwb_reader import NWBReader
-
 from .settings import *
 
 
-class NWBModelInterpreter(ModelInterpreter):
+class NWBModelInterpreter(ModelInterpreter, metaclass=Singleton):
 
     def __init__(self):
         self.factory = GeppettoModelFactory()
@@ -32,8 +31,26 @@ class NWBModelInterpreter(ModelInterpreter):
     def get_nwbfile(self):
         return self.nwb_reader.nwbfile
 
-    def importType(self, nwbfile_or_path, typeName='nwb', library='nwblib', commonLibraryAccess=None):
-        '''
+    def createModel(self, nwbfile_or_path, typeName='nwb', library='nwblib'):
+        logging.debug(f'Creating a Geppetto Model from {nwbfile_or_path}')
+
+        geppetto_model = self.factory.createGeppettoModel('GeppettoModel')
+        nwb_geppetto_library = pygeppetto.GeppettoLibrary(name=library, id=library)
+        geppetto_model.libraries.append(
+            nwb_geppetto_library)  # FIXME the library should not be created here at every call
+
+        nwbType = pygeppetto.CompositeType(id=typeName, name=typeName, abstract=False)
+        # add top level variable
+        nwb_file_variable = Variable(id='nwbfile')
+        nwb_file_variable.types.append(nwbType)
+        geppetto_model.variables.append(nwb_file_variable)
+        # add top level type
+
+        self.importType(nwbfile_or_path, nwbType, nwb_geppetto_library)
+        return geppetto_model
+
+    def importType(self, nwbfile_or_path, nwbType, nwb_geppetto_library, commonLibraryAccess=None):
+        """
         Create the Geppetto Model for a nwb file.
 
         reates a group structure such as
@@ -45,28 +62,14 @@ class NWBModelInterpreter(ModelInterpreter):
         acquisition.[TIMESERIESNAME1].time
 
         where each group entry contains the corresponding data from the nwb file.
+        """
 
-        :param nwbfile_or_path:
-        :param typeName: unused
-        :param library: unused
-        :param commonLibraryAccess:
-        :return:
-        '''
 
-        logging.debug(f'Creating a Geppetto Model from {nwbfile_or_path}')
 
-        geppetto_model = self.factory.createGeppettoModel('GeppettoModel')
-        nwb_geppetto_library = pygeppetto.GeppettoLibrary(name=library, id=library)
-        geppetto_model.libraries.append(nwb_geppetto_library)
 
-        # add top level type
-        nwbType = pygeppetto.CompositeType(id=typeName, name=typeName, abstract=False)
         nwb_geppetto_library.types.append(nwbType)
 
-        # add top level variable
-        nwb_file_variable = Variable(id='nwbfile')
-        nwb_file_variable.types.append(nwbType)
-        geppetto_model.variables.append(nwb_file_variable)
+
 
         # read data
         self.nwb_reader = NWBReader(nwbfile_or_path)
@@ -75,7 +78,8 @@ class NWBModelInterpreter(ModelInterpreter):
 
         # Create type to reuse for all time series
         timeseries_type = pygeppetto.CompositeType(id='timeseries', name='timeseries', abstract=False)
-        timeseries_type.variables.append(self.factory.createStateVariable("time", self.factory.createImportValue()))
+        timeseries_type.variables.append(
+            self.factory.createStateVariable("time", self.factory.createImportValue()))  # TODO add unit to import
         timeseries_type.variables.append(self.factory.createStateVariable('data', self.factory.createImportValue()))
         nwb_geppetto_library.types.append(timeseries_type)
 
@@ -101,9 +105,8 @@ class NWBModelInterpreter(ModelInterpreter):
                 current_variable_type = pygeppetto.CompositeType(id=current_group_name, name=current_group_name, abstract=False)
                 nwb_geppetto_library.types.append(current_variable_type)
 
-                current_variable = Variable(id=current_group_name, name=current_group_name)
-                current_variable.types.append(current_variable_type)
-                # geppetto_model.variables.append(group_variable) # This should not be needed
+                current_variable = Variable(id=current_group_name, name=current_group_name,
+                                            types=(current_variable_type,))
 
                 parent_type.variables.append(current_variable)
 
@@ -116,8 +119,8 @@ class NWBModelInterpreter(ModelInterpreter):
                     current_variable_type.variables.append(self.factory.createStateVariable('image', md_time_series_variable))
                 else:
                     variable_name = self.clean_name_to_variable(time_series.name)
-                    time_series_variable = Variable(id=variable_name, name=variable_name)
-                    time_series_variable.types.append(timeseries_type)
+                    time_series_variable = Variable(id=variable_name, name=variable_name, types=(timeseries_type,))
+
                     current_variable_type.variables.append(time_series_variable)
 
 
@@ -131,14 +134,11 @@ class NWBModelInterpreter(ModelInterpreter):
                 import traceback
                 traceback.print_exc()
 
-        # add type to nwb
-
-        return geppetto_model
 
     def importValue(self, import_value_path):
         path_pieces = import_value_path.split(path_separator)
         var_to_extract = path_pieces[-1]
-        time_series = self.nwb_reader.retrieve_from_path(path_pieces[0:-1])
+        time_series = self.nwb_reader.retrieve_from_path(path_pieces[1:-1])
         # Geppetto timeseries does not include the time axe; we are using the last path piece to determine whether we
         # are looking for time or data
 
