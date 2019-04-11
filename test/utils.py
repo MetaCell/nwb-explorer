@@ -1,8 +1,8 @@
 from datetime import datetime
-from dateutil.tz import tzlocal
-import pynwb
-import math
+
 import numpy as np
+import pynwb
+from dateutil.tz import tzlocal
 
 
 def create_nwb_file():

@@ -1,8 +1,7 @@
 import unittest
+
 from nwb_explorer.nwb_model_interpreter.nwb_reader import NWBReader
 from .utils import create_nwb_file
-from nwb_explorer.nwb_model_interpreter import settings
-
 
 
 class TestReader(unittest.TestCase):

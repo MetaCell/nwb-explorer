@@ -69,8 +69,8 @@ class NWBController:
         if path:
             value = NWBController.model_interpreter.importValue(path)
             model = ''  # TODO
-            serialized_value = GeppettoModelSerializer().serialize_value(value, path)
-            # TODO implement
+            serialized_value = GeppettoModelSerializer().serialize(value)
+            # TODO implement: this should return a full geppetto model
             return serialized_value
         else:
             raise Exception("Value path missing")
@@ -80,7 +80,7 @@ class NWBController:
         logging.info('Loading value: {}'.format(path))
         if path:
             value = NWBController.model_interpreter.importValue(path)
-            serialized_value = GeppettoModelSerializer().serialize_value(value, path)
+            serialized_value = GeppettoModelSerializer().serialize(value)
             return serialized_value
         else:
             raise Exception("Value path missing")

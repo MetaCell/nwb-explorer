@@ -48,6 +48,7 @@ class NWBDataManager(GeppettoDataManager):
             project = GeppettoProject(id=0, name='NWB file {}'.format(os.path.basename(nwbfilename)),
                                       geppetto_model=geppetto_model, volatile=True, base_url=None, public=False,
                                       experiments=None, view=None)
+            self.projects[project.id] = project
             return project
         except ValueError as e:
             raise Exception("File error", e)

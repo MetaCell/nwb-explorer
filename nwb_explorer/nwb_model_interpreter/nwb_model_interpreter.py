@@ -158,6 +158,29 @@ class NWBModelInterpreter(ModelInterpreter, metaclass=Singleton):
                                                               unit)
             return time_series_value
 
+    def import_value_from_path(self, import_value_path):
+        path_pieces = import_value_path.split(path_separator)
+        var_to_extract = path_pieces[-1]
+        time_series = self.nwb_reader.retrieve_from_path(path_pieces[1:-1])
+        # Geppetto timeseries does not include the time axe; we are using the last path piece to determine whether we
+        # are looking for time or data
+
+        if var_to_extract == 'time':
+            timestamps = NWBReader.get_timeseries_timestamps(time_series, MAX_SAMPLES)
+            timestamps_unit = time_series.timestamps_unit
+            return self.factory.createTimeSeries("time_" + time_series.name,
+                                                 timestamps,
+                                                 timestamps_unit)
+        else:
+
+            plottable_timeseries = NWBReader.get_plottable_timeseries(time_series, MAX_SAMPLES)
+
+            unit = time_series.unit
+            time_series_value = self.factory.createTimeSeries("data_" + time_series.name,
+                                                              plottable_timeseries,
+                                                              unit)
+            return time_series_value
+
     def extract_image_variable(self, metatype, plottable_timeseries):
         img = Img.fromarray(plottable_timeseries, 'RGB')
         data_bytes = BytesIO()

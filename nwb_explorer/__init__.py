@@ -9,7 +9,7 @@ from nwb_explorer.nwb_model_interpreter import NWBModelInterpreter
 RouteManager.add_controller(api.NWBController)
 
 # Add model interpreter
-model_interpreter.add_model_interpreter('nwb', NWBModelInterpreter())
+model_interpreter.add_model_interpreter('nwblib', NWBModelInterpreter())
 
 # Replace data manager
 data_manager.set_data_manager(NWBDataManager())
