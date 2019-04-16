@@ -18,6 +18,7 @@ from pynwb import TimeSeries
 import string
 
 from .nwb_reader import NWBReader
+from ..utils import guessUnits
 
 
 SUPPORTED_TIME_SERIES_TYPES = (
@@ -74,8 +75,8 @@ class NWBModelInterpreter(ModelInterpreter):
                 group_variable = Variable(id=group_name_clean)
                 group_type = pygeppetto.CompositeType(id=group_name_clean, name=group_name_clean, abstract=False)
 
-                unit = time_series.unit
-                timestamps_unit = time_series.timestamps_unit
+                unit = guessUnits(time_series.unit)
+                timestamps_unit = guessUnits(time_series.timestamps_unit)
 
                 try:
 
