@@ -76,12 +76,7 @@ class NWBModelInterpreter(ModelInterpreter, metaclass=Singleton):
 
         time_series_list = self.nwb_reader.get_all_timeseries()
 
-        # Create type to reuse for all time series
-        timeseries_type = pygeppetto.CompositeType(id='timeseries', name='timeseries', abstract=False)
-        timeseries_type.variables.append(
-            self.factory.createStateVariable("time", self.factory.createImportValue()))  # TODO add unit to import
-        timeseries_type.variables.append(self.factory.createStateVariable('data', self.factory.createImportValue()))
-        nwb_geppetto_library.types.append(timeseries_type)
+
 
         for time_series in time_series_list:
 
@@ -102,6 +97,7 @@ class NWBModelInterpreter(ModelInterpreter, metaclass=Singleton):
                     current_variable_type = current_variable_types[0]
                     continue
 
+
                 current_variable_type = pygeppetto.CompositeType(id=current_group_name, name=current_group_name, abstract=False)
                 nwb_geppetto_library.types.append(current_variable_type)
 
@@ -118,6 +114,10 @@ class NWBModelInterpreter(ModelInterpreter, metaclass=Singleton):
                     md_time_series_variable = self.extract_image_variable('image', plottable_image)
                     current_variable_type.variables.append(self.factory.createStateVariable('image', md_time_series_variable))
                 else:
+
+                    # TODO we are temporarely creating one type for each timeseries
+                    timeseries_type = self.get_timeseries_type(time_series.name)
+                    nwb_geppetto_library.types.append(timeseries_type)
                     variable_name = self.clean_name_to_variable(time_series.name)
                     time_series_variable = Variable(id=variable_name, name=variable_name, types=(timeseries_type,))
 
@@ -134,6 +134,12 @@ class NWBModelInterpreter(ModelInterpreter, metaclass=Singleton):
                 import traceback
                 traceback.print_exc()
 
+    def get_timeseries_type(self, name="timeseries"):
+        timeseries_type = pygeppetto.CompositeType(id=name, name="timeseries", abstract=False)
+        timeseries_type.variables.append(
+            self.factory.createStateVariable("time", self.factory.createImportValue()))  # TODO add unit to import
+        timeseries_type.variables.append(self.factory.createStateVariable('data', self.factory.createImportValue()))
+        return timeseries_type
 
     def importValue(self, import_value_path):
         path_pieces = import_value_path.split(path_separator)
