@@ -7,6 +7,7 @@ import pkg_resources
 branch = None
 
 # repos
+PYECORE = 'https://github.com/rodriguez-facundo/pyecore'
 NWBEXP = 'https://github.com/metacell/geppetto-nwbexplorer'
 PYNWB = 'https://github.com/NeurodataWithoutBorders/pynwb.git'
 JUPYTER = 'https://github.com/openworm/org.geppetto.frontend.jupyter.git'
@@ -67,6 +68,14 @@ if __name__ == "__main__":
     cprint("Installing requirements")
     subprocess.call(['pip', 'install', '-r', 'requirements.txt'], cwd=ROOT_DIR)
 
+    # install pyecore
+    cprint("Installing pyecore")
+    clone(repository=PYECORE,
+        folder='pyecore',
+        default_branch='development'
+    )
+    subprocess.call(['pip', 'install', '-e', '.'], cwd='pyecore')
+
     # install pygeppetto
     cprint("Installing pygeppetto")
     clone(repository=PYGEPPETTO,
@@ -113,7 +122,11 @@ if __name__ == "__main__":
 
     # back to finish jupyter installation
     cprint("Installing extensions")
-    subprocess.call(['pip', 'install', '-e', '.'], cwd=os.path.join(DEPS_DIR, JUPYTER_DIR))
+    # FIXME for some reason it fails the first time on a clean conda env 
+    # (pip version, conda version, jupyter installation?)
+    if subprocess.call(['pip', 'install', '-e', '.'], cwd=os.path.join(DEPS_DIR, JUPYTER_DIR)):
+        subprocess.call(['pip', 'install', '-e', '.'], cwd=os.path.join(DEPS_DIR, JUPYTER_DIR))
+
     subprocess.call(['jupyter', 'nbextension', 'install', '--py', '--symlink', '--sys-prefix', 'jupyter_geppetto'])
     subprocess.call(['jupyter', 'nbextension', 'enable', '--py', '--sys-prefix', 'jupyter_geppetto'])
     subprocess.call(['jupyter', 'nbextension', 'enable', '--py', '--sys-prefix', 'widgetsnbextension'])

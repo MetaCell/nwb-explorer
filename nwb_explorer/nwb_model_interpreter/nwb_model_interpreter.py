@@ -17,6 +17,8 @@ from pygeppetto.utils import Singleton
 from .nwb_reader import NWBReader
 from .settings import *
 
+from ..utils import guessUnits
+
 
 class NWBModelInterpreter(ModelInterpreter, metaclass=Singleton):
 
@@ -150,7 +152,7 @@ class NWBModelInterpreter(ModelInterpreter, metaclass=Singleton):
 
         if var_to_extract == 'time':
             timestamps = NWBReader.get_timeseries_timestamps(time_series, MAX_SAMPLES)
-            timestamps_unit = time_series.timestamps_unit
+            timestamps_unit = guessUnits(time_series.timestamps_unit)
             return self.factory.createTimeSeries("time_" + time_series.name,
                                                  timestamps,
                                                  timestamps_unit)
@@ -158,7 +160,7 @@ class NWBModelInterpreter(ModelInterpreter, metaclass=Singleton):
 
             plottable_timeseries = NWBReader.get_plottable_timeseries(time_series, MAX_SAMPLES)
 
-            unit = time_series.unit
+            unit = guessUnits(time_series.unit)
             time_series_value = self.factory.createTimeSeries("data_" + time_series.name,
                                                               plottable_timeseries[0],
                                                               unit)
@@ -173,7 +175,7 @@ class NWBModelInterpreter(ModelInterpreter, metaclass=Singleton):
 
         if var_to_extract == 'time':
             timestamps = NWBReader.get_timeseries_timestamps(time_series, MAX_SAMPLES)
-            timestamps_unit = time_series.timestamps_unit
+            timestamps_unit = guessUnits(time_series.timestamps_unit)
             return self.factory.createTimeSeries("time_" + time_series.name,
                                                  timestamps,
                                                  timestamps_unit)
@@ -181,7 +183,7 @@ class NWBModelInterpreter(ModelInterpreter, metaclass=Singleton):
 
             plottable_timeseries = NWBReader.get_plottable_timeseries(time_series, MAX_SAMPLES)
 
-            unit = time_series.unit
+            unit = guessUnits(time_series.unit)
             time_series_value = self.factory.createTimeSeries("data_" + time_series.name,
                                                               plottable_timeseries[0],
                                                               unit)
