@@ -160,7 +160,7 @@ class NWBModelInterpreter(ModelInterpreter, metaclass=Singleton):
 
             unit = time_series.unit
             time_series_value = self.factory.createTimeSeries("data_" + time_series.name,
-                                                              plottable_timeseries,
+                                                              plottable_timeseries[0],
                                                               unit)
             return time_series_value
 
@@ -183,7 +183,7 @@ class NWBModelInterpreter(ModelInterpreter, metaclass=Singleton):
 
             unit = time_series.unit
             time_series_value = self.factory.createTimeSeries("data_" + time_series.name,
-                                                              plottable_timeseries,
+                                                              plottable_timeseries[0],
                                                               unit)
             return time_series_value
 

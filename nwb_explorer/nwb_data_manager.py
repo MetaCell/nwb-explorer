@@ -39,15 +39,18 @@ def get_file_from_url(file_url, fname=None, cache_dir=CACHE_DEFAULT_DIR):
 class NWBDataManager(GeppettoDataManager):
     model_interpreter = NWBModelInterpreter()
 
+    last_id = 0
+
     def get_project_from_url(self, nwbfile):
         '''The url we expect here is a nwb file, potentially remote'''
         nwbfilename = get_file_path(nwbfile)
         try:
 
             geppetto_model = self.model_interpreter.createModel(nwbfilename)
-            project = GeppettoProject(id=0, name='NWB file {}'.format(os.path.basename(nwbfilename)),
+            project = GeppettoProject(id=self.last_id, name='NWB file {}'.format(os.path.basename(nwbfilename)),
                                       geppetto_model=geppetto_model, volatile=True, base_url=None, public=False,
                                       experiments=None, view=None)
+            self.last_id += 1
             self.projects[project.id] = project
             return project
         except ValueError as e:
