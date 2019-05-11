@@ -16,14 +16,12 @@ from pygeppetto.utils import Singleton
 
 from .nwb_reader import NWBReader
 from .settings import *
-
 from ..utils import guessUnits
 
 
 class NWBModelInterpreter(ModelInterpreter, metaclass=Singleton):
 
     def __init__(self):
-        self.factory = GeppettoModelFactory()
         self.nwb_reader = None
 
     @staticmethod
@@ -36,7 +34,7 @@ class NWBModelInterpreter(ModelInterpreter, metaclass=Singleton):
     def createModel(self, nwbfile_or_path, typeName='nwb', library='nwblib'):
         logging.debug(f'Creating a Geppetto Model from {nwbfile_or_path}')
 
-        geppetto_model = self.factory.createGeppettoModel('GeppettoModel')
+        geppetto_model = GeppettoModelFactory.createGeppettoModel('GeppettoModel')
         nwb_geppetto_library = pygeppetto.GeppettoLibrary(name=library, id=library)
         geppetto_model.libraries.append(
             nwb_geppetto_library)  # FIXME the library should not be created here at every call
@@ -48,10 +46,10 @@ class NWBModelInterpreter(ModelInterpreter, metaclass=Singleton):
         geppetto_model.variables.append(nwb_file_variable)
         # add top level type
 
-        self.importType(nwbfile_or_path, nwbType, nwb_geppetto_library)
+        self.importType(nwbfile_or_path, nwbType, nwb_geppetto_library, GeppettoModelFactory(geppetto_model))
         return geppetto_model
 
-    def importType(self, nwbfile_or_path, nwbType, nwb_geppetto_library, commonLibraryAccess=None):
+    def importType(self, nwbfile_or_path, nwbType, nwb_geppetto_library, commonLibraryAccess):
         """
         Create the Geppetto Model for a nwb file.
 
@@ -66,19 +64,12 @@ class NWBModelInterpreter(ModelInterpreter, metaclass=Singleton):
         where each group entry contains the corresponding data from the nwb file.
         """
 
-
-
-
         nwb_geppetto_library.types.append(nwbType)
-
-
 
         # read data
         self.nwb_reader = NWBReader(nwbfile_or_path)
 
         time_series_list = self.nwb_reader.get_all_timeseries()
-
-
 
         for time_series in time_series_list:
 
@@ -114,11 +105,12 @@ class NWBModelInterpreter(ModelInterpreter, metaclass=Singleton):
                     # TODO lazy fetching with importValue
                     plottable_image = NWBReader.get_timeseries_image_array(time_series)
                     md_time_series_variable = self.extract_image_variable('image', plottable_image)
-                    current_variable_type.variables.append(self.factory.createStateVariable('image', md_time_series_variable))
+                    current_variable_type.variables.append(
+                        commonLibraryAccess.createStateVariable('image', md_time_series_variable))
                 else:
 
                     # TODO we are temporarely creating one type for each timeseries
-                    timeseries_type = self.get_timeseries_type(time_series.name)
+                    timeseries_type = self.get_timeseries_type(time_series.name, commonLibraryAccess)
                     nwb_geppetto_library.types.append(timeseries_type)
                     variable_name = self.clean_name_to_variable(time_series.name)
                     time_series_variable = Variable(id=variable_name, name=variable_name, types=(timeseries_type,))
@@ -136,11 +128,13 @@ class NWBModelInterpreter(ModelInterpreter, metaclass=Singleton):
                 import traceback
                 traceback.print_exc()
 
-    def get_timeseries_type(self, name="timeseries"):
+    def get_timeseries_type(self, name, commonLibraryAccess):
         timeseries_type = pygeppetto.CompositeType(id=name, name="timeseries", abstract=False)
         timeseries_type.variables.append(
-            self.factory.createStateVariable("time", self.factory.createImportValue()))  # TODO add unit to import
-        timeseries_type.variables.append(self.factory.createStateVariable('data', self.factory.createImportValue()))
+            commonLibraryAccess.createStateVariable("time",
+                                                    commonLibraryAccess.createImportValue()))  # TODO add unit to import
+        timeseries_type.variables.append(
+            commonLibraryAccess.createStateVariable('data', commonLibraryAccess.createImportValue()))
         return timeseries_type
 
     def importValue(self, import_value_path):
@@ -153,17 +147,17 @@ class NWBModelInterpreter(ModelInterpreter, metaclass=Singleton):
         if var_to_extract == 'time':
             timestamps = NWBReader.get_timeseries_timestamps(time_series, MAX_SAMPLES)
             timestamps_unit = guessUnits(time_series.timestamps_unit)
-            return self.factory.createTimeSeries("time_" + time_series.name,
-                                                 timestamps,
-                                                 timestamps_unit)
+            return GeppettoModelFactory.createTimeSeries("time_" + time_series.name,
+                                                         timestamps,
+                                                         timestamps_unit)
         else:
 
             plottable_timeseries = NWBReader.get_plottable_timeseries(time_series, MAX_SAMPLES)
 
             unit = guessUnits(time_series.unit)
-            time_series_value = self.factory.createTimeSeries("data_" + time_series.name,
-                                                              plottable_timeseries[0],
-                                                              unit)
+            time_series_value = GeppettoModelFactory.createTimeSeries("data_" + time_series.name,
+                                                                      plottable_timeseries[0],
+                                                                      unit)
             return time_series_value
 
     def import_value_from_path(self, import_value_path):
@@ -176,17 +170,17 @@ class NWBModelInterpreter(ModelInterpreter, metaclass=Singleton):
         if var_to_extract == 'time':
             timestamps = NWBReader.get_timeseries_timestamps(time_series, MAX_SAMPLES)
             timestamps_unit = guessUnits(time_series.timestamps_unit)
-            return self.factory.createTimeSeries("time_" + time_series.name,
-                                                 timestamps,
-                                                 timestamps_unit)
+            return GeppettoModelFactory.createTimeSeries("time_" + time_series.name,
+                                                         timestamps,
+                                                         timestamps_unit)
         else:
 
             plottable_timeseries = NWBReader.get_plottable_timeseries(time_series, MAX_SAMPLES)
 
             unit = guessUnits(time_series.unit)
-            time_series_value = self.factory.createTimeSeries("data_" + time_series.name,
-                                                              plottable_timeseries[0],
-                                                              unit)
+            time_series_value = GeppettoModelFactory.createTimeSeries("data_" + time_series.name,
+                                                                      plottable_timeseries[0],
+                                                                      unit)
             return time_series_value
 
     def extract_image_variable(self, metatype, plottable_timeseries):
@@ -195,7 +189,7 @@ class NWBModelInterpreter(ModelInterpreter, metaclass=Singleton):
         img.save(data_bytes, 'PNG')
         data_str = base64.b64encode(data_bytes.getvalue()).decode('utf8')
         values = [Image(data=data_str)]
-        md_time_series_variable = self.factory.createMDTimeSeries(metatype + "variable", values)
+        md_time_series_variable = GeppettoModelFactory.createMDTimeSeries(metatype + "variable", values)
         return md_time_series_variable
 
     def getName(self):

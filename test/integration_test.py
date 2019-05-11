@@ -23,9 +23,12 @@ class TestWebsocketHandler(GeppettoWebSocketHandler):
 
 class NWBExplorerIntegrationTest(unittest.TestCase):
 
-    @classmethod
-    def setup_class(cls):
-        cls.websocket_handler = TestWebsocketHandler()
+    # @classmethod
+    # def setup_class(cls):
+    #     cls.websocket_handler = TestWebsocketHandler()
+
+    def setup_method(self, method):
+        self.websocket_handler = TestWebsocketHandler()
 
     def test_init_websocket(self):
         self.websocket_handler.open()
@@ -53,7 +56,8 @@ class NWBExplorerIntegrationTest(unittest.TestCase):
         assert model2 == model
 
     def test_import_value(self):
-        self.test_load_project()
+        msg = {'type': InboundMessages.LOAD_PROJECT_FROM_URL, 'data': 'nwb_files/time_series_data.nwb', 'requestID': 0}
+        self.websocket_handler.on_message(json.dumps(msg))
         opened_projects = self.websocket_handler.geppettoHandler.geppettoManager.opened_projects
 
         runtime_project = next(iter(opened_projects.values()))
