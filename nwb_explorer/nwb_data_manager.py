@@ -28,11 +28,11 @@ def get_file_from_url(file_url, fname=None, cache_dir=CACHE_DEFAULT_DIR):
     if not os.path.exists(file_name):
         if not os.path.exists(os.path.dirname(file_name)):
             os.makedirs(os.path.dirname(file_name))
-    logging.info('Downloading {} to {}...'.format(file_url, file_name))
-    response = requests.get(file_url)
-    with open(file_name, 'wb') as f:
-        f.write(response.content)
-    logging.info('Downloaded file to: {}'.format(file_name))
+        logging.info('Downloading {} to {}...'.format(file_url, file_name))
+        response = requests.get(file_url)
+        with open(file_name, 'wb') as f:
+            f.write(response.content)
+        logging.info('Downloaded file to: {}'.format(file_name))
     return file_name
 
 
