@@ -60,7 +60,9 @@ If everything worked, the default browser will open on `http://localhost:8000/ge
 ## How to use
 
 When the application is started, no file will be loaded.
-Specify the parameter nwbfile in your browser:  `http://localhost:8000/geppetto?nwbfile=https://github.com/OpenSourceBrain/NWBShowcase/raw/master/NWB/time_series_data.nwb`
+
+1. Use the interface to load the file from a public url or just load a sample
+1. Specify the parameter nwbfile in your browser:  `http://localhost:8000/geppetto?nwbfile=https://github.com/OpenSourceBrain/NWBShowcase/raw/master/NWB/time_series_data.nwb`
 
 ## How to develop
 The application is built as a Jupyter notebook extension by means of the jupyter-geppetto extension (https://github.com/openworm/org.geppetto.frontend.jupyter).
