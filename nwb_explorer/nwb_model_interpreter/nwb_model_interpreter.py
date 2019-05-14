@@ -146,7 +146,8 @@ class NWBModelInterpreter(ModelInterpreter, metaclass=Singleton):
 
         if var_to_extract == 'time':
             timestamps = NWBReader.get_timeseries_timestamps(time_series, MAX_SAMPLES)
-            timestamps_unit = guessUnits(time_series.timestamps_unit)
+            timestamps_unit = guessUnits(time_series.timestamps_unit) if hasattr(time_series,
+                                                                                 'timestamps_unit') and time_series.timestamps_unit else 's'
             return GeppettoModelFactory.createTimeSeries("time_" + time_series.name,
                                                          timestamps,
                                                          timestamps_unit)
