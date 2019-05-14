@@ -86,7 +86,6 @@ npm run build-dev-noTest:watch
 * [Jupyter notebook](https://jupyter.org/) - The Jupyter notebook web application is used as a backend.
 * [Geppetto](http://www.geppetto.org/) - Used to build a web-based application to visualize and simulate the NWB 2.0 files.
 
-
 ## Authors
 
 * Matteo Cantarelli ([MetaCell](http://metacell.us))
