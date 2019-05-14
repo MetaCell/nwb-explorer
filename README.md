@@ -11,23 +11,12 @@ These instructions will get you a copy of the project up and running on your loc
 Below you will find the software you need to install to use nwb explorer (and the versions we used)
 * Git (2.17.0).
 * Node (9.11.1) and npm (6.0.0).
-* Redis-Server (4.0.9).
 * Python 3 (3.6.5), pip (10.0.1) and Python3-tk.
 
-  
-
-#### Adding a local nwb file folder:
-
-```
-mkdir test_data <- In the nwb-explorer folder
-cd test_data/
-wget http://ec2-34-229-132-127.compute-1.amazonaws.com/api/v1/item/5ae9f7896664c640660400b5/download -O brain_observatory.nwb
-
-```
 
 #### Python Dependencies
 
-We recommend the use of a new python virtual environment: 
+We recommend the use of a new python 3 virtual environment: 
 
 ```
 python3 -m venv new_venv_folder
@@ -41,33 +30,38 @@ Or, with conda
 conda create -n nwb python=3.7
 source activate nwb
 ```
-### Installing
+### Local installation
 
-Step by step instructions to get a development env running.
+Step by step instructions to get a development environment running.
 
 
-### Clone nwb explorer
+#### Clone nwb explorer
 ```bash
-git clone -b development https://github.com/tarelli/nwb-explorer
-cd nwb-explorer
+git clone -b nwbdev https://github.com/MetaCell/nwb-explorer [PROJECT_ROOT]
+```
+#### Run install script
+```bash
+cd [PROJECT_ROOT]
 cd utilities
 python install.py [branch MYBRANCH]
-cd ..
 ```
-
 
 ## How to run
 
-After the installation is complete, just run the script:
+After the installation is complete, run the script:
 ```bash
 cd [PROJECT_ROOT]
 ./NWBE
 ```
 
+If everything worked, the default browser will open on `http://localhost:8000/geppetto`
+
 
 ## How to use
 
-![Real plots](https://github.com/NeurodataWithoutBorders/nwb_hackathons/raw/master/HCK04_2018_Seattle/Projects/NWBExplorer/nwbexplorer.gif)
+When the application is started, no file will be loaded.
+Specify the parameter nwbfile in your browser:  `http://localhost:8000/geppetto?nwbfile=https://github.com/OpenSourceBrain/NWBShowcase/raw/master/NWB/time_series_data.nwb`
+
 ## How to develop
 The application is built as a Jupyter notebook extension by means of the jupyter-geppetto extension (https://github.com/openworm/org.geppetto.frontend.jupyter).
 The Jupyter notebook web application is hance used as a backend, the application pages, the web resources and apis are served by Tornado handlers.
