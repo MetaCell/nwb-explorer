@@ -66,7 +66,7 @@ When the application is started, no file will be loaded.
 
 ## How to develop
 The application is built as a Jupyter notebook extension by means of the jupyter-geppetto extension (https://github.com/openworm/org.geppetto.frontend.jupyter).
-The Jupyter notebook web application is hance used as a backend, the application pages, the web resources and apis are served by Tornado handlers.
+The Jupyter notebook web application is hence used as a backend, the application pages, the web resources and apis are served by Tornado handlers.
 
 ### Python code
 In order to have all the python files redeployed, the application and the dependencies must be installed in development mode, i.e. with the command
@@ -92,7 +92,7 @@ npm run build-dev-noTest:watch
 * Matteo Cantarelli ([MetaCell](http://metacell.us))
 * Giovanni Idili ([MetaCell](http://metacell.us))
 
-See also the list of [contributors](https://github.com/tarelli/nwb-explorer/contributors) who participated in this project.
+See also the list of [contributors](https://github.com/Metacell/nwb-explorer/contributors) who participated in this project.
 
 
 
