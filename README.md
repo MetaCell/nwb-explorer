@@ -56,6 +56,14 @@ cd [PROJECT_ROOT]
 
 If everything worked, the default browser will open on `http://localhost:8000/geppetto`
 
+### Run with docker
+Under the folder k8s are available the container definitions to setup a kubernetes deployment with jupyter hub spawner.
+We can simply run the application with docker:
+```bash
+cd [PROJECT_ROOT]/k8s
+docker build -t nwb-explorer --build-arg BRANCH=nwbdev .
+docker run -it -p8888:8888 nwb-explorer
+```
 
 ## How to use
 
