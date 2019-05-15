@@ -62,10 +62,15 @@ If everything worked, the default browser will open on `http://localhost:8000/ge
 When the application is started, no file will be loaded.
 
 1. Use the interface to load the file from a public url or just load a sample
-1. Specify the parameter nwbfile in your browser:  `http://localhost:8000/geppetto?nwbfile=https://github.com/OpenSourceBrain/NWBShowcase/raw/master/NWB/time_series_data.nwb`
+1. Specify the parameter nwbfile in your browser. Example: `http://localhost:8000/geppetto?nwbfile=https://github.com/OpenSourceBrain/NWBShowcase/raw/master/NWB/time_series_data.nwb`
+
+After the file is loaded, a Jupyter notebook will be available.
+From the notebook the current loaded file can be accessed through the variable `nwbfile`.
+For further information about the Python API, see the [PyNWB docs](https://pynwb.readthedocs.io/en/stable/)
+
 
 ## How to develop
-The application is built as a Jupyter notebook extension by means of the jupyter-geppetto extension (https://github.com/openworm/org.geppetto.frontend.jupyter).
+The application is built as a Jupyter notebook extension by means of the [jupyter-geppetto extension](https://github.com/openworm/org.geppetto.frontend.jupyter).
 The Jupyter notebook web application is hence used as a backend, the application pages, the web resources and apis are served by Tornado handlers.
 
 ### Python code
@@ -83,8 +88,10 @@ npm run build-dev-noTest:watch
 
 ## Built With
 
+* [PyNWB](https://github.com/NeurodataWithoutBorders/pynwb) - Used to read and manipulate NWB files
 * [Jupyter notebook](https://jupyter.org/) - The Jupyter notebook web application is used as a backend.
 * [Geppetto](http://www.geppetto.org/) - Used to build a web-based application to visualize and simulate the NWB 2.0 files.
+
 
 ## Authors
 
