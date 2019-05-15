@@ -13,7 +13,6 @@ from . import nwb_data_manager
 from .nwb_model_interpreter.nwb_reader import NWBReader
 
 
-# Note: this is not needed until we make use of data synchronization.
 class NWBGeppetto():
 
     def __init__(self):
