@@ -8,10 +8,10 @@ the content of NWB 2 files.
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
 
 ### Prerequisites 
-Below you will find the software you need to install to use nwb explorer (and the versions we used)
+Below you will find the software you need to install to use nwb explorer (and the versions we used):
 * Git (2.17.0).
 * Node (9.11.1) and npm (6.0.0).
-* Python 3 (3.6.5), pip (10.0.1) and Python3-tk.
+* Python 3 (3.6+), pip (10.0.1)
 
 
 #### Python Dependencies
@@ -21,7 +21,6 @@ We recommend the use of a new python 3 virtual environment:
 ```
 python3 -m venv new_venv_folder
 source new_venv_folder/bin/activate
-pip install -r requirements.txt
 ```
 
 Or, with conda
@@ -35,13 +34,13 @@ source activate nwb
 Step by step instructions to get a development environment running.
 
 
-#### Clone nwb explorer
+First, clone nwb explorer
 ```bash
 git clone -b nwbdev https://github.com/MetaCell/nwb-explorer [PROJECT_ROOT]
 ```
-#### Run install script
+Then run install script
 ```bash
-cd [PROJECT_ROOT]
+cd PROJECT_ROOT
 cd utilities
 python install.py [branch MYBRANCH]
 ```
@@ -54,11 +53,11 @@ cd [PROJECT_ROOT]
 ./NWBE
 ```
 
-If everything worked, the default browser will open on `http://localhost:8000/geppetto`
+If everything worked, the default browser will open on `http://localhost:8888/geppetto`
 
 ### Run with docker
-Under the folder k8s are available the container definitions to setup a kubernetes deployment with jupyter hub spawner.
-We can simply run the application with docker:
+Under the folder k8s we can find the container definitions to setup a kubernetes deployment with jupyter hub spawner.
+We can run with docker with the following commands:
 ```bash
 cd [PROJECT_ROOT]/k8s
 docker build -t nwb-explorer --build-arg BRANCH=nwbdev .
