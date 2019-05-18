@@ -173,6 +173,28 @@ class NWBReader:
     def get_nwbfile(self):
         return self.nwbfile
 
+    def get_metadata(self):
+        recommended = [
+            'experimenter',
+            'experiment_description',
+            'session_id',
+            'lab',
+            'institution',
+            'data_collection',
+            'notes',
+            'pharmacology',
+            'protocol',
+            'related_publications',
+            'slices',
+            'source_script',
+            'source_script_file_name',
+            'surgery',
+            'virus',
+            'stimulus_notes',
+        ]
+        
+        return dict([ (attr, getattr(self, attr, 'N/A')) for attr in recommended ])
+
     # Assuming requirements are NWBDataInterfaces provided by the API and NWB specification
     # http://pynwb.readthedocs.io/en/latest/overview_nwbfile.html#processing-modules
     def has_all_requirements(self, requirements):

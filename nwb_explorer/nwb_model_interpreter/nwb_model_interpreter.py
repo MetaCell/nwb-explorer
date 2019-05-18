@@ -8,9 +8,10 @@ from io import BytesIO
 
 import pygeppetto.model as pygeppetto
 from PIL import Image as Img
+from pygeppetto.model.types.types import TextType
 from pygeppetto.model.model_factory import GeppettoModelFactory
-from pygeppetto.model.values import Image
-from pygeppetto.model.variables import Variable
+from pygeppetto.model.values import Image, Text
+from pygeppetto.model.variables import Variable, TypeToValueMap
 from pygeppetto.services.model_interpreter import ModelInterpreter
 from pygeppetto.utils import Singleton
 
@@ -69,6 +70,23 @@ class NWBModelInterpreter(ModelInterpreter, metaclass=Singleton):
         # read data
         self.nwb_reader = NWBReader(nwbfile_or_path)
 
+        # Add metadata
+        # --------------
+        metadata_name = 'metadata'
+        metadata_type = pygeppetto.CompositeType(id=metadata_name, name=metadata_name)
+        
+        metadata_var = pygeppetto.Variable(id=metadata_name)
+        metadata_var.types.append(metadata_type)
+        
+        for k, v in self.nwb_reader.get_metadata().items():
+            metadata_type.variables.append(commonLibraryAccess.createTextVariable(k, v))
+
+        nwb_geppetto_library.types.append(metadata_type)
+        nwbType.variables.append(metadata_var)
+        # --------------
+        
+        
+        # Continue with timeseries
         time_series_list = self.nwb_reader.get_all_timeseries()
 
         for time_series in time_series_list:
