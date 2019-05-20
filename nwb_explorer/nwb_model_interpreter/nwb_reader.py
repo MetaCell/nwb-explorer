@@ -192,9 +192,9 @@ class NWBReader:
             'virus',
             'stimulus_notes',
         ]
-        
-        return dict([ (attr, getattr(self, attr, 'N/A')) for attr in recommended ])
 
+        return dict([ (attr, getattr(self.nwbfile, attr, 'N/A')) for attr in recommended ])
+        
     # Assuming requirements are NWBDataInterfaces provided by the API and NWB specification
     # http://pynwb.readthedocs.io/en/latest/overview_nwbfile.html#processing-modules
     def has_all_requirements(self, requirements):

@@ -79,7 +79,8 @@ class NWBModelInterpreter(ModelInterpreter, metaclass=Singleton):
         metadata_var.types.append(metadata_type)
         
         for k, v in self.nwb_reader.get_metadata().items():
-            metadata_type.variables.append(commonLibraryAccess.createTextVariable(k, v))
+            if v:
+                metadata_type.variables.append(commonLibraryAccess.createTextVariable(k, v))
 
         nwb_geppetto_library.types.append(metadata_type)
         nwbType.variables.append(metadata_var)
