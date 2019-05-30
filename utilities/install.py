@@ -70,6 +70,10 @@ def checkout(folder, default_branch, cwdp):
         subprocess.call(['git', 'checkout', default_branch], cwd='./')
     os.chdir(currentPath)
 
+def execute(cmd, cwd='.'):
+    exit_code = subprocess.call(cmd, cwd=cwd)
+    if exit_code != 0:
+        raise SystemExit('Error installing NWB-Explorer')
 
 def main(argv):
     global branch
@@ -84,9 +88,10 @@ if __name__ == "__main__":
         os.mkdir(DEPS_DIR)
     os.chdir(DEPS_DIR)
     intro()
+    
     # install requirements
     cprint("Installing requirements")
-    subprocess.call(['pip', 'install', '-r', 'requirements.txt'], cwd=ROOT_DIR)
+    execute(cmd=['pip', 'install', '-r', 'requirements.txt'], cwd=ROOT_DIR)
 
     # install pyecore
     cprint("Installing pyecore")
@@ -94,7 +99,7 @@ if __name__ == "__main__":
         folder='pyecore',
         default_branch='development'
     )
-    subprocess.call(['pip', 'install', '-e', '.'], cwd='pyecore')
+    execute(cmd=['pip', 'install', '-e', '.'], cwd='pyecore')
 
     # install pygeppetto
     cprint("Installing pygeppetto")
@@ -102,7 +107,7 @@ if __name__ == "__main__":
         folder='pygeppetto',
         default_branch='development'
     )
-    subprocess.call(['pip', 'install', '-e', '.'], cwd='pygeppetto')
+    execute(cmd=['pip', 'install', '-e', '.'], cwd='pygeppetto')
 
 
 
@@ -112,7 +117,7 @@ if __name__ == "__main__":
         folder='pynwb',
         default_branch='dev'
     )
-    subprocess.call(['pip', 'install', '-e', '.'], cwd='pynwb')
+    execute(cmd=['pip', 'install', '-e', '.'], cwd='pynwb')
 
 
 
@@ -122,21 +127,21 @@ if __name__ == "__main__":
         folder='org.geppetto.frontend.jupyter',
         default_branch='development'
     )
-    subprocess.call(['npm', 'install'], cwd=os.path.join(JUPYTER_DIR, 'js'))
-    subprocess.call(['npm', 'run', 'build-dev'], cwd=os.path.join(JUPYTER_DIR, 'js'))
+    execute(cmd=['npm', 'install'], cwd=os.path.join(JUPYTER_DIR, 'js'))
+    execute(cmd=['npm', 'run', 'build-dev'], cwd=os.path.join(JUPYTER_DIR, 'js'))
 
 
 
     # install nwb explorer
     os.chdir(ROOT_DIR)
-    cprint("Installing nwb-explorer")
+    cprint("Installing nwb-explorer frontend")
     clone(repository=NWBEXP,
         folder=WEBAPP_DIR,
         destination_folder=WEBAPP_DIR,
         default_branch='development'
     )
-    subprocess.call(['npm', 'install'], cwd=WEBAPP_DIR)
-    subprocess.call(['npm', 'run', 'build-dev'], cwd=WEBAPP_DIR)
+    execute(cmd=['npm', 'install'], cwd=WEBAPP_DIR)
+    execute(cmd=['npm', 'run', 'build-dev'], cwd=WEBAPP_DIR)
 
 
 
@@ -145,15 +150,15 @@ if __name__ == "__main__":
     # FIXME for some reason it fails the first time on a clean conda env 
     # (pip version, conda version, jupyter installation?)
     if subprocess.call(['pip', 'install', '-e', '.'], cwd=os.path.join(DEPS_DIR, JUPYTER_DIR)):
-        subprocess.call(['pip', 'install', '-e', '.'], cwd=os.path.join(DEPS_DIR, JUPYTER_DIR))
+        execute(cmd=['pip', 'install', '-e', '.'], cwd=os.path.join(DEPS_DIR, JUPYTER_DIR))
 
-    subprocess.call(['jupyter', 'nbextension', 'install', '--py', '--symlink', '--sys-prefix', 'jupyter_geppetto'])
-    subprocess.call(['jupyter', 'nbextension', 'enable', '--py', '--sys-prefix', 'jupyter_geppetto'])
-    subprocess.call(['jupyter', 'nbextension', 'enable', '--py', '--sys-prefix', 'widgetsnbextension'])
-    subprocess.call(['jupyter', 'serverextension', 'enable', '--py', '--sys-prefix', 'jupyter_geppetto'])
+    execute(cmd=['jupyter', 'nbextension', 'install', '--py', '--symlink', '--sys-prefix', 'jupyter_geppetto'])
+    execute(cmd=['jupyter', 'nbextension', 'enable', '--py', '--sys-prefix', 'jupyter_geppetto'])
+    execute(cmd=['jupyter', 'nbextension', 'enable', '--py', '--sys-prefix', 'widgetsnbextension'])
+    execute(cmd=['jupyter', 'serverextension', 'enable', '--py', '--sys-prefix', 'jupyter_geppetto'])
 
 
 
     # install app
     cprint("Installing UI python package...")
-    subprocess.call(['pip', 'install', '-e', '.', '--no-deps'])
+    execute(cmd=['pip', 'install', '-e', '.', '--no-deps'])
