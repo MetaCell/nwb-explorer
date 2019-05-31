@@ -1,8 +1,7 @@
 import os
 import subprocess
 import sys
-from shutil import copyfile
-import pkg_resources
+
 
 def intro():
     n = 26
@@ -32,6 +31,7 @@ NWBEXP = 'https://github.com/metacell/geppetto-nwbexplorer'
 PYNWB = 'https://github.com/NeurodataWithoutBorders/pynwb.git'
 JUPYTER = 'https://github.com/openworm/org.geppetto.frontend.jupyter.git'
 PYGEPPETTO = 'https://github.com/openworm/pygeppetto.git'
+NWBWIDGETS = 'https://github.com/jupyter-widgets/ipywidgets.git'
 
 WEBAPP_DIR = "webapp"
 JUPYTER_DIR = 'org.geppetto.frontend.jupyter'
@@ -119,7 +119,13 @@ if __name__ == "__main__":
     )
     execute(cmd=['pip', 'install', '-e', '.'], cwd='pynwb')
 
-
+    # install pynwb
+    cprint("Installing nwb jupyter widgets")
+    clone(repository=NWBWIDGETS,
+          folder='nwbwidgets',
+          default_branch='master'
+          )
+    subprocess.call(['pip', 'install', '-e', '.'], cwd='nwbwidgets')
 
     # install jupyter notebook
     cprint("Installing org.geppetto.frontend.jupyter")

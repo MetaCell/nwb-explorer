@@ -44,4 +44,11 @@ def main(nwbfilename):
     logging.info("Initialising NWB UI")
     geppetto = NWBGeppetto()
     geppetto.set_nwb_file(nwbfilename)
+
+    main = __import__('__main__')
+
+    from nwbwidgets import nwb2widget
+    main.nwb2widget = nwb2widget
+    main.show = lambda: nwb2widget(main.nwbfile)
+
     logging.info("NWB UI initialised")
