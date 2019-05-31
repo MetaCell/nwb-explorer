@@ -44,22 +44,25 @@ def cprint(string):
 
 # by default clones branch (which can be passed as a parameter python install.py branch test_branch)
 # if branch doesnt exist clones the default_branch
-def clone(repository, folder, default_branch, cwdp='', recursive=False, destination_folder=None):
+def clone(repository, folder, default_branch, cwdp='', recursive=False):
     global branch
     print("Cloning " + repository)
-    if recursive:
-        subprocess.call(['git', 'clone', '--recursive', repository], cwd='./' + cwdp)
+    if os.path.exists(os.path.join(cwdp, folder)):
+        print(f'Skipping clone of {repository}: folder exists')
     else:
-        if destination_folder:
-            subprocess.call(['git', 'clone', repository, destination_folder], cwd='./' + cwdp)
+        if recursive:
+            subprocess.call(['git', 'clone', '--recursive', repository], cwd='./' + cwdp)
         else:
-            subprocess.call(['git', 'clone', repository], cwd='./' + cwdp)
+            if folder:
+                subprocess.call(['git', 'clone', repository, folder], cwd='./' + cwdp)
+            else:
+                subprocess.call(['git', 'clone', repository], cwd='./' + cwdp)
     checkout(folder, default_branch, cwdp)
 
 def checkout(folder, default_branch, cwdp):
     currentPath = os.getcwd()
     print(currentPath)
-    newPath = currentPath + "/" + cwdp + folder
+    newPath = os.path.join(currentPath, cwdp, folder)
     print(newPath)
     os.chdir(newPath)
     python_git = subprocess.Popen("git branch -a", shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -75,14 +78,10 @@ def execute(cmd, cwd='.'):
     if exit_code != 0:
         raise SystemExit('Error installing NWB-Explorer')
 
-def main(argv):
-    global branch
-    if (len(argv) > 0):
-        if (argv[0] == 'branch'):
-            branch = argv[1]
 
-if __name__ == "__main__":
-    main(sys.argv[1:])
+def main(branch=branch, npmSkip=False):
+
+
 
     if not os.path.exists(DEPS_DIR):
         os.mkdir(DEPS_DIR)
@@ -96,9 +95,9 @@ if __name__ == "__main__":
     # install pyecore
     cprint("Installing pyecore")
     clone(repository=PYECORE,
-        folder='pyecore',
-        default_branch='development'
-    )
+          folder='pyecore',
+          default_branch='develop'
+          )
     execute(cmd=['pip', 'install', '-e', '.'], cwd='pyecore')
 
     # install pygeppetto
@@ -133,8 +132,9 @@ if __name__ == "__main__":
         folder='org.geppetto.frontend.jupyter',
         default_branch='development'
     )
-    execute(cmd=['npm', 'install'], cwd=os.path.join(JUPYTER_DIR, 'js'))
-    execute(cmd=['npm', 'run', 'build-dev'], cwd=os.path.join(JUPYTER_DIR, 'js'))
+    if not skipNpm:
+        execute(cmd=['npm', 'install'], cwd=os.path.join(JUPYTER_DIR, 'js'))
+        execute(cmd=['npm', 'run', 'build-dev'], cwd=os.path.join(JUPYTER_DIR, 'js'))
 
 
 
@@ -143,11 +143,11 @@ if __name__ == "__main__":
     cprint("Installing nwb-explorer frontend")
     clone(repository=NWBEXP,
         folder=WEBAPP_DIR,
-        destination_folder=WEBAPP_DIR,
         default_branch='development'
     )
-    execute(cmd=['npm', 'install'], cwd=WEBAPP_DIR)
-    execute(cmd=['npm', 'run', 'build-dev'], cwd=WEBAPP_DIR)
+    if not skipNpm:
+        execute(cmd=['npm', 'install'], cwd=WEBAPP_DIR)
+        execute(cmd=['npm', 'run', 'build-dev'], cwd=WEBAPP_DIR)
 
 
 
@@ -168,3 +168,21 @@ if __name__ == "__main__":
     # install app
     cprint("Installing UI python package...")
     execute(cmd=['pip', 'install', '-e', '.', '--no-deps'])
+
+
+if __name__ == "__main__":
+    import argparse
+
+    parser = argparse.ArgumentParser(description='Install NWB explorer and related dev libraries.')
+    parser.add_argument('--branch', '-b', dest='branch', type=str, action="store", nargs='?',
+                        help='the branch to checkout for all projects. '
+                             'The branch is checked out if exists, otherwise the default for the project will be used')
+    parser.add_argument('--npm-skip', dest='skipNpm', action='store_true', default=False,
+                        help='Skips the long npm install and build processes')
+
+    args = parser.parse_args([arg if arg != 'branch' else '-b' for arg in sys.argv[1:]])
+    print(args)
+    branch = args.branch
+
+    skipNpm = args.skipNpm
+    main(branch, skipNpm)

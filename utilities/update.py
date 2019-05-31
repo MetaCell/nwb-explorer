@@ -1,4 +1,4 @@
-from install import DEPS_DIR, os, cprint, JUPYTER_DIR, WEBAPP_DIR, subprocess, ROOT_DIR
+from .install import DEPS_DIR, os, cprint, JUPYTER_DIR, WEBAPP_DIR, subprocess, ROOT_DIR
 
 
 if __name__ == '__main__':

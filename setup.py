@@ -1,7 +1,8 @@
-import setuptools
 import fnmatch
 import os
 from glob import glob
+
+import setuptools
 
 #This block copies resources to the server so we avoid jupyter nbextension install --py --sys-prefix jupyter_geppetto
 data_files = []
@@ -21,7 +22,7 @@ setuptools.setup(
     author_email="info@metacell.us",
     description="NWB Explorer User interface",
     license="MIT",
-    long_description=open('README.rst').read(),
+    long_description=open('README.md').read(),
     data_files=data_files,
     packages=setuptools.find_packages(),
     package_data={
