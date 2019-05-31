@@ -31,7 +31,7 @@ NWBEXP = 'https://github.com/metacell/geppetto-nwbexplorer'
 PYNWB = 'https://github.com/NeurodataWithoutBorders/pynwb.git'
 JUPYTER = 'https://github.com/openworm/org.geppetto.frontend.jupyter.git'
 PYGEPPETTO = 'https://github.com/openworm/pygeppetto.git'
-NWBWIDGETS = 'https://github.com/jupyter-widgets/ipywidgets.git'
+NWBWIDGETS = 'https://github.com/NeurodataWithoutBorders/nwb-jupyter-widgets.git'
 
 WEBAPP_DIR = "webapp"
 JUPYTER_DIR = 'org.geppetto.frontend.jupyter'
