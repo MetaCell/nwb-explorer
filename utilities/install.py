@@ -175,9 +175,10 @@ def main(branch=branch, npmSkip=False):
     cprint("Testing")
     os.chdir(ROOT_DIR)
     execute(cmd=['python', '-m', 'pytest', 
-        '--ignore=dependencies/pyecore', 
         '--ignore=dependencies/pynwb', 
-        '--ignore=test/test_reader.py'
+        '--ignore=dependencies/pyecore', 
+        '--ignore=dependencies/nwbwidgets'
+        '--ignore=test/test_reader.py',
         ], cwd=ROOT_DIR)
 
 
