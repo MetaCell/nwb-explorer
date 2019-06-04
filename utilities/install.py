@@ -17,6 +17,7 @@ def intro():
     print(f"    \U0001F41E Install frontend NPM packages.\n")
     print(f"    \U0001F9F1 Build frontend bundle.\n")
     print(f"    \U0001F316 Enable Jupyter extensions.\n")
+    print(f"    \U0001F52C Test NWB-Explorer.\n")
     print(f"  \U0001F433 \033[0m Wrap-up and tag the Docker image.\n")
     print(f"\U0000231B The  whole process takes between 3 to 5 minutes. \033[0m \n")
     print(f"\U0001F3C4 Thank you for using NWB-Explorer!\n")
@@ -168,6 +169,11 @@ def main(branch=branch, npmSkip=False):
     # install app
     cprint("Installing UI python package...")
     execute(cmd=['pip', 'install', '-e', '.', '--no-deps'])
+
+
+    # test
+    cprint("Testing")
+    execute(cmd=['python', '-m', 'pytest', '--ignore=dependencies/pyecore', '--ignore=dependencies/pynwb', '--ignore=test/test_reader.py'])
 
 
 if __name__ == "__main__":
