@@ -97,7 +97,7 @@ def main(branch=branch, npmSkip=False):
     cprint("Installing pyecore")
     clone(repository=PYECORE,
           folder='pyecore',
-          default_branch='develop'
+          default_branch='nwbdev'
           )
     execute(cmd=['pip', 'install', '-e', '.'], cwd='pyecore')
 
@@ -173,7 +173,12 @@ def main(branch=branch, npmSkip=False):
 
     # test
     cprint("Testing")
-    execute(cmd=['python', '-m', 'pytest', '--ignore=dependencies/pyecore', '--ignore=dependencies/pynwb', '--ignore=test/test_reader.py'])
+    os.chdir(ROOT_DIR)
+    execute(cmd=['python', '-m', 'pytest', 
+        '--ignore=dependencies/pyecore', 
+        '--ignore=dependencies/pynwb', 
+        '--ignore=test/test_reader.py'
+        ], cwd=ROOT_DIR)
 
 
 if __name__ == "__main__":
