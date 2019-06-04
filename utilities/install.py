@@ -105,7 +105,7 @@ def main(branch=branch, npmSkip=False):
     cprint("Installing pygeppetto")
     clone(repository=PYGEPPETTO,
         folder='pygeppetto',
-        default_branch='development'
+        default_branch='nwbdev'
     )
     execute(cmd=['pip', 'install', '-e', '.'], cwd='pygeppetto')
 
@@ -131,7 +131,7 @@ def main(branch=branch, npmSkip=False):
     cprint("Installing org.geppetto.frontend.jupyter")
     clone(repository=JUPYTER,
         folder='org.geppetto.frontend.jupyter',
-        default_branch='development'
+        default_branch='nwbdev'
     )
     if not skipNpm:
         execute(cmd=['npm', 'install'], cwd=os.path.join(JUPYTER_DIR, 'js'))
@@ -144,7 +144,7 @@ def main(branch=branch, npmSkip=False):
     cprint("Installing nwb-explorer frontend")
     clone(repository=NWBEXP,
         folder=WEBAPP_DIR,
-        default_branch='development'
+        default_branch='nwbdev'
     )
     if not skipNpm:
         execute(cmd=['npm', 'install'], cwd=WEBAPP_DIR)
