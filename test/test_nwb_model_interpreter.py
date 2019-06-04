@@ -1,6 +1,6 @@
 import traceback
 import unittest
-
+import os
 import pynwb
 
 from nwb_explorer import nwb_model_interpreter
@@ -65,10 +65,10 @@ class TestModelInterpreter(unittest.TestCase):
                :return:
                '''
         file_path = "/home/user/NWBShowcase/FergusonEtAl2015/FergusonEtAl2015.nwb"
-        self._single_file_test(file_path)
+        self._single_file_test(TestModelInterpreter.nwb_test_urls['ferguson2015.nwb'])
 
     def _single_file_test(self, file_path):
-        name = file_path.split('/')[-1]
+        name = os.path.basename(file_path)
         print('Testing file', name)
         try:
             geppetto_model = self.uut.importType(file_path, '', '', '')
@@ -79,26 +79,25 @@ class TestModelInterpreter(unittest.TestCase):
             traceback.print_exc()
 
     def test_importType(self):
-        geppetto_model = self.uut.importType(self.nwbfile, 'typename', '', '')
+        geppetto_model = self.uut.createModel(self.nwbfile, 'typename')
 
         self.assertEqual(len(geppetto_model.variables), 1)
         self.assertEqual(geppetto_model.variables[0].types[0].name, 'typename')
-        self.assertEqual(len(geppetto_model.variables[0].types[0].variables), 2)
-        self.assertEqual(len(geppetto_model.variables[0].types[0].variables[0].types[0].variables), 2)
+        self.assertEqual(len(geppetto_model.variables[0].types[0].variables), 3)
+        self.assertEqual(len(geppetto_model.variables[0].types[0].variables[0].types[0].variables), 4)
 
 
     def test_importValue(self):
-        geppetto_model = self.uut.importType(self.nwbfile, 'typename', '', '')
+        geppetto_model = self.uut.createModel(self.nwbfile, 'typename')
         value = self.uut.importValue('typename.acquisition.t1.data')
         from pygeppetto.model.values import TimeSeries
         self.assertEqual(type(value), TimeSeries)
-        self.assertEqual(len(value.value), 1)
-        self.assertEqual(len(value.value[0]), 100)
-        self.assertEqual(value.value[0][0], 0.0)
-        self.assertEqual(value.value[0][1], 2.0)
+        self.assertEqual(len(value.value), 100)
+        self.assertEqual(value.value[0], 0.0)
+        # self.assertEqual(value.value[0][0], 0.0)
+        # self.assertEqual(value.value[0][1], 2.0)
 
         value = self.uut.importValue('typename.acquisition.t1.time')
-        from pygeppetto.model.values import TimeSeries
         self.assertEqual(type(value), TimeSeries)
         self.assertEqual(len(value.value), 100)
         self.assertEqual(value.value[0], 0.0)
