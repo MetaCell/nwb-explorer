@@ -194,7 +194,31 @@ class NWBReader:
         ]
 
         return dict([ (attr, getattr(self.nwbfile, attr, 'N/A')) for attr in recommended ])
+    
+    def get_acq_metadata(self, acq):
+        ''' Returns metadata asociated to an acquisition '''
+        recommended = [
+            "comments",
+            "description",
+            "data",
+            "resolution",
+            "conversion",
+            "unit",
+            "timestamps",
+            "timestamps_unit",
+            "interval",
+            "starting_time",
+            "rate",
+            "starting_time_unit",
+            "control",
+            "control_description"
+        ]
+        return dict([ (attr, getattr(acq, attr, 'N/A')) for attr in recommended ])
         
+    def get_all_acq(self):
+        ''' Return a dict with all acquisition '''
+        return self.nwbfile.acquisition.items()
+
     # Assuming requirements are NWBDataInterfaces provided by the API and NWB specification
     # http://pynwb.readthedocs.io/en/latest/overview_nwbfile.html#processing-modules
     def has_all_requirements(self, requirements):

@@ -86,8 +86,27 @@ class NWBModelInterpreter(ModelInterpreter, metaclass=Singleton):
         nwbType.variables.append(metadata_var)
         # --------------
         
-        
+
+        # Add individual acq metadata
+        # --------------
+        for acq_name, acq_value in self.nwb_reader.get_all_acq():
+            #  
+            metadata_name = acq_name
+            metadata_type = pygeppetto.CompositeType(id=metadata_name, name=metadata_name)
+            
+            metadata_var = pygeppetto.Variable(id=metadata_name)
+            metadata_var.types.append(metadata_type)
+            
+            for k, v in self.nwb_reader.get_acq_metadata(acq_value).items():
+                if v and isinstance(v, (str, float, int)):
+                    metadata_type.variables.append(commonLibraryAccess.createTextVariable(k, str(v)))
+
+            nwb_geppetto_library.types.append(metadata_type)
+            nwbType.variables.append(metadata_var)
+
+        # --------------
         # Continue with timeseries
+
         time_series_list = self.nwb_reader.get_all_timeseries()
 
         for time_series in time_series_list:
