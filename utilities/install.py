@@ -80,7 +80,7 @@ def execute(cmd, cwd='.'):
         raise SystemExit('Error installing NWB-Explorer')
 
 
-def main(branch=branch, npmSkip=False):
+def main(branch=branch, npmSkip=False, skipTest=False):
 
 
 
@@ -92,6 +92,12 @@ def main(branch=branch, npmSkip=False):
     # install requirements
     cprint("Installing requirements")
     execute(cmd=['pip', 'install', '-r', 'requirements.txt'], cwd=ROOT_DIR)
+
+    # install pytest if needed
+    if not skipTest:
+        cprint("Installing pytest")
+        if subprocess.call(['pip', 'show', 'pytest']):
+            subprocess.call(['pip', 'install', 'pytest==4.6.2'])
 
     # install pyecore
     cprint("Installing pyecore")
@@ -110,6 +116,13 @@ def main(branch=branch, npmSkip=False):
     execute(cmd=['pip', 'install', '-e', '.'], cwd='pygeppetto')
 
 
+    # test
+    if skipTest:
+        cprint("Skipping pygeppetto tests")
+    else:
+        cprint("Testing pygeppetto")
+        execute(cmd=['python', '-m', 'pytest'], cwd=os.path.join(DEPS_DIR, 'pygeppetto'))
+
 
     # install pynwb
     cprint("Installing pynwb")
@@ -119,6 +132,7 @@ def main(branch=branch, npmSkip=False):
     )
     execute(cmd=['pip', 'install', '-e', '.'], cwd='pynwb')
 
+
     # install pynwb
     cprint("Installing nwb jupyter widgets")
     clone(repository=NWBWIDGETS,
@@ -126,6 +140,7 @@ def main(branch=branch, npmSkip=False):
           default_branch='master'
           )
     subprocess.call(['pip', 'install', '-e', '.'], cwd='nwbwidgets')
+
 
     # install jupyter notebook
     cprint("Installing org.geppetto.frontend.jupyter")
@@ -138,7 +153,6 @@ def main(branch=branch, npmSkip=False):
         execute(cmd=['npm', 'run', 'build-dev'], cwd=os.path.join(JUPYTER_DIR, 'js'))
 
 
-
     # install nwb explorer
     os.chdir(ROOT_DIR)
     cprint("Installing nwb-explorer frontend")
@@ -146,10 +160,6 @@ def main(branch=branch, npmSkip=False):
         folder=WEBAPP_DIR,
         default_branch='nwbdev'
     )
-    if not skipNpm:
-        execute(cmd=['npm', 'install'], cwd=WEBAPP_DIR)
-        execute(cmd=['npm', 'run', 'build-dev'], cwd=WEBAPP_DIR)
-
 
 
     # back to finish jupyter installation
@@ -165,21 +175,26 @@ def main(branch=branch, npmSkip=False):
     execute(cmd=['jupyter', 'serverextension', 'enable', '--py', '--sys-prefix', 'jupyter_geppetto'])
 
 
+    # test
+    if skipTest:
+        cprint("Skipping tests")
+    else:
+        cprint("Testing NWB-Explorer")
+        execute(cmd=['python', '-m', 'pytest', 
+            '--ignore=dependencies',
+            '--ignore=test/test_reader.py',
+            ], cwd=ROOT_DIR)
+
+    
+    cprint("Installing client packages")
+    if not skipNpm:
+        execute(cmd=['npm', 'install'], cwd=WEBAPP_DIR)
+        execute(cmd=['npm', 'run', 'build-dev'], cwd=WEBAPP_DIR)
+
 
     # install app
     cprint("Installing UI python package...")
     execute(cmd=['pip', 'install', '-e', '.', '--no-deps'])
-
-
-    # test
-    cprint("Testing")
-    os.chdir(ROOT_DIR)
-    execute(cmd=['python', '-m', 'pytest', 
-        '--ignore=dependencies/pynwb', 
-        '--ignore=dependencies/pyecore', 
-        '--ignore=dependencies/nwbwidgets'
-        '--ignore=test/test_reader.py',
-        ], cwd=ROOT_DIR)
 
 
 if __name__ == "__main__":
@@ -192,9 +207,13 @@ if __name__ == "__main__":
     parser.add_argument('--npm-skip', dest='skipNpm', action='store_true', default=False,
                         help='Skips the long npm install and build processes')
 
+    parser.add_argument('--no-test', dest='skipTest', action="store_true", default=False,
+                        help='Skip python tests.')
+
     args = parser.parse_args([arg if arg != 'branch' else '-b' for arg in sys.argv[1:]])
     print(args)
     branch = args.branch
 
     skipNpm = args.skipNpm
-    main(branch, skipNpm)
+    skipTest = args.skipTest
+    main(branch, skipNpm, skipTest)
