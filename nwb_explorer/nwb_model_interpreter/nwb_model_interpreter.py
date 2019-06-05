@@ -72,37 +72,46 @@ class NWBModelInterpreter(ModelInterpreter, metaclass=Singleton):
 
         # Add metadata
         # --------------
-        metadata_name = 'metadata'
-        metadata_type = pygeppetto.CompositeType(id=metadata_name, name=metadata_name)
+        # ############################################################################
         
-        metadata_var = pygeppetto.Variable(id=metadata_name)
-        metadata_var.types.append(metadata_type)
+        name = 'information'
+        info_type = pygeppetto.CompositeType(id=name, name=name)
+        
+        info_var = pygeppetto.Variable(id=name)
+        info_var.types.append(info_type)
+
+        # General nwbfile information
+        metadata_name = 'general'
+        metadata_type = pygeppetto.CompositeType(id=metadata_name, name=metadata_name)
         
         for k, v in self.nwb_reader.get_metadata().items():
             if v:
                 metadata_type.variables.append(commonLibraryAccess.createTextVariable(k, v))
 
         nwb_geppetto_library.types.append(metadata_type)
-        nwbType.variables.append(metadata_var)
-        # --------------
-        
+        metadata_var = Variable(id=metadata_name, name=metadata_name, types=(metadata_type,))
+        info_type.variables.append(metadata_var)
 
-        # Add individual acq metadata
-        # --------------
+        # Timeseries specific information
         for acq_name, acq_value in self.nwb_reader.get_all_acq():
-            #  
-            metadata_name = acq_name
+            metadata_name = f"acquisition_{acq_name}"
             metadata_type = pygeppetto.CompositeType(id=metadata_name, name=metadata_name)
             
-            metadata_var = pygeppetto.Variable(id=metadata_name)
-            metadata_var.types.append(metadata_type)
-            
-            for k, v in self.nwb_reader.get_acq_metadata(acq_value).items():
-                if v and isinstance(v, (str, float, int)):
-                    metadata_type.variables.append(commonLibraryAccess.createTextVariable(k, str(v)))
+            for label, value in self.nwb_reader.get_acq_metadata(acq_value).items():
+                if value and isinstance(value, (str, float, int)):
+                    metadata_type.variables.append(commonLibraryAccess.createTextVariable(label, str(value)))
 
             nwb_geppetto_library.types.append(metadata_type)
-            nwbType.variables.append(metadata_var)
+
+            metadata_var = Variable(id=metadata_name, name=metadata_name, types=(metadata_type,))
+
+            info_type.variables.append(metadata_var)
+
+        # Add information to model
+        nwb_geppetto_library.types.append(info_type)
+        nwbType.variables.append(info_var)
+
+        # ############################################################################
 
         # --------------
         # Continue with timeseries
