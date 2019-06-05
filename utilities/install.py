@@ -93,6 +93,12 @@ def main(branch=branch, npmSkip=False, skipTest=False):
     cprint("Installing requirements")
     execute(cmd=['pip', 'install', '-r', 'requirements.txt'], cwd=ROOT_DIR)
 
+    # install pytest if needed
+    if not skipTest:
+        cprint("Installing pytest")
+        if subprocess.call(['pip', 'show', 'pytest']):
+            subprocess.call(['pip', 'install', 'pytest==4.6.2'])
+
     # install pyecore
     cprint("Installing pyecore")
     clone(repository=PYECORE,
@@ -108,6 +114,14 @@ def main(branch=branch, npmSkip=False, skipTest=False):
         default_branch='nwbdev'
     )
     execute(cmd=['pip', 'install', '-e', '.'], cwd='pygeppetto')
+
+
+    # test
+    if skipTest:
+        cprint("Skipping pygeppetto tests")
+    else:
+        cprint("Testing pygeppetto")
+        execute(cmd=['python', '-m', 'pytest'], cwd=os.path.join(DEPS_DIR, 'pygeppetto'))
 
 
     # install pynwb
@@ -146,9 +160,6 @@ def main(branch=branch, npmSkip=False, skipTest=False):
         folder=WEBAPP_DIR,
         default_branch='nwbdev'
     )
-    if not skipNpm:
-        execute(cmd=['npm', 'install'], cwd=WEBAPP_DIR)
-        execute(cmd=['npm', 'run', 'build-dev'], cwd=WEBAPP_DIR)
 
 
     # back to finish jupyter installation
@@ -164,23 +175,26 @@ def main(branch=branch, npmSkip=False, skipTest=False):
     execute(cmd=['jupyter', 'serverextension', 'enable', '--py', '--sys-prefix', 'jupyter_geppetto'])
 
 
-    # install app
-    cprint("Installing UI python package...")
-    execute(cmd=['pip', 'install', '-e', '.', '--no-deps'])
-
-
-        # test
+    # test
     if skipTest:
         cprint("Skipping tests")
     else:
-        cprint("Testing")
-        os.chdir(ROOT_DIR)
+        cprint("Testing NWB-Explorer")
         execute(cmd=['python', '-m', 'pytest', 
-            '--ignore=dependencies/pynwb', 
-            '--ignore=dependencies/pyecore', 
-            '--ignore=dependencies/nwbwidgets'
+            '--ignore=dependencies',
             '--ignore=test/test_reader.py',
             ], cwd=ROOT_DIR)
+
+    
+    cprint("Installing client packages")
+    if not skipNpm:
+        execute(cmd=['npm', 'install'], cwd=WEBAPP_DIR)
+        execute(cmd=['npm', 'run', 'build-dev'], cwd=WEBAPP_DIR)
+
+
+    # install app
+    cprint("Installing UI python package...")
+    execute(cmd=['pip', 'install', '-e', '.', '--no-deps'])
 
 
 if __name__ == "__main__":
