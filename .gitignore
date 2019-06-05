@@ -13,3 +13,7 @@ holoviews_plots
 nwb_files_cache
 test_data
 *.pynwb
+.pytest_cache
+.tox
+notebook.ipynb
+tox.ini

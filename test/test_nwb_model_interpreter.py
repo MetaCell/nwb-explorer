@@ -1,6 +1,6 @@
 import traceback
-import unittest
-
+import pytest
+import os
 import pynwb
 
 from nwb_explorer import nwb_model_interpreter
@@ -10,103 +10,101 @@ from .utils import create_nwb_file
 
 
 def write_nwb_file(nwbfile, nwb_file_name):
-    io = pynwb.NWBHDF5IO(nwb_file_name, mode='w')
+    io = pynwb.NWBHDF5IO(path=nwb_file_name, mode='w')
     io.write(nwbfile)
     io.close()
     print("Written NWB file to %s" % nwb_file_name)
 
 
-class TestModelInterpreter(unittest.TestCase):
-    nwb_test_urls = {
+@pytest.fixture
+def nwb_interpreter():
+    return NWBModelInterpreter()
 
-        'time_series_data.nwb': 'https://github.com/OpenSourceBrain/NWBShowcase/raw/master/NWB/time_series_data.nwb',
-        'simple_example.nwb': 'https://github.com/OpenSourceBrain/NWBShowcase/raw/master/NWB/simple_example.nwb',
-        'ferguson2015.nwb': 'https://github.com/OpenSourceBrain/NWBShowcase/raw/master/FergusonEtAl2015/FergusonEtAl2015.nwb',
-        'brain_observatory.nwb': 'http://ec2-34-229-132-127.compute-1.amazonaws.com/api/v1/item/5ae9f7896664c640660400b5/download',
-    }
+@pytest.fixture
+def nwbfile():
+    return create_nwb_file()
 
-    def setUp(self):
-
-        self.uut = NWBModelInterpreter()
-        self.nwbfile = create_nwb_file()
-
-    def _test_samples(self):
-        '''
-        Here only for dev/debug purposed. Do not use as a standard unit test
-        :return:
-        '''
-        fails = []
-        for name, url in self.nwb_test_urls.items():
-            print('Testing file', name)
-            file_path = get_file_from_url(url, name, '../../test_data')
-            try:
-                geppetto_model = self.uut.importType(file_path, '', '', '')
-                print('File read correctly:', name)
-            except Exception as e:
-                fails.append(name)
-                print('Error', e.args)
-                traceback.print_exc()
-
-        if fails:
-            self.fail('Some file failed: {}'.format('; '.join(fails)))
-
-    def test_big_file(self):
-        '''
-               Here only for dev/debug purpose. Do not use as a standard unit test
-               :return:
-        '''
-        nwb_model_interpreter.MAX_SAMPLES = 100000
-        file_path = "/home/user/nwb-explorer-jupyter/test_data/pynwb/YutaMouse41-150903.nwb"
-        self._single_file_test(file_path)
-
-    def test_ferguson(self):
-        '''
-               Here only for dev/debug purpose. Do not use as a standard unit test
-               :return:
-               '''
-        file_path = "/home/user/NWBShowcase/FergusonEtAl2015/FergusonEtAl2015.nwb"
-        self._single_file_test(file_path)
-
-    def _single_file_test(self, file_path):
-        name = file_path.split('/')[-1]
-        print('Testing file', name)
-        try:
-            geppetto_model = self.uut.importType(file_path, '', '', '')
-            print('File read correctly:', name)
-
-        except Exception as e:
-            print('Error', e.args)
-            traceback.print_exc()
-
-    def test_importType(self):
-        geppetto_model = self.uut.importType(self.nwbfile, 'typename', '', '')
-
-        self.assertEqual(len(geppetto_model.variables), 1)
-        self.assertEqual(geppetto_model.variables[0].types[0].name, 'typename')
-        self.assertEqual(len(geppetto_model.variables[0].types[0].variables), 2)
-        self.assertEqual(len(geppetto_model.variables[0].types[0].variables[0].types[0].variables), 2)
+FILES = {
+    'time_series_data.nwb': 'https://github.com/OpenSourceBrain/NWBShowcase/raw/master/NWB/time_series_data.nwb',
+    'simple_example.nwb': 'https://github.com/OpenSourceBrain/NWBShowcase/raw/master/NWB/simple_example.nwb',
+    'ferguson2015.nwb': 'https://github.com/OpenSourceBrain/NWBShowcase/raw/master/FergusonEtAl2015/FergusonEtAl2015.nwb',
+    'brain_observatory.nwb': 'http://ec2-34-229-132-127.compute-1.amazonaws.com/api/v1/item/5ae9f7896664c640660400b5/download',
+}
 
 
-    def test_importValue(self):
-        geppetto_model = self.uut.importType(self.nwbfile, 'typename', '', '')
-        value = self.uut.importValue('typename.acquisition.t1.data')
-        from pygeppetto.model.values import TimeSeries
-        self.assertEqual(type(value), TimeSeries)
-        self.assertEqual(len(value.value), 1)
-        self.assertEqual(len(value.value[0]), 100)
-        self.assertEqual(value.value[0][0], 0.0)
-        self.assertEqual(value.value[0][1], 2.0)
+# def _test_samples():
+#     '''
+#     Here only for dev/debug purposed. Do not use as a standard unit test
+#     :return:
+#     '''
+#     fails = []
+#     for name, url in FILES.items():
+#         print('Testing file', name)
+#         file_path = get_file_from_url(url, name, '../../test_data')
+#         try:
+#             geppetto_model = nwb_interpreter.importType(file_path, '', '', '')
+#             print('File read correctly:', name)
+#         except Exception as e:
+#             fails.append(name)
+#             print('Error', e.args)
+#             traceback.print_exc()
 
-        value = self.uut.importValue('typename.acquisition.t1.time')
-        from pygeppetto.model.values import TimeSeries
-        self.assertEqual(type(value), TimeSeries)
-        self.assertEqual(len(value.value), 100)
-        self.assertEqual(value.value[0], 0.0)
-        self.assertEqual(value.value[1], 1.0)
+#     if fails:
+#         pytest.fail('Some file failed: {}'.format('; '.join(fails)))
 
 
 
+def _single_file_test(nwb_interpreter, file_path, tmpdir):
+    name = os.path.basename(file_path)
+    print('Testing file', name)
+    try:
+        file_path = get_file_from_url(file_url=file_path, fname=name, cache_dir=tmpdir.dirname)
+        nwb_interpreter.createModel(file_path, 'test-model')
+        print('File read correctly:', name)
+
+    except Exception as e:
+        print('Error', e.args)
+        pytest.fail(f"Error reading file: {name}. Message: {e.args}")
 
 
-if __name__ == '__main__':
-    unittest.main()
+@pytest.mark.skip(reason="To be implemented")
+def test_big_file(nwb_interpreter, nwbfile, tmpdir):
+    '''
+            Here only for dev/debug purpose. Do not use as a standard unit test
+            :return:
+    '''
+    nwb_model_interpreter.MAX_SAMPLES = 100000
+    file_path = "/home/user/nwb-explorer-jupyter/test_data/pynwb/YutaMouse41-150903.nwb"
+    _single_file_test(nwb_interpreter, file_path, tmpdir)
+
+
+def test_ferguson(nwb_interpreter, tmpdir):
+    '''
+            Here only for dev/debug purpose. Do not use as a standard unit test
+            :return:
+    '''
+    _single_file_test(nwb_interpreter, FILES['ferguson2015.nwb'], tmpdir)
+
+
+def test_importType(nwb_interpreter, nwbfile):
+    geppetto_model = nwb_interpreter.createModel(nwbfile, 'typename')
+
+    assert len(geppetto_model.variables) == 1
+    assert geppetto_model.variables[0].types[0].name == 'typename'
+    assert len(geppetto_model.variables[0].types[0].variables) == 3
+    assert len(geppetto_model.variables[0].types[0].variables[0].types[0].variables) == 4
+
+
+def test_importValue(nwb_interpreter, nwbfile):
+    nwb_interpreter.createModel(nwbfile, 'typename')
+    value = nwb_interpreter.importValue('typename.acquisition.t1.data')
+    from pygeppetto.model.values import TimeSeries
+    assert type(value) == TimeSeries
+    assert len(value.value) == 100
+    assert value.value[0] == 0.0
+
+    value = nwb_interpreter.importValue('typename.acquisition.t1.time')
+    assert type(value) == TimeSeries
+    assert len(value.value) == 100
+    assert value.value[0] == 0.0
+    assert value.value[1] == 1.0
