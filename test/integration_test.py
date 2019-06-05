@@ -1,6 +1,5 @@
 import json
 import pytest
-import unittest
 
 from jupyter_geppetto import GeppettoWebSocketHandler
 from jupyter_geppetto.websocket import outbound_messages as OutboundMessages, inbound_messages as InboundMessages
