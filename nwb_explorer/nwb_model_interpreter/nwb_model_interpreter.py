@@ -71,50 +71,15 @@ class NWBModelInterpreter(ModelInterpreter, metaclass=Singleton):
         self.nwb_reader = NWBReader(nwbfile_or_path)
 
         # Add metadata
-        # --------------
+        # ------------
         # ############################################################################
-        
-        name = 'information'
-        info_type = pygeppetto.CompositeType(id=name, name=name)
-        
-        info_var = pygeppetto.Variable(id=name)
-        info_var.types.append(info_type)
 
-        # General nwbfile information
-        metadata_name = 'general'
-        metadata_type = pygeppetto.CompositeType(id=metadata_name, name=metadata_name)
-        
-        for k, v in self.nwb_reader.get_metadata().items():
-            if v:
-                metadata_type.variables.append(commonLibraryAccess.createTextVariable(k, v))
-
+        metadata_type = self.get_general_metadata_type(commonLibraryAccess)
+        metadata_var = Variable(id='general', name='general', types=(metadata_type,))
         nwb_geppetto_library.types.append(metadata_type)
-        metadata_var = Variable(id=metadata_name, name=metadata_name, types=(metadata_type,))
-        info_type.variables.append(metadata_var)
-
-        # Timeseries specific information
-        for acq_name, acq_value in self.nwb_reader.get_all_acq():
-            metadata_name = f"acquisition_{acq_name}"
-            metadata_type = pygeppetto.CompositeType(id=metadata_name, name=metadata_name)
-            
-            for label, value in self.nwb_reader.get_acq_metadata(acq_value).items():
-                if value and isinstance(value, (str, float, int)):
-                    metadata_type.variables.append(commonLibraryAccess.createTextVariable(label, str(value)))
-
-            nwb_geppetto_library.types.append(metadata_type)
-
-            metadata_var = Variable(id=metadata_name, name=metadata_name, types=(metadata_type,))
-
-            info_type.variables.append(metadata_var)
-
-        # Add information to model
-        nwb_geppetto_library.types.append(info_type)
-        nwbType.variables.append(info_var)
+        nwbType.variables.append(metadata_var)
 
         # ############################################################################
-
-        # --------------
-        # Continue with timeseries
 
         time_series_list = self.nwb_reader.get_all_timeseries()
 
@@ -157,7 +122,8 @@ class NWBModelInterpreter(ModelInterpreter, metaclass=Singleton):
                 else:
 
                     # TODO we are temporarely creating one type for each timeseries
-                    timeseries_type = self.get_timeseries_type(time_series.name, commonLibraryAccess)
+                    timeseries_parent = current_variable_type.id
+                    timeseries_type = self.get_timeseries_type(time_series.name, timeseries_parent, commonLibraryAccess, nwb_geppetto_library)
                     nwb_geppetto_library.types.append(timeseries_type)
                     variable_name = self.clean_name_to_variable(time_series.name)
                     time_series_variable = Variable(id=variable_name, name=variable_name, types=(timeseries_type,))
@@ -175,13 +141,42 @@ class NWBModelInterpreter(ModelInterpreter, metaclass=Singleton):
                 import traceback
                 traceback.print_exc()
 
-    def get_timeseries_type(self, name, commonLibraryAccess):
+
+    def get_general_metadata_type(self, commonLibraryAccess):
+        metadata_name = 'general'
+        metadata_type = pygeppetto.CompositeType(id=metadata_name, name=metadata_name)
+        
+        for k, v in self.nwb_reader.get_nwbfile_metadata().items():
+            if v:
+                metadata_type.variables.append(commonLibraryAccess.createTextVariable(k, v))
+        return metadata_type
+
+
+    def get_single_ts_metadata_type(self, name, timeseries_parent, commonLibraryAccess):
+         
+        single_ts_meta_type = pygeppetto.CompositeType(
+            id=f"{timeseries_parent}_{name}_details", 
+            name="details", 
+            abstract=False
+        )
+        for label, value in self.nwb_reader.get_single_ts_metadata(name, timeseries_parent).items():
+            single_ts_meta_type.variables.append(commonLibraryAccess.createTextVariable(label, str(value)))
+        return single_ts_meta_type
+
+
+    def get_timeseries_type(self, name, timeseries_parent, commonLibraryAccess, nwb_geppetto_library):
         timeseries_type = pygeppetto.CompositeType(id=name, name="timeseries", abstract=False)
+
         timeseries_type.variables.append(
-            commonLibraryAccess.createStateVariable("time",
-                                                    commonLibraryAccess.createImportValue()))  # TODO add unit to import
+            commonLibraryAccess.createStateVariable("time", commonLibraryAccess.createImportValue()))  # TODO add unit to import
+        
         timeseries_type.variables.append(
             commonLibraryAccess.createStateVariable('data', commonLibraryAccess.createImportValue()))
+
+        single_ts_metadata_type = self.get_single_ts_metadata_type(name, timeseries_parent, commonLibraryAccess)
+        nwb_geppetto_library.types.append(single_ts_metadata_type)
+        timeseries_type.variables.append(Variable(id="details", types=(single_ts_metadata_type,)))
+
         return timeseries_type
 
     def importValue(self, import_value_path):

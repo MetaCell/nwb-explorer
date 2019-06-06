@@ -173,51 +173,16 @@ class NWBReader:
     def get_nwbfile(self):
         return self.nwbfile
 
-    def get_metadata(self):
-        recommended = [
-            'experimenter',
-            'experiment_description',
-            'session_id',
-            'lab',
-            'institution',
-            'data_collection',
-            'notes',
-            'pharmacology',
-            'protocol',
-            'related_publications',
-            'slices',
-            'source_script',
-            'source_script_file_name',
-            'surgery',
-            'virus',
-            'stimulus_notes',
-        ]
+    def get_nwbfile_metadata(self):
+        nwbfile_metadata_dict = self.nwbfile.fields.items()
+        return dict([ (param, value) for param, value in nwbfile_metadata_dict if isinstance(value, (str, int, float)) ])
 
-        return dict([ (attr, getattr(self.nwbfile, attr, 'N/A')) for attr in recommended ])
-    
-    def get_acq_metadata(self, acq):
-        ''' Returns metadata asociated to an acquisition '''
-        recommended = [
-            "comments",
-            "description",
-            "data",
-            "resolution",
-            "conversion",
-            "unit",
-            "timestamps",
-            "timestamps_unit",
-            "interval",
-            "starting_time",
-            "rate",
-            "starting_time_unit",
-            "control",
-            "control_description"
-        ]
-        return dict([ (attr, getattr(acq, attr, 'N/A')) for attr in recommended ])
-        
-    def get_all_acq(self):
-        ''' Return a dict with all acquisition '''
-        return self.nwbfile.acquisition.items()
+    def get_single_ts_metadata(self, ts_name, ts_type):
+        if not ts_type in self.nwbfile.fields or ts_name not in self.nwbfile.fields[ts_type]:
+            return {}
+
+        ts_metadata_dict = self.nwbfile.fields[ts_type][ts_name].fields.items()
+        return dict([ (param, value) for param, value in ts_metadata_dict if isinstance(value, (str, int, float)) ])
 
     # Assuming requirements are NWBDataInterfaces provided by the API and NWB specification
     # http://pynwb.readthedocs.io/en/latest/overview_nwbfile.html#processing-modules
