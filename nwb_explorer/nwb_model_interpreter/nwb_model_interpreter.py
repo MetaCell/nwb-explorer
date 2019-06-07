@@ -146,7 +146,7 @@ class NWBModelInterpreter(ModelInterpreter, metaclass=Singleton):
         metadata_name = 'general'
         metadata_type = pygeppetto.CompositeType(id=metadata_name, name=metadata_name)
         
-        for k, v in self.nwb_reader.get_nwbfile_metadata().items():
+        for k, v in self.nwb_reader.create_nwbfile_metadata().items():
             if v:
                 metadata_type.variables.append(commonLibraryAccess.createTextVariable(k, v))
         return metadata_type
@@ -159,7 +159,7 @@ class NWBModelInterpreter(ModelInterpreter, metaclass=Singleton):
             name="details", 
             abstract=False
         )
-        for label, value in self.nwb_reader.get_single_ts_metadata(name, timeseries_parent).items():
+        for label, value in self.nwb_reader.create_single_ts_metadata(name, timeseries_parent).items():
             single_ts_meta_type.variables.append(commonLibraryAccess.createTextVariable(label, str(value)))
         return single_ts_meta_type
 
