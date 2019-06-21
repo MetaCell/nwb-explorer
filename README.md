@@ -1,7 +1,11 @@
 # NWB Explorer
 
-NWB Explorer is an application that can be used by scientists to read, visualize and explore
-the content of NWB 2 files. 
+NWB Explorer is a web application that can be used by scientists to read, visualize and explore
+the content of NWB files. 
+
+Learn more about the [Neurodata Without Borders](https://www.nwb.org/).
+
+
 
 ## Getting Started
 
@@ -99,6 +103,12 @@ npm run build-dev-noTest:watch
 * [Jupyter notebook](https://jupyter.org/) - The Jupyter notebook web application is used as a backend.
 * [Geppetto](http://www.geppetto.org/) - Used to build a web-based application to visualize and simulate the NWB 2.0 files.
 
+## Background
+The NWB Explorer was initially created by MetaCell to showcase the features of the Geppetto platform to share 
+neurophysiological data in Neurodata Without Borders format. It was further developed as part of a 
+Google Summer of Code project with the OpenWorm project. It is currently being extended as part of the Open Source Brain
+project to provide both a standalone and online application for visualising and analysing the contents of NWB files. 
+This work is currently funded by the Wellcome Trust.
 
 ## Authors
 
