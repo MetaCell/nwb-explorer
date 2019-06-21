@@ -103,16 +103,16 @@ def main(branch=branch, npmSkip=False, skipTest=False):
     cprint("Installing pyecore")
     clone(repository=PYECORE,
           folder='pyecore',
-          default_branch='nwbdev'
+          default_branch='dev'
           )
     execute(cmd=['pip', 'install', '-e', '.'], cwd='pyecore')
 
     # install pygeppetto
     cprint("Installing pygeppetto")
     clone(repository=PYGEPPETTO,
-        folder='pygeppetto',
-        default_branch='nwbdev'
-    )
+          folder='pygeppetto',
+          default_branch='development'
+          )
     execute(cmd=['pip', 'install', '-e', '.'], cwd='pygeppetto')
 
 
@@ -145,9 +145,9 @@ def main(branch=branch, npmSkip=False, skipTest=False):
     # install jupyter notebook
     cprint("Installing org.geppetto.frontend.jupyter")
     clone(repository=JUPYTER,
-        folder='org.geppetto.frontend.jupyter',
-        default_branch='nwbdev'
-    )
+          folder='org.geppetto.frontend.jupyter',
+          default_branch='development'
+          )
     if not skipNpm:
         execute(cmd=['npm', 'install'], cwd=os.path.join(JUPYTER_DIR, 'js'))
         execute(cmd=['npm', 'run', 'build-dev'], cwd=os.path.join(JUPYTER_DIR, 'js'))
@@ -157,9 +157,9 @@ def main(branch=branch, npmSkip=False, skipTest=False):
     os.chdir(ROOT_DIR)
     cprint("Installing nwb-explorer frontend")
     clone(repository=NWBEXP,
-        folder=WEBAPP_DIR,
-        default_branch='nwbdev'
-    )
+          folder=WEBAPP_DIR,
+          default_branch='development'
+          )
 
 
     # back to finish jupyter installation
