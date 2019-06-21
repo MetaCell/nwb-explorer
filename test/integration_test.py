@@ -1,20 +1,21 @@
 import json
-import pytest
 
-from jupyter_geppetto import GeppettoWebSocketHandler
-from jupyter_geppetto.websocket import outbound_messages as OutboundMessages, inbound_messages as InboundMessages
-from jupyter_geppetto.websocket.connection_handler import ConnectionHandler
+import pytest
+from jupyter_geppetto import TornadoGeppettoWebSocketHandler
+from pygeppetto.api import outbound_messages as OutboundMessages, inbound_messages as InboundMessages
+from pygeppetto.api.message_handler import GeppettoMessageHandler
+from pygeppetto.utils import Singleton
 
 import nwb_explorer  # With this import we are assigning the model interpreter and data manager
-from pygeppetto.utils import Singleton
-from pygeppetto.managers.geppetto_manager import GeppettoManager
+
 model_interpreter = nwb_explorer.model_interpreter  # This is just to say the idle the nwb_explorer import is not useless
 
-class TestWebsocketHandler(GeppettoWebSocketHandler):
+
+class TestWebsocketHandler(TornadoGeppettoWebSocketHandler):
     sent_messages = {}
 
     def __init__(self, *args, **kwargs):
-        self.geppettoHandler = ConnectionHandler(self)
+        GeppettoMessageHandler.__init__(self)
 
     def send_message(self, requestID, return_msg_type, msg_data):
         if not return_msg_type in self.sent_messages:
@@ -57,7 +58,7 @@ def test_load_project(websocket_handler):
 def test_import_value(websocket_handler):
     msg = {'type': InboundMessages.LOAD_PROJECT_FROM_URL, 'data': 'https://github.com/OpenSourceBrain/NWBShowcase/raw/master/NWB/time_series_data.nwb', 'requestID': 0}
     websocket_handler.on_message(json.dumps(msg))
-    opened_projects = websocket_handler.geppettoHandler.geppettoManager.opened_projects
+    opened_projects = websocket_handler.geppettoManager.opened_projects
 
     runtime_project = next(iter(opened_projects.values()))
     msg = {'type': InboundMessages.RESOLVE_IMPORT_VALUE, 'data': json.dumps(
