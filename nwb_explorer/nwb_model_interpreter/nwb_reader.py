@@ -177,6 +177,7 @@ class NWBReader:
         nwbfile_metadata_dict = self.nwbfile.fields.items()
         metadata = dict((param, value) for param, value in nwbfile_metadata_dict if isinstance(value, (str, int, float)))
         metadata['experiment_summary'] = self.get_experiment_summary()
+        metadata['Subject'] = self.get_subject()
         return metadata
 
     def create_single_ts_metadata(self, ts_name, ts_type):
@@ -191,6 +192,16 @@ class NWBReader:
         rows = ['Timeseries']
         data = [[len(self.nwbfile.acquisition), len(self.nwbfile.stimulus)]]
         return { "columns": cols, "rows": rows, "data": data }
+
+    def get_subject(self):
+        if self.nwbfile.subject:
+            sub = self.nwbfile.subject.fields
+            cols = ['Subject']
+            rows = list(sub.keys())
+            data = list(sub.values())
+            return { "columns": cols, "rows": rows, "data": data }
+        else:
+            return None
 
     # Assuming requirements are NWBDataInterfaces provided by the API and NWB specification
     # http://pynwb.readthedocs.io/en/latest/overview_nwbfile.html#processing-modules

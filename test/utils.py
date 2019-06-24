@@ -4,6 +4,7 @@ import numpy as np
 import pynwb
 from dateutil.tz import tzlocal
 
+from pynwb import NWBHDF5IO
 
 def create_nwb_file():
     '''
@@ -15,7 +16,19 @@ def create_nwb_file():
     '''
     start_time = datetime(2019, 1, 1, 11, tzinfo=tzlocal())
     create_date = datetime.now(tz=tzlocal())
-
+    
+    # FIXME: this attr breaks nwb-explorer
+    # date_of_birth=create_date 
+    sub = pynwb.file.Subject(
+        age='33',
+        description='Nothing too personal.',
+        genotype='AA',
+        sex='M',
+        species='Homo erectus',
+        subject_id='001',
+        weight="199 lb"
+    )
+    
     nwbfile = pynwb.NWBFile('Example structured data',
                             'TSD',
                             start_time,
@@ -24,6 +37,7 @@ def create_nwb_file():
                             experimenter='Filippo Ledda',
                             experiment_description='Add example data',
                             institution='UCL',
+                            subject=sub
                             )
     sample_num = 100
     timestamps = np.arange(0, sample_num, 1)
