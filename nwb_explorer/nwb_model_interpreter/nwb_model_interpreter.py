@@ -148,7 +148,11 @@ class NWBModelInterpreter(ModelInterpreter, metaclass=Singleton):
         
         for k, v in self.nwb_reader.create_nwbfile_metadata().items():
             if v:
-                metadata_type.variables.append(commonLibraryAccess.createTextVariable(k, v))
+                if isinstance(v, dict):
+                    if 'columns' in v:
+                        metadata_type.variables.append(commonLibraryAccess.createHTMLTable(k, v['columns'], v['rows'], v['data']))
+                else:
+                    metadata_type.variables.append(commonLibraryAccess.createTextVariable(k, v))
         return metadata_type
 
 
