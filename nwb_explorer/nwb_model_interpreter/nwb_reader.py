@@ -1,5 +1,5 @@
 import collections
-import json
+
 import numpy as np
 from pynwb import TimeSeries, NWBHDF5IO, ProcessingModule
 from pynwb.core import NWBDataInterface

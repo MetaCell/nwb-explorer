@@ -74,7 +74,7 @@ class NWBModelInterpreter(ModelInterpreter, metaclass=Singleton):
         # ------------
         # ############################################################################
 
-        metadata_type = self.get_general_metadata_type(commonLibraryAccess, nwb_geppetto_library)
+        metadata_type = self.get_general_metadata_type(commonLibraryAccess)
         metadata_var = Variable(id='general', name='general', types=(metadata_type,))
         nwb_geppetto_library.types.append(metadata_type)
         nwbType.variables.append(metadata_var)
@@ -142,7 +142,7 @@ class NWBModelInterpreter(ModelInterpreter, metaclass=Singleton):
                 traceback.print_exc()
 
 
-    def get_general_metadata_type(self, commonLibraryAccess, nwb_geppetto_library):
+    def get_general_metadata_type(self, commonLibraryAccess):
         metadata_name = 'general'
         metadata_type = pygeppetto.CompositeType(id=metadata_name, name=metadata_name)
         
