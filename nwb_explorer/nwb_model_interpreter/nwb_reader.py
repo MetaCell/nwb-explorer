@@ -201,6 +201,8 @@ class NWBReader:
 
     def get_subject(self):
         sub = ''
+        if not hasattr(self.nwbfile, 'subject') or self.nwbfile.subject == None:
+            return None
         for k, v in self.nwbfile.subject.fields.items():
             if v and isinstance(v, str):
                 sub += f"{k}: {v}\n" 
