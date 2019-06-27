@@ -174,8 +174,7 @@ class NWBReader:
 
     def create_nwbfile_metadata(self):
         nwbfile_metadata_dict = self.nwbfile.fields.items()
-        metadata = dict((param, value) for param, value in nwbfile_metadata_dict if isinstance(value, (str, int, float)))
-        return metadata
+        return dict((param, value) for param, value in nwbfile_metadata_dict if isinstance(value, (str, int, float)))
 
     def create_single_ts_metadata(self, ts_name, ts_type):
         if not ts_type in self.nwbfile.fields or ts_name not in self.nwbfile.fields[ts_type]:
