@@ -190,23 +190,27 @@ class NWBReader:
         return dict((param, value) for param, value in ts_metadata_dict if isinstance(value, (str, int, float)))
 
     def get_experiment_summary(self):
-        aqc = str(len(self.nwbfile.acquisition))
-        stim = str(len(self.nwbfile.stimulus))
-        summary = ''
+        aqc = len(self.nwbfile.acquisition)
+        stim = len(self.nwbfile.stimulus)
+        summary = {}
+        n = 0 # use to enforce consistent render sequence in frontend without having to know the keys
         if aqc:
-            summary += f"Num. of acquisitions: {aqc}\n"
+            summary[f'o{n}'] = f"Num. of acquisitions: {aqc}"
+            n +=1
         if stim:
-            summary += f"Num. of stimulus: {stim}"
-        return summary if summary else None
+            summary[f'o{n}'] = f"Num. of stimulus: {stim}"
+        return summary if n != 0 else None
 
     def get_subject(self):
-        sub = ''
+        n = 0
+        sub = {}
         if not hasattr(self.nwbfile, 'subject') or self.nwbfile.subject == None:
             return None
         for k, v in self.nwbfile.subject.fields.items():
             if v and isinstance(v, str):
-                sub += f"{k}: {v}\n" 
-        return sub if sub else None
+                sub[f'o{n}'] = f"{k}: {v}"
+                n +=1
+        return sub if n > 0 else None
 
     # Assuming requirements are NWBDataInterfaces provided by the API and NWB specification
     # http://pynwb.readthedocs.io/en/latest/overview_nwbfile.html#processing-modules
