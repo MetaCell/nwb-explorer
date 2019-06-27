@@ -73,3 +73,9 @@ def test_import_value(websocket_handler):
     model = json.loads(websocket_handler.sent_messages[OutboundMessages.GEPPETTO_MODEL_LOADED][0])
     assert len(model['variables']) == 1
     assert 'eClass' in model['variables'][0]['types'][0]
+
+def test_load_errors(websocket_handler):
+    msg1 = {'type': InboundMessages.LOAD_PROJECT_FROM_URL, 'data': 'fake.nwb', 'requestID': 0}
+    websocket_handler.on_message(json.dumps(msg1))
+    
+    assert "error_loading_project" in websocket_handler.sent_messages.keys()

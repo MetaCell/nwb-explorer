@@ -52,7 +52,6 @@ class NWBReader:
     def get_raw_data(image_series_data):
         """Given a image_series data object returns a NumPy array with the raw data."""
         arr = np.zeros(image_series_data.shape, dtype=image_series_data.dtype)
-        image_series_data.read_direct(arr)
         return arr
 
     @staticmethod
@@ -175,7 +174,8 @@ class NWBReader:
 
     def create_nwbfile_metadata(self):
         nwbfile_metadata_dict = self.nwbfile.fields.items()
-        return dict((param, value) for param, value in nwbfile_metadata_dict if isinstance(value, (str, int, float)))
+        metadata = dict((param, value) for param, value in nwbfile_metadata_dict if isinstance(value, (str, int, float)))
+        return metadata
 
     def create_single_ts_metadata(self, ts_name, ts_type):
         if not ts_type in self.nwbfile.fields or ts_name not in self.nwbfile.fields[ts_type]:
@@ -183,6 +183,7 @@ class NWBReader:
 
         ts_metadata_dict = self.nwbfile.fields[ts_type][ts_name].fields.items()
         return dict((param, value) for param, value in ts_metadata_dict if isinstance(value, (str, int, float)))
+
 
     # Assuming requirements are NWBDataInterfaces provided by the API and NWB specification
     # http://pynwb.readthedocs.io/en/latest/overview_nwbfile.html#processing-modules

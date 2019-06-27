@@ -11,7 +11,7 @@ cache_model = False
 
 
 # TODO this is still a really distant relative of the RuntimeProject in the Java backend. Remove when a sensible implementation of the flow is available on pygeppetto
-class RuntimeProject:
+class RuntimeProject: # pytest: no cover
     __geppetto_model = None
     __filename = None
 
@@ -35,7 +35,7 @@ class RuntimeProject:
 # curl -X POST http://localhost:8000/api/load
 
 
-class NWBController:
+class NWBController: # pytest: no cover
     model_interpreter = NWBModelInterpreter()
 
     @classmethod

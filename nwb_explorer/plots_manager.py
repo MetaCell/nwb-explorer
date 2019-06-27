@@ -16,7 +16,7 @@ hv.extension('bokeh')
 sns.set_style('whitegrid')
 
 
-class PlotManager:
+class PlotManager: # pytest: no cover
     holoviews_plots_path = "webapp/holoviews_plots/"
     public_plots_path = "nwb_explorer/public/plots"
     public_plots_dict = {}
