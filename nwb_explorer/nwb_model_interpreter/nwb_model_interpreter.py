@@ -149,7 +149,7 @@ class NWBModelInterpreter(ModelInterpreter, metaclass=Singleton):
         for k, v in self.nwb_reader.create_nwbfile_metadata().items():
             if v:
                 if isinstance(v, dict):
-                    inception_type = self.create_metadata_type_from_dict(k, v, commonLibraryAccess)
+                    inception_type = self.create_metadata_type_from_dict(f'{k}_interface_map', v, commonLibraryAccess)
                     nwb_geppetto_library.types.append(inception_type)
                     metadata_type.variables.append(Variable(id=k, types=(inception_type,)))
 
