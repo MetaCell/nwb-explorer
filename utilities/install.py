@@ -1,28 +1,7 @@
 import os
 import subprocess
 import sys
-
-
-def intro():
-    n = 26
-    delimiter = '\U0001F53D'
-    print()
-    print(f"{delimiter*n}")
-    print()
-    print(f"\U0001F604 Welcome to \033[36;3mNWB-Explorer\033[0m development installation\n")
-    print(f"\U0001F463 We will execute the following steps:\n")
-    print(f"  \U0001F40D Install Python requirements.\n")
-    print(f"  \U0001F63C Clone some GitHub repositories\n")
-    print(f"  \U0001F9D9 Setup a custom Geppetto Application:\n")
-    print(f"    \U0001F41E Install frontend NPM packages.\n")
-    print(f"    \U0001F9F1 Build frontend bundle.\n")
-    print(f"    \U0001F316 Enable Jupyter extensions.\n")
-    print(f"    \U0001F52C Test NWB-Explorer.\n")
-    print(f"  \U0001F433 \033[0m Wrap-up and tag the Docker image.\n")
-    print(f"\U0000231B The  whole process takes between 3 to 5 minutes. \033[0m \n")
-    print(f"\U0001F3C4 Thank you for using NWB-Explorer!\n")
-    print(f"{delimiter*n}\n")    
-    sys.stdout.flush()
+from welcome import donkey
 
 branch = None
 
@@ -87,7 +66,8 @@ def main(branch=branch, npmSkip=False, skipTest=False):
     if not os.path.exists(DEPS_DIR):
         os.mkdir(DEPS_DIR)
     os.chdir(DEPS_DIR)
-    intro()
+    print(f"{donkey}\n")    
+    sys.stdout.flush()
     
     # install requirements
     cprint("Installing requirements")

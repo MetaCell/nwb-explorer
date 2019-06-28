@@ -74,7 +74,7 @@ class NWBModelInterpreter(ModelInterpreter, metaclass=Singleton):
         # ------------
         # ############################################################################
 
-        metadata_type = self.get_general_metadata_type(commonLibraryAccess)
+        metadata_type = self.get_general_metadata_type(commonLibraryAccess, nwb_geppetto_library)
         metadata_var = Variable(id='general', name='general', types=(metadata_type,))
         nwb_geppetto_library.types.append(metadata_type)
         nwbType.variables.append(metadata_var)
@@ -138,14 +138,28 @@ class NWBModelInterpreter(ModelInterpreter, metaclass=Singleton):
                 traceback.print_exc()
 
 
-    def get_general_metadata_type(self, commonLibraryAccess):
+    def get_general_metadata_type(self, commonLibraryAccess, nwb_geppetto_library):
         metadata_name = 'general'
         metadata_type = pygeppetto.CompositeType(id=metadata_name, name=metadata_name)
         
         for k, v in self.nwb_reader.create_nwbfile_metadata().items():
             if v:
-                metadata_type.variables.append(commonLibraryAccess.createTextVariable(k, v))
+                if isinstance(v, dict):
+                    inception_type = self.create_metadata_type_from_dict(f'{k}_interface_map', v, commonLibraryAccess)
+                    nwb_geppetto_library.types.append(inception_type)
+                    metadata_type.variables.append(Variable(id=k, types=(inception_type,)))
+
+                else:
+                    metadata_type.variables.append(commonLibraryAccess.createTextVariable(k, v))
         return metadata_type
+
+    def create_metadata_type_from_dict(self, name, dictionary, commonLibraryAccess):
+        inception_type = pygeppetto.CompositeType(id=name, name=name, abstract=False)
+                    
+        for kk, vv in dictionary.items():
+            inception_type.variables.append(commonLibraryAccess.createTextVariable(kk, vv))
+
+        return inception_type
 
     def get_single_ts_metadata_type(self, name, timeseries_parent, commonLibraryAccess):
          
