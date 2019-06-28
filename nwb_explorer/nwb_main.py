@@ -13,7 +13,7 @@ from . import nwb_data_manager
 from .nwb_model_interpreter.nwb_reader import NWBReader
 
 
-class NWBGeppetto():
+class NWBGeppetto(): # pytest: no cover
 
     def __init__(self):
         # use to decide whether or not to update the canvas in the front end
@@ -40,7 +40,7 @@ class NWBGeppetto():
         main.nwbfile = self.nwb_reader.nwbfile
 
 
-def main(nwbfilename):
+def main(nwbfilename): # pytest: no cover
     logging.info("Initialising NWB UI")
     geppetto = NWBGeppetto()
     geppetto.set_nwb_file(nwbfilename)

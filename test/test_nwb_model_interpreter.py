@@ -8,6 +8,7 @@ from nwb_explorer.nwb_data_manager import get_file_from_url
 from nwb_explorer.nwb_model_interpreter import NWBModelInterpreter
 from .utils import create_nwb_file
 
+from nwb_explorer.nwb_model_interpreter.nwb_reader import NWBReader
 
 def write_nwb_file(nwbfile, nwb_file_name):
     io = pynwb.NWBHDF5IO(path=nwb_file_name, mode='w')
@@ -108,3 +109,19 @@ def test_importValue(nwb_interpreter, nwbfile):
     assert len(value.value) == 100
     assert value.value[0] == 0.0
     assert value.value[1] == 1.0
+
+    assert nwb_interpreter.import_value_from_path('typename.acquisition.t1.data').value[0] == 0.0
+    assert nwb_interpreter.import_value_from_path('typename.acquisition.t1.time').value[0] == 0.0
+
+def test_errors(nwb_interpreter, nwbfile, tmpdir):
+    nwb_interpreter.createModel(nwbfile, 'typename')
+    nwbfile = nwb_interpreter.nwb_reader.get_nwbfile()
+    
+    assert isinstance(nwbfile, pynwb.file.NWBFile)
+    assert nwb_interpreter.getDependentModels() == []
+    assert nwb_interpreter.getName() == 'NWB Model Interpreter'
+    assert nwb_interpreter.nwb_reader.has_all_requirements(['acquisition.TimeSeries', 'TimeSeries', 'ProcessingModule', 'TwoPhotonSeries'])
+    
+    with pytest.raises(KeyError):
+        assert _single_file_test(nwb_interpreter, FILES['a_non_existent_file.pynwb'], tmpdir)
+

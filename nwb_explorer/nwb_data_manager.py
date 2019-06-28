@@ -11,7 +11,7 @@ from nwb_explorer.nwb_model_interpreter import NWBModelInterpreter
 CACHE_DEFAULT_DIR = 'nwb_files_cache/'
 
 
-class NWBFileNotFound(Exception): pass
+class NWBFileNotFound(FileNotFoundError): pass
 
 
 def get_file_path(file_name_or_url):

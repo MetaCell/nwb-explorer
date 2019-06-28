@@ -52,7 +52,6 @@ class NWBReader:
     def get_raw_data(image_series_data):
         """Given a image_series data object returns a NumPy array with the raw data."""
         arr = np.zeros(image_series_data.shape, dtype=image_series_data.dtype)
-        image_series_data.read_direct(arr)
         return arr
 
     @staticmethod

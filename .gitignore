@@ -17,3 +17,4 @@ test_data
 .tox
 notebook.ipynb
 tox.ini
+.coverage

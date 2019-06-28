@@ -85,10 +85,6 @@ class NWBModelInterpreter(ModelInterpreter, metaclass=Singleton):
 
         for time_series in time_series_list:
 
-            if not isinstance(time_series, SUPPORTED_TIME_SERIES_TYPES):
-                logging.warning(f"Unsupported time series type: {type(time_series)}. Cannot import {time_series.name}")
-                continue
-
             timeseries_path = self.nwb_reader.extract_time_series_path(time_series)
 
             current_variable_type = nwbType
@@ -170,8 +166,8 @@ class NWBModelInterpreter(ModelInterpreter, metaclass=Singleton):
         single_ts_meta_type = pygeppetto.CompositeType(
             id=f"{timeseries_parent}_{name}_details", 
             name="details", 
-            abstract=False
-        )
+            abstract=False)
+
         for label, value in self.nwb_reader.create_single_ts_metadata(name, timeseries_parent).items():
             single_ts_meta_type.variables.append(commonLibraryAccess.createTextVariable(label, str(value)))
         return single_ts_meta_type
@@ -245,7 +241,7 @@ class NWBModelInterpreter(ModelInterpreter, metaclass=Singleton):
         img.save(data_bytes, 'PNG')
         data_str = base64.b64encode(data_bytes.getvalue()).decode('utf8')
         values = [Image(data=data_str)]
-        md_time_series_variable = GeppettoModelFactory.createMDTimeSeries(metatype + "variable", values)
+        md_time_series_variable = GeppettoModelFactory.createMDTimeSeries('', metatype + "variable", values)
         return md_time_series_variable
 
     def getName(self):
