@@ -49,7 +49,6 @@ def create_nwb_file():
     mod = nwbfile.create_processing_module('mod', 'Mod')
     interface = mod.add_data_interface(pynwb.TimeSeries('t3', data, 'm', timestamps=timestamps))
     mod.add_data_interface(pynwb.TimeSeries('t4', data, 'm', timestamps=timestamps))
-<<<<<<< HEAD
 
     
     nwbfile.add_acquisition(create_image('image', nwbfile))
@@ -68,7 +67,4 @@ def create_image(name, nwbfile):
     return pynwb.ophys.TwoPhotonSeries(name='test_iS', data=data, dimension=[2], imaging_plane=imaging_plane,
                                 starting_frame=[0], format='tiff', starting_time=0.0, rate=1.0)
     
-create_nwb_file()
-=======
-    return nwbfile
->>>>>>> ac3f299db5e225f9cd7ce6a64a0fb2b926984353
+
