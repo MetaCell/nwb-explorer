@@ -175,7 +175,12 @@ class NWBReader:
 
     def create_nwbfile_metadata(self):
         nwbfile_metadata_dict = self.nwbfile.fields.items()
-        return dict((param, value) for param, value in nwbfile_metadata_dict if isinstance(value, (str, int, float)))
+        metadata = dict((param, value) for param, value in nwbfile_metadata_dict if isinstance(value, (str, int, float)))
+        if self.get_experiment_summary():
+            metadata['Experiment_summary'] = self.get_experiment_summary()
+        if self.get_subject():
+            metadata['Subject'] = self.get_subject()
+        return metadata
 
     def create_single_ts_metadata(self, ts_name, ts_type):
         if not ts_type in self.nwbfile.fields or ts_name not in self.nwbfile.fields[ts_type]:
@@ -183,6 +188,29 @@ class NWBReader:
 
         ts_metadata_dict = self.nwbfile.fields[ts_type][ts_name].fields.items()
         return dict((param, value) for param, value in ts_metadata_dict if isinstance(value, (str, int, float)))
+
+    def get_experiment_summary(self):
+        aqc = len(self.nwbfile.acquisition)
+        stim = len(self.nwbfile.stimulus)
+        summary = {}
+        n = 0 # use to enforce consistent render sequence in frontend without having to know the keys
+        if aqc:
+            summary[f'o{n}'] = f"Num. of acquisitions: {aqc}"
+            n +=1
+        if stim:
+            summary[f'o{n}'] = f"Num. of stimulus: {stim}"
+        return summary if n != 0 else None
+
+    def get_subject(self):
+        n = 0
+        sub = {}
+        if not hasattr(self.nwbfile, 'subject') or self.nwbfile.subject == None:
+            return None
+        for k, v in self.nwbfile.subject.fields.items():
+            if v and isinstance(v, str):
+                sub[f'o{n}'] = f"{k}: {v}"
+                n +=1
+        return sub if n > 0 else None
 
     # Assuming requirements are NWBDataInterfaces provided by the API and NWB specification
     # http://pynwb.readthedocs.io/en/latest/overview_nwbfile.html#processing-modules
