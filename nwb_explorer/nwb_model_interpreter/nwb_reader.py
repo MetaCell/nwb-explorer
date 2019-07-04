@@ -250,6 +250,9 @@ class NWBReader:
                 return True
         return False
 
+    def get_all(self):
+        return self.nwbfile.all_children()
+
 
 
 
