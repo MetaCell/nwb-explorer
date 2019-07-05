@@ -164,22 +164,11 @@ class GeppettoNwbCompositeTypeBuilder(object):
         obj_variable = Variable(id=id, name=geppetto_type_name, types=(obj_type, ))
         parent_geppetto_type.variables.append(obj_variable)
 
-    def add_extra_geppetto_types(self, custom_obj_name, custom_obj, geppetto_type_name, parent_geppetto_type):
-        ''' Use this function to add objects to the Geppetto model that are not present in the nwbfile '''
-        self.build_geppetto_pynwb_type(custom_obj_name, custom_obj, geppetto_type_name, parent_geppetto_type)
-
-    def get_root_type(self):
-        try:
-            return self.geppetto_model.variables[0].types[0]
-        except:
-            return None
-
     def build(self):
         self.build_geppetto_pynwb_type(id=self.typename,
                                     obj=self.nwb_reader.nwbfile, 
                                     geppetto_type_name=self.typename, 
                                     parent_geppetto_type=self.geppetto_model)
-
 
     # This is for custom compositeTypes that are not present in nwbfile object
     def extended_build(self):
@@ -199,9 +188,6 @@ class GeppettoNwbCompositeTypeBuilder(object):
             return self.geppetto_model.variables[0].types[0]
         except:
             return None
-
-
-
 
 
 class NWBModelInterpreter(ModelInterpreter, metaclass=Singleton):
