@@ -77,7 +77,7 @@ def main(branch=branch, npmSkip=False, skipTest=False):
     if not skipTest:
         cprint("Installing pytest")
         if subprocess.call(['pip', 'show', 'pytest']):
-            subprocess.call(['pip', 'install', 'pytest==4.6.2'])
+            subprocess.call(['pip', 'install', 'pytest==4.6.2', 'pytest-cov==2.7.1', 'tox==3.12.1'])
 
     # install pyecore
     cprint("Installing pyecore")
@@ -101,7 +101,7 @@ def main(branch=branch, npmSkip=False, skipTest=False):
         cprint("Skipping pygeppetto tests")
     else:
         cprint("Testing pygeppetto")
-        execute(cmd=['python', '-m', 'pytest'], cwd=os.path.join(DEPS_DIR, 'pygeppetto'))
+        execute(cmd=['tox'], cwd=os.path.join(DEPS_DIR, 'pygeppetto'))
 
 
     # install pynwb
