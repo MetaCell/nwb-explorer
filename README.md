@@ -1,3 +1,6 @@
+[![Build Status](https://travis-ci.org/MetaCell/nwb-explorer.svg?branch=development)](https://travis-ci.org/MetaCell/nwb-explorer)
+[![codecov](https://codecov.io/gh/MetaCell/nwb-explorer/branch/development/graph/badge.svg)](https://codecov.io/gh/MetaCell/nwb-explorer)
+
 # NWB Explorer
 
 NWB Explorer is a web application that can be used by scientists to read, visualize and explore
