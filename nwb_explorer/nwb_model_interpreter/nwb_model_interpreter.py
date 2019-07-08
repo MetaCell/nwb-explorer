@@ -27,6 +27,7 @@ from pynwb.file import Subject
 from pynwb.core import DynamicTable
 from pynwb.device import Device
 
+
 class DefaultPyNWBToGeppettoMapper(object):
     ''' Extend this class to handle extra pynwb objects '''
 
@@ -135,7 +136,7 @@ class GeppettoNwbCompositeTypeBuilder(object):
 
     def build_geppetto_pynwb_type(self, id, obj, geppetto_type_name, parent_geppetto_type):
         ''' Scan pynwb object and create geppetto CompositeTypes and Variables with a recursive strategy '''
-        obj_type = pygeppetto.CompositeType(id=id, name=geppetto_type_name, abstract=False)
+        obj_type = pygeppetto.CompositeType(id=((parent_geppetto_type.id + '.' if parent_geppetto_type and  parent_geppetto_type.id  else '') + id  ), name=geppetto_type_name, abstract=False)
         self.nwb_geppetto_library.types.append(obj_type)
         
         if isinstance(obj, self.pynwb_to_geppetto_mapper.supported_types):
@@ -264,28 +265,7 @@ class NWBModelInterpreter(ModelInterpreter, metaclass=Singleton):
                                                                       unit)
             return time_series_value
 
-    def import_value_from_path(self, import_value_path):
-        path_pieces = import_value_path.split(path_separator)
-        var_to_extract = path_pieces[-1]
-        time_series = self.nwb_reader.retrieve_from_path(path_pieces[1:-1])
-        # Geppetto timeseries does not include the time axe; we are using the last path piece to determine whether we
-        # are looking for time or data
 
-        if var_to_extract == 'time':
-            timestamps = NWBReader.get_timeseries_timestamps(time_series, MAX_SAMPLES)
-            timestamps_unit = guessUnits(time_series.timestamps_unit)
-            return GeppettoModelFactory.createTimeSeries("time_" + time_series.name,
-                                                         timestamps,
-                                                         timestamps_unit)
-        else:
-
-            plottable_timeseries = NWBReader.get_plottable_timeseries(time_series, MAX_SAMPLES)
-
-            unit = guessUnits(time_series.unit)
-            time_series_value = GeppettoModelFactory.createTimeSeries("data_" + time_series.name,
-                                                                      plottable_timeseries[0],
-                                                                      unit)
-            return time_series_value
 
     def extract_image_variable(self, metatype, plottable_timeseries):
         img = Img.fromarray(plottable_timeseries, 'RGB')
