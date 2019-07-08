@@ -122,19 +122,15 @@ class ExtendedPyNWBToGeppettoMapper(DefaultPyNWBToGeppettoMapper):
 
 
 class GeppettoNwbCompositeTypeBuilder(object):
-    def __init__(self, name, typename, libname, nwbfile_or_path, pynwb_to_geppetto_mapper=None):
-        self.geppetto_model = GeppettoModelFactory.createGeppettoModel(name)
-        
-        # FIXME the library should not be created here at every call
-        self.nwb_geppetto_library = pygeppetto.GeppettoLibrary(name=libname, id=libname)
-        
-        self.geppetto_model.libraries.append(self.nwb_geppetto_library)
-        self.commonLibraryAccess = GeppettoModelFactory(self.geppetto_model)
-        self.nwb_reader = NWBReader(nwbfile_or_path)
+    def __init__(self, typename, nwb_reader, geppetto_model, commonLibraryAccess, nwb_geppetto_library,
+                pynwb_to_geppetto_mapper=DefaultPyNWBToGeppettoMapper()):
 
+        self.geppetto_model = geppetto_model
+        self.nwb_geppetto_library = nwb_geppetto_library
+        self.commonLibraryAccess = commonLibraryAccess
+        self.nwb_reader = nwb_reader
         self.typename = typename
-
-        self.pynwb_to_geppetto_mapper = pynwb_to_geppetto_mapper if pynwb_to_geppetto_mapper else DefaultPyNWBToGeppettoMapper()
+        self.pynwb_to_geppetto_mapper = pynwb_to_geppetto_mapper
 
 
     def build_geppetto_pynwb_type(self, id, obj, geppetto_type_name, parent_geppetto_type):
@@ -204,23 +200,45 @@ class NWBModelInterpreter(ModelInterpreter, metaclass=Singleton):
 
     def createModel(self, nwbfile_or_path, typeName='nwb', library='nwblib'):
         logging.debug(f'Creating a Geppetto Model from {nwbfile_or_path}')
+
+
+        geppetto_model = GeppettoModelFactory.createGeppettoModel('GeppettoModel')
         
+        # FIXME the library should not be created here at every call
+        nwb_geppetto_library = pygeppetto.GeppettoLibrary(name='nwblib', id='nwblib')
+        
+        geppetto_model.libraries.append(nwb_geppetto_library)
+        commonLibraryAccess = GeppettoModelFactory(geppetto_model)
         self.nwb_reader = NWBReader(nwbfile_or_path)
 
-        geppetto_model_builder = GeppettoNwbCompositeTypeBuilder(name='GeppettoModel', 
-                                                typename='nwbfile',
-                                                libname='nwblib',
-                                                nwbfile_or_path=nwbfile_or_path,
-                                                pynwb_to_geppetto_mapper=ExtendedPyNWBToGeppettoMapper())
+
+        
+        self.importType(typename='nwbfile',
+                        nwb_reader=self.nwb_reader,
+                        geppetto_model=geppetto_model,
+                        commonLibraryAccess=commonLibraryAccess,
+                        nwb_geppetto_library=nwb_geppetto_library,
+                        pynwb_to_geppetto_mapper=ExtendedPyNWBToGeppettoMapper())
+
+        return geppetto_model
+
+
+    def importType(self, typename, nwb_reader, geppetto_model, commonLibraryAccess, nwb_geppetto_library, pynwb_to_geppetto_mapper):
+
+        geppetto_types_builder = GeppettoNwbCompositeTypeBuilder(typename='nwbfile',
+                                        nwb_reader=self.nwb_reader,
+                                        geppetto_model=geppetto_model,
+                                        commonLibraryAccess=commonLibraryAccess,             
+                                        nwb_geppetto_library=nwb_geppetto_library,
+                                        pynwb_to_geppetto_mapper=pynwb_to_geppetto_mapper)
         
         # build compositeTypes for pynwb objects
-        geppetto_model_builder.build()
+        geppetto_types_builder.build()
 
         # Build compositeTypes for custom objects that are not present in pynwb
-        if hasattr(geppetto_model_builder, 'extended_build'):
-            geppetto_model_builder.extended_build()
+        if hasattr(geppetto_types_builder, 'extended_build'):
+            geppetto_types_builder.extended_build()
 
-        return geppetto_model_builder.geppetto_model
 
     def importValue(self, import_value_path):
         path_pieces = import_value_path.split(path_separator)
