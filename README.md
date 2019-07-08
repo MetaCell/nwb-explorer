@@ -40,7 +40,7 @@ Step by step instructions to get a development environment running.
 
 First, clone nwb explorer
 ```bash
-git clone -b nwbdev https://github.com/MetaCell/nwb-explorer [PROJECT_ROOT]
+git clone -b development https://github.com/MetaCell/nwb-explorer [PROJECT_ROOT]
 ```
 Then run install script
 ```bash
