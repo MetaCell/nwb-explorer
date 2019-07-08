@@ -19,6 +19,172 @@ from .nwb_reader import NWBReader
 from .settings import *
 from ..utils import guessUnits
 
+from numpy import ndarray
+from pynwb import TimeSeries
+from pynwb.core import NWBBaseType
+from pynwb.core import LabelledDict
+from pynwb.file import Subject
+from pynwb.core import DynamicTable
+from pynwb.device import Device
+
+class DefaultPyNWBToGeppettoMapper(object):
+    ''' Extend this class to handle extra pynwb objects '''
+
+    def __init__(self):
+        self._supported_types = ( TimeSeries )
+
+    @property
+    def supported_types(self):
+        ''' return the supported pynwb types '''
+        return self._supported_types
+
+    def assign_name_to_types(self, pynwb_obj):
+        ''' Use this function to assign custom names to geppetto compositeTypes '''
+        if isinstance(pynwb_obj, Subject):
+            return 'map'
+
+        elif isinstance(pynwb_obj, TimeSeries):
+            return 'timeseries'
+
+        elif isinstance(pynwb_obj, LabelledDict):
+            if len(pynwb_obj) == 0:
+                return None
+            return pynwb_obj.label
+
+        elif isinstance(pynwb_obj, ndarray):
+            return None
+
+        elif isinstance(pynwb_obj, set):
+            return None
+
+        elif isinstance(pynwb_obj, DynamicTable):
+            return None
+
+        elif isinstance(pynwb_obj, Device):
+            return None
+
+        else:
+            return None
+
+    def add_variables_to_type(self, pynwb_obj, geppetto_composite_type, geppetto_common_library_access):
+        ''' Use this function to add variables to a geppetto compositeType '''
+        
+        if isinstance(pynwb_obj, TimeSeries):
+
+            geppetto_composite_type.variables.append(
+                geppetto_common_library_access.createStateVariable("time", geppetto_common_library_access.createImportValue()))
+            
+            geppetto_composite_type.variables.append(
+                geppetto_common_library_access.createStateVariable('data', geppetto_common_library_access.createImportValue()))
+            
+            for key, value in pynwb_obj.fields.items():
+                if isinstance(value, str):
+                    geppetto_composite_type.variables.append(geppetto_common_library_access.createTextVariable(id=key, text=str(value)))
+
+class Summary(object):
+    ''' This is a custom Geppetto CompositeType that we want to have in the frontend.
+        It collects information about the nwbfile '''
+    def __init__(self, nwbfile):
+        self._fields = self.build_fields(nwbfile)
+
+    @property
+    def fields(self):
+        return self._fields
+
+    def build_fields(self, nwbfile):
+        ''' Use this function to add the fields you want to see in Geppetto model '''
+        aqc = len(nwbfile.acquisition)
+        stim = len(nwbfile.stimulus)
+        summary = {}
+        if aqc:
+            summary['Num. of acquisitions'] = f"{aqc}"
+        if stim:
+            summary['Num. of stimulus'] = f"{stim}"
+        
+        return summary
+
+
+class ExtendedPyNWBToGeppettoMapper(DefaultPyNWBToGeppettoMapper):
+    ''' Add mappers for objects that are not present in pynwb but you want to have a compositeType 
+        in geppetto for them. For example: aggregation data about number of acquisiton or stimulus'''
+
+    def __init__(self):
+        super(ExtendedPyNWBToGeppettoMapper, self).__init__()
+        self._supported_types = ( self._supported_types, Summary )  # Add here your custom class
+
+    def add_variables_to_type(self, pynwb_obj, geppetto_composite_type, geppetto_common_library_access):
+        if isinstance(pynwb_obj, Summary):
+            for key, value in pynwb_obj.fields.items():
+                if isinstance(value, str):
+                    geppetto_composite_type.variables.append(geppetto_common_library_access.createTextVariable(id=key, text=str(value)))
+        else:
+            super().add_variables_to_type(pynwb_obj, geppetto_composite_type, geppetto_common_library_access)
+
+
+class GeppettoNwbCompositeTypeBuilder(object):
+    def __init__(self, typename, nwb_reader, geppetto_model, commonLibraryAccess, nwb_geppetto_library,
+                pynwb_to_geppetto_mapper=DefaultPyNWBToGeppettoMapper()):
+
+        self.geppetto_model = geppetto_model
+        self.nwb_geppetto_library = nwb_geppetto_library
+        self.commonLibraryAccess = commonLibraryAccess
+        self.nwb_reader = nwb_reader
+        self.typename = typename
+        self.pynwb_to_geppetto_mapper = pynwb_to_geppetto_mapper
+
+
+    def build_geppetto_pynwb_type(self, id, obj, geppetto_type_name, parent_geppetto_type):
+        ''' Scan pynwb object and create geppetto CompositeTypes and Variables with a recursive strategy '''
+        obj_type = pygeppetto.CompositeType(id=id, name=geppetto_type_name, abstract=False)
+        self.nwb_geppetto_library.types.append(obj_type)
+        
+        if isinstance(obj, self.pynwb_to_geppetto_mapper.supported_types):
+            self.pynwb_to_geppetto_mapper.add_variables_to_type(obj, obj_type, self.commonLibraryAccess)
+
+        else:
+            if hasattr(obj, 'fields'):
+                obj = obj.fields
+            
+            for key, value in obj.items():
+                create_composite_type = self.pynwb_to_geppetto_mapper.assign_name_to_types(value)
+
+                if isinstance(value, (str, int)):
+                    obj_type.variables.append(self.commonLibraryAccess.createTextVariable(id=key, text=str(value)))
+                                        
+                if create_composite_type:
+                    self.build_geppetto_pynwb_type(id=key,
+                                                obj=value,
+                                                geppetto_type_name=create_composite_type,
+                                                parent_geppetto_type=obj_type)
+
+        obj_variable = Variable(id=id, name=geppetto_type_name, types=(obj_type, ))
+        parent_geppetto_type.variables.append(obj_variable)
+
+    def build(self):
+        self.build_geppetto_pynwb_type(id=self.typename,
+                                    obj=self.nwb_reader.nwbfile, 
+                                    geppetto_type_name=self.typename, 
+                                    parent_geppetto_type=self.geppetto_model)
+
+    # This is for custom compositeTypes that are not present in nwbfile object
+    def extended_build(self):
+        ''' Use this function to add objects to the Geppetto model that are not present in nwbfile '''
+        parent_type = self.get_root_type()
+
+        if parent_type:
+            # This function will handle creation of compositeTypes in a recursive fashion.
+            # Just make sure your mapper can handle the classes you define for obj.
+            self.build_geppetto_pynwb_type(id='Summary', 
+                                            obj=Summary(self.nwb_reader.nwbfile), 
+                                            geppetto_type_name='map', 
+                                            parent_geppetto_type=parent_type)
+
+    def get_root_type(self):
+        try:
+            return self.geppetto_model.variables[0].types[0]
+        except:
+            return None
+
 
 class NWBModelInterpreter(ModelInterpreter, metaclass=Singleton):
 
@@ -35,158 +201,44 @@ class NWBModelInterpreter(ModelInterpreter, metaclass=Singleton):
     def createModel(self, nwbfile_or_path, typeName='nwb', library='nwblib'):
         logging.debug(f'Creating a Geppetto Model from {nwbfile_or_path}')
 
+
         geppetto_model = GeppettoModelFactory.createGeppettoModel('GeppettoModel')
-        nwb_geppetto_library = pygeppetto.GeppettoLibrary(name=library, id=library)
-        geppetto_model.libraries.append(
-            nwb_geppetto_library)  # FIXME the library should not be created here at every call
-
-        nwbType = pygeppetto.CompositeType(id=typeName, name=typeName, abstract=False)
-        # add top level variable
-        nwb_file_variable = Variable(id='nwbfile')
-        nwb_file_variable.types.append(nwbType)
-        geppetto_model.variables.append(nwb_file_variable)
-        # add top level type
-
-        self.importType(nwbfile_or_path, nwbType, nwb_geppetto_library, GeppettoModelFactory(geppetto_model))
-        return geppetto_model
-
-    def importType(self, nwbfile_or_path, nwbType, nwb_geppetto_library, commonLibraryAccess):
-        """
-        Create the Geppetto Model for a nwb file.
-
-        reates a group structure such as
-        nwbfile.acquisition.[TIMESERIESNAME1]
-        nwbfile.acquisition.[TIMESERIESNAME2]
-        nwbfile.stimulus.[TIMESERIESNAME1]
-
-        acquisition.[TIMESERIESNAME1].data
-        acquisition.[TIMESERIESNAME1].time
-
-        where each group entry contains the corresponding data from the nwb file.
-        """
-
-        nwb_geppetto_library.types.append(nwbType)
-
-        # read data
+        
+        # FIXME the library should not be created here at every call
+        nwb_geppetto_library = pygeppetto.GeppettoLibrary(name='nwblib', id='nwblib')
+        
+        geppetto_model.libraries.append(nwb_geppetto_library)
+        commonLibraryAccess = GeppettoModelFactory(geppetto_model)
         self.nwb_reader = NWBReader(nwbfile_or_path)
 
-        # Add metadata
-        # ------------
-        # ############################################################################
 
-        metadata_type = self.get_general_metadata_type(commonLibraryAccess, nwb_geppetto_library)
-        metadata_var = Variable(id='general', name='general', types=(metadata_type,))
-        nwb_geppetto_library.types.append(metadata_type)
-        nwbType.variables.append(metadata_var)
-
-        # ############################################################################
-
-        time_series_list = self.nwb_reader.get_all_timeseries()
-
-        for time_series in time_series_list:
-
-            timeseries_path = self.nwb_reader.extract_time_series_path(time_series)
-
-            current_variable_type = nwbType
-            for path_element in timeseries_path:
-                current_group_name = self.clean_name_to_variable(path_element)
-                parent_type = current_variable_type
-
-                # Me may already have added the current type previously
-                current_variable_types = [variable.types[0] for variable in parent_type.variables if current_group_name == variable.name]
-                if current_variable_types:
-                    current_variable_type = current_variable_types[0]
-                    continue
-
-
-                current_variable_type = pygeppetto.CompositeType(id=current_group_name, name=current_group_name, abstract=False)
-                nwb_geppetto_library.types.append(current_variable_type)
-
-                current_variable = Variable(id=current_group_name, name=current_group_name,
-                                            types=(current_variable_type,))
-
-                parent_type.variables.append(current_variable)
-
-            try:
-
-                if isinstance(time_series, ImageSeries):
-                    # TODO lazy fetching with importValue
-                    plottable_image = NWBReader.get_timeseries_image_array(time_series)
-                    md_time_series_variable = self.extract_image_variable('image', plottable_image)
-                    current_variable_type.variables.append(
-                        commonLibraryAccess.createStateVariable('image', md_time_series_variable))
-                else:
-
-                    # TODO we are temporarely creating one type for each timeseries
-                    timeseries_parent = current_variable_type.id
-                    timeseries_type = self.get_timeseries_type(time_series.name, timeseries_parent, commonLibraryAccess, nwb_geppetto_library)
-                    nwb_geppetto_library.types.append(timeseries_type)
-                    variable_name = self.clean_name_to_variable(time_series.name)
-                    time_series_variable = Variable(id=variable_name, name=variable_name, types=(timeseries_type,))
-
-                    current_variable_type.variables.append(time_series_variable)
-
-
-
-            except ValueError as e:
-                logging.error("Error loading timeseries: " + " -- ".join(e.args))
-                import traceback
-                traceback.print_exc()
-            except NotImplementedError as e:
-                logging.error("Unsupported feature: " + " -- ".join(e.args))
-                import traceback
-                traceback.print_exc()
-
-
-    def get_general_metadata_type(self, commonLibraryAccess, nwb_geppetto_library):
-        metadata_name = 'general'
-        metadata_type = pygeppetto.CompositeType(id=metadata_name, name=metadata_name)
         
-        for k, v in self.nwb_reader.create_nwbfile_metadata().items():
-            if v:
-                if isinstance(v, dict):
-                    inception_type = self.create_metadata_type_from_dict(f'{k}_interface_map', v, commonLibraryAccess)
-                    nwb_geppetto_library.types.append(inception_type)
-                    metadata_type.variables.append(Variable(id=k, types=(inception_type,)))
+        self.importType(typename='nwbfile',
+                        nwb_reader=self.nwb_reader,
+                        geppetto_model=geppetto_model,
+                        commonLibraryAccess=commonLibraryAccess,
+                        nwb_geppetto_library=nwb_geppetto_library,
+                        pynwb_to_geppetto_mapper=ExtendedPyNWBToGeppettoMapper())
 
-                else:
-                    metadata_type.variables.append(commonLibraryAccess.createTextVariable(k, v))
-        return metadata_type
-
-    def create_metadata_type_from_dict(self, name, dictionary, commonLibraryAccess):
-        inception_type = pygeppetto.CompositeType(id=name, name=name, abstract=False)
-                    
-        for kk, vv in dictionary.items():
-            inception_type.variables.append(commonLibraryAccess.createTextVariable(kk, vv))
-
-        return inception_type
-
-    def get_single_ts_metadata_type(self, name, timeseries_parent, commonLibraryAccess):
-         
-        single_ts_meta_type = pygeppetto.CompositeType(
-            id=f"{timeseries_parent}_{name}_details", 
-            name="details", 
-            abstract=False)
-
-        for label, value in self.nwb_reader.create_single_ts_metadata(name, timeseries_parent).items():
-            single_ts_meta_type.variables.append(commonLibraryAccess.createTextVariable(label, str(value)))
-        return single_ts_meta_type
+        return geppetto_model
 
 
-    def get_timeseries_type(self, name, timeseries_parent, commonLibraryAccess, nwb_geppetto_library):
-        timeseries_type = pygeppetto.CompositeType(id=name, name="timeseries", abstract=False)
+    def importType(self, typename, nwb_reader, geppetto_model, commonLibraryAccess, nwb_geppetto_library, pynwb_to_geppetto_mapper):
 
-        timeseries_type.variables.append(
-            commonLibraryAccess.createStateVariable("time", commonLibraryAccess.createImportValue()))  # TODO add unit to import
+        geppetto_types_builder = GeppettoNwbCompositeTypeBuilder(typename='nwbfile',
+                                        nwb_reader=self.nwb_reader,
+                                        geppetto_model=geppetto_model,
+                                        commonLibraryAccess=commonLibraryAccess,             
+                                        nwb_geppetto_library=nwb_geppetto_library,
+                                        pynwb_to_geppetto_mapper=pynwb_to_geppetto_mapper)
         
-        timeseries_type.variables.append(
-            commonLibraryAccess.createStateVariable('data', commonLibraryAccess.createImportValue()))
+        # build compositeTypes for pynwb objects
+        geppetto_types_builder.build()
 
-        single_ts_metadata_type = self.get_single_ts_metadata_type(name, timeseries_parent, commonLibraryAccess)
-        nwb_geppetto_library.types.append(single_ts_metadata_type)
-        timeseries_type.variables.append(Variable(id="details", types=(single_ts_metadata_type,)))
+        # Build compositeTypes for custom objects that are not present in pynwb
+        if hasattr(geppetto_types_builder, 'extended_build'):
+            geppetto_types_builder.extended_build()
 
-        return timeseries_type
 
     def importValue(self, import_value_path):
         path_pieces = import_value_path.split(path_separator)

@@ -91,9 +91,9 @@ def test_importType(nwb_interpreter, nwbfile):
     geppetto_model = nwb_interpreter.createModel(nwbfile, 'typename')
 
     assert len(geppetto_model.variables) == 1
-    assert geppetto_model.variables[0].types[0].name == 'typename'
-    assert len(geppetto_model.variables[0].types[0].variables) == 3
-    assert len(geppetto_model.variables[0].types[0].variables[0].types[0].variables) == 6
+    assert geppetto_model.variables[0].types[0].name == 'nwbfile'
+    assert len(geppetto_model.variables[0].types[0].variables) == 10
+    assert len(geppetto_model.variables[0].types[0].variables[0].types[0].variables) == 3
 
 
 def test_importValue(nwb_interpreter, nwbfile):
