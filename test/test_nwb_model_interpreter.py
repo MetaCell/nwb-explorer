@@ -97,21 +97,21 @@ def test_importType(nwb_interpreter, nwbfile):
 
 
 def test_importValue(nwb_interpreter, nwbfile):
-    nwb_interpreter.createModel(nwbfile, 'typename')
-    value = nwb_interpreter.importValue('typename.acquisition.t1.data')
+    nwb_interpreter.createModel(nwbfile, 'nwbfile')
+    value = nwb_interpreter.importValue('nwbfile.acquisition.t1.data')
     from pygeppetto.model.values import TimeSeries
     assert type(value) == TimeSeries
     assert len(value.value) == 100
     assert value.value[0] == 0.0
 
-    value = nwb_interpreter.importValue('typename.acquisition.t1.time')
+    value = nwb_interpreter.importValue('nwbfile.acquisition.t1.time')
     assert type(value) == TimeSeries
     assert len(value.value) == 100
     assert value.value[0] == 0.0
     assert value.value[1] == 1.0
 
-    assert nwb_interpreter.import_value_from_path('typename.acquisition.t1.data').value[0] == 0.0
-    assert nwb_interpreter.import_value_from_path('typename.acquisition.t1.time').value[0] == 0.0
+    assert nwb_interpreter.importValue('nwbfile.acquisition.t1.data').value[0] == 0.0
+    assert nwb_interpreter.importValue('nwbfile.acquisition.t1.time').value[0] == 0.0
 
 def test_errors(nwb_interpreter, nwbfile, tmpdir):
     nwb_interpreter.createModel(nwbfile, 'typename')

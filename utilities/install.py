@@ -101,7 +101,8 @@ def main(branch=branch, npmSkip=False, skipTest=False):
         cprint("Skipping pygeppetto tests")
     else:
         cprint("Testing pygeppetto")
-        execute(cmd=['tox'], cwd=os.path.join(DEPS_DIR, 'pygeppetto'))
+        execute(cmd=['coverage', 'run', '--source', 'pygeppetto', '-m', 'pytest', '-v', '-c', 'tox.ini'], cwd=os.path.join(DEPS_DIR, 'pygeppetto'))
+
 
 
     # install pynwb

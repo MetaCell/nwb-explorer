@@ -251,7 +251,7 @@ class NWBModelInterpreter(ModelInterpreter, metaclass=Singleton):
 
 
 
-    def extract_image_variable(self, metatype, plottable_timeseries):
+    def extract_image_variable(self, metatype, plottable_timeseries): # pytest: no cover
         img = Img.fromarray(plottable_timeseries, 'RGB')
         data_bytes = BytesIO()
         img.save(data_bytes, 'PNG')
