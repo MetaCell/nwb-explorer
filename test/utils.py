@@ -4,7 +4,10 @@ import numpy as np
 import pynwb
 from dateutil.tz import tzlocal
 
-from pynwb import NWBHDF5IO
+from pynwb import NWBFile
+from pynwb.ophys import TwoPhotonSeries, OpticalChannel, ImageSegmentation, Fluorescence
+from pynwb.device import Device
+from pynwb.image import ImageSeries
 
 def create_nwb_file():
     '''
@@ -43,28 +46,68 @@ def create_nwb_file():
     timestamps = np.arange(0, sample_num, 1)
     data = timestamps * 2
 
-    nwbfile.add_acquisition(pynwb.TimeSeries('t1', data, 'm', unit='UA', timestamps=timestamps))
-    nwbfile.add_acquisition(pynwb.TimeSeries('t2', data, 'm', rate=1.0))
+    nwbfile.add_acquisition(pynwb.TimeSeries(name='t1', data=data, unit='UA', timestamps=timestamps))
+    nwbfile.add_acquisition(pynwb.TimeSeries(name='t2', data=data, unit='pA',rate=1.0))
 
     mod = nwbfile.create_processing_module('mod', 'Mod')
-    interface = mod.add_data_interface(pynwb.TimeSeries('t3', data, 'm', timestamps=timestamps))
-    mod.add_data_interface(pynwb.TimeSeries('t4', data, 'm', timestamps=timestamps))
+    interface = mod.add_data_interface(pynwb.TimeSeries(name='t3', data=data, unit='pA', timestamps=timestamps))
+    mod.add_data_interface(pynwb.TimeSeries(name='t4', data=data, unit='UA', timestamps=timestamps))
 
-    
-    nwbfile.add_acquisition(create_image('image', nwbfile))
+    nwbfile.add_acquisition(create_image('internal_storaged_image', nwbfile, False))
+    nwbfile.add_acquisition(create_image('external_storaged_image', nwbfile, True))
     
     return nwbfile
 
-def create_image(name, nwbfile):
-    device = pynwb.device.Device('imaging_device_1')
-    nwbfile.add_device(device)
-    optical_channel = pynwb.ophys.OpticalChannel('my_optchan', 'description', 500.)
-    imaging_plane = nwbfile.create_imaging_plane('my_imgpln', optical_channel, 'a very interesting part of the brain',
-                                             device, 600., 300., 'GFP', 'my favorite brain location',
-                                             np.ones((5, 5, 3)), 4.0, 'manifold unit', 'A frame to refer to')
-
-    data = np.ones((5, 5, 5))
-    return pynwb.ophys.TwoPhotonSeries(name='test_iS', data=data, dimension=[2], imaging_plane=imaging_plane,
-                                starting_frame=[0], format='tiff', starting_time=0.0, rate=1.0)
+def create_image(name, nwbfile, external_storage):
+    import imageio
+    formats = ['png', 'jpg', 'tiff']
     
+    n = len(formats)
+    
+    if  external_storage:
+        base_uri = "https://raw.githubusercontent.com/MetaCell/nwb-explorer/feature/60/test/images/"
+    else:
+        base_uri = "test/images/"
+    
+    images_uri = [f"{base_uri}{i}.{i}" for i in formats]  
+    
+    timestamp = datetime.now().timestamp()
+    timestamps = np.arange(n) + timestamp
 
+    if  external_storage:
+        return ImageSeries(name=name,
+                               external_file=images_uri,
+                               timestamps=timestamps,
+                               starting_frame=[0], 
+                               format='external', 
+                               description='Series of images from a simulation of the cerebellum via neuroConstruct')
+    else:
+        return ImageSeries(name=name,
+                               data=np.array([imageio.imread(image_uri) for image_uri in images_uri]),
+                               timestamps=timestamps,
+                               starting_frame=[0], 
+                               format='png,tiff,png', 
+                               description='Series of images from a simulation of the cerebellum via neuroConstruct')
+
+
+def generate_images():
+    import imageio
+    import numpy as np
+    from PIL import Image as Img
+
+    np_image = np.array(
+        [[[0,0,0],[84,84,84]], 
+        [[168, 168, 168], [255, 255, 255]]
+    ], dtype=np.uint8)
+
+    image = Img.fromarray(np_image, 'RGB')
+
+    image.save('png.png', format='PNG')
+    image.save('jpg.jpg', format='JPEG')
+    image.save('tiff.tiff', format='TIFF')
+
+
+if __name__ == "__main__":
+    from pynwb import NWBHDF5IO
+    with NWBHDF5IO('time_series_data.nwb', 'w') as io:
+        io.write(create_nwb_file())
