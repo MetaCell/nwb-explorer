@@ -7,33 +7,13 @@ from nwb_explorer.nwb_model_interpreter import NWBModelInterpreter
 from nwb_explorer.plots_manager import PlotManager
 from . import nwb_data_manager
 
+from pygeppetto.managers import GeppettoManager
+from pygeppetto.managers.geppetto_manager import RuntimeProject
+
 cache_model = False
 
-
-# TODO this is still a really distant relative of the RuntimeProject in the Java backend. Remove when a sensible implementation of the flow is available on pygeppetto
-class RuntimeProject: # pytest: no cover
-    __geppetto_model = None
-    __filename = None
-
-    @classmethod
-    def get_geppetto_model(cls):
-        return cls.__geppetto_model
-
-    @classmethod
-    def set_geppetto_model(cls, model):
-        cls.__geppetto_model = model
-
-    @classmethod
-    def get_file_name(cls):
-        return cls.__filename
-
-    @classmethod
-    def set_file_name(cls, file_name):
-        cls.__filename = file_name
-
-
-# curl -X POST http://localhost:8000/api/load
-
+from pygeppetto.services.data_manager import DataManagerHelper
+from .nwb_data_manager import NWBDataManager
 
 class NWBController: # pytest: no cover
     model_interpreter = NWBModelInterpreter()
@@ -117,3 +97,18 @@ class NWBController: # pytest: no cover
         except Exception as e:
             e.args += ["Error creating plot"]
             raise e
+
+    @get('/api/image', {'Content-type': 'image/png'})
+    def image(self, name: str, interface: str, projectId: str='0', index: str='0') -> str:
+        if not any([name, interface, projectId]):
+            return "Bad request"
+
+        manager = GeppettoManager()
+        
+        dataManager = DataManagerHelper.getDataManager()
+        project = dataManager.getGeppettoProjectById(project_id=int(projectId))
+
+        project = manager.get_runtime_project(project)
+        nwb_reader = NWBController.model_interpreter.nwb_reader
+
+        return nwb_reader.get_image(name=name, interface=interface, index=index)

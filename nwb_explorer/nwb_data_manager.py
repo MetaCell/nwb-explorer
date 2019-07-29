@@ -4,7 +4,7 @@ import os
 import requests
 from pygeppetto.data_model import GeppettoProject
 from pygeppetto.services.data_manager import GeppettoDataManager
-
+from pygeppetto.utils import Singleton
 # TODO this path must be a shared storage inside the cluster
 from nwb_explorer.nwb_model_interpreter import NWBModelInterpreter
 

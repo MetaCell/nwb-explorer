@@ -19,6 +19,7 @@ from .nwb_reader import NWBReader
 from .settings import *
 from ..utils import guessUnits
 
+import numpy as np
 from numpy import ndarray
 from pynwb import TimeSeries
 from pynwb.core import NWBBaseType
@@ -26,13 +27,14 @@ from pynwb.core import LabelledDict
 from pynwb.file import Subject
 from pynwb.core import DynamicTable
 from pynwb.device import Device
-
+from pynwb.image import ImageSeries
+from h5py import Dataset
 
 class DefaultPyNWBToGeppettoMapper(object):
     ''' Extend this class to handle extra pynwb objects '''
 
     def __init__(self):
-        self._supported_types = ( TimeSeries )
+        self._supported_types = ( ImageSeries, TimeSeries )
 
     @property
     def supported_types(self):
@@ -43,6 +45,9 @@ class DefaultPyNWBToGeppettoMapper(object):
         ''' Use this function to assign custom names to geppetto compositeTypes '''
         if isinstance(pynwb_obj, Subject):
             return 'map'
+
+        elif isinstance(pynwb_obj, ImageSeries):
+            return 'imageseries'
 
         elif isinstance(pynwb_obj, TimeSeries):
             return 'timeseries'
@@ -70,21 +75,32 @@ class DefaultPyNWBToGeppettoMapper(object):
     def add_variables_to_type(self, pynwb_obj, geppetto_composite_type, geppetto_common_library_access):
         ''' Use this function to add variables to a geppetto compositeType '''
         
-        if isinstance(pynwb_obj, TimeSeries):
+        if isinstance(pynwb_obj, ImageSeries):
+            self.add_str_variables_from_fields_key(pynwb_obj, geppetto_composite_type, geppetto_common_library_access)
+            
+            geppetto_composite_type.variables.append(
+                geppetto_common_library_access.createStateVariable("timestamps", geppetto_common_library_access.createImportValue()))
+            
+            if hasattr(pynwb_obj, 'num_samples'):
+                geppetto_composite_type.variables.append(geppetto_common_library_access.createTextVariable(id='num_samples', text=str(pynwb_obj.num_samples)))
+
+        elif isinstance(pynwb_obj, TimeSeries):
+            self.add_str_variables_from_fields_key(pynwb_obj, geppetto_composite_type, geppetto_common_library_access)
 
             geppetto_composite_type.variables.append(
                 geppetto_common_library_access.createStateVariable("time", geppetto_common_library_access.createImportValue()))
             
             geppetto_composite_type.variables.append(
                 geppetto_common_library_access.createStateVariable('data', geppetto_common_library_access.createImportValue()))
-            
-            for key, value in pynwb_obj.fields.items():
-                if isinstance(value, str):
-                    geppetto_composite_type.variables.append(geppetto_common_library_access.createTextVariable(id=key, text=str(value)))
+    
+    def add_str_variables_from_fields_key(self, pynwb_obj, geppetto_composite_type, geppetto_common_library_access):
+        for key, value in pynwb_obj.fields.items():
+            if isinstance(value, (str, int, float)):
+                geppetto_composite_type.variables.append(geppetto_common_library_access.createTextVariable(id=key, text=str(value)))
+
 
 class Summary(object):
-    ''' This is a custom Geppetto CompositeType that we want to have in the frontend.
-        It collects information about the nwbfile '''
+    ''' This is a Geppetto CompositeType that is not present in pynwb '''
     def __init__(self, nwbfile):
         self._fields = self.build_fields(nwbfile)
 
@@ -93,7 +109,7 @@ class Summary(object):
         return self._fields
 
     def build_fields(self, nwbfile):
-        ''' Use this function to add the fields you want to see in Geppetto model '''
+        ''' Use this function to add the fields you want to see in the Geppetto model '''
         aqc = len(nwbfile.acquisition)
         stim = len(nwbfile.stimulus)
         summary = {}
@@ -107,7 +123,7 @@ class Summary(object):
 
 class ExtendedPyNWBToGeppettoMapper(DefaultPyNWBToGeppettoMapper):
     ''' Add mappers for objects that are not present in pynwb but you want to have a compositeType 
-        in geppetto for them. For example: aggregation data about number of acquisiton or stimulus'''
+        in Geppetto model for them. For example: aggregation data about number of acquisiton or stimulus'''
 
     def __init__(self):
         super(ExtendedPyNWBToGeppettoMapper, self).__init__()
@@ -173,9 +189,9 @@ class GeppettoNwbCompositeTypeBuilder(object):
                                     geppetto_type_name=self.typename, 
                                     parent_geppetto_type=self.geppetto_model)
 
-    # This is for custom compositeTypes that are not present in nwbfile object
+    # builder for compositeTypes created from classes that are not present in pynwb (custom objects)
     def extended_build(self):
-        ''' Use this function to add objects to the Geppetto model that are not present in nwbfile '''
+        ''' Use this method to add objects to the Geppetto model that are not present in nwbfile '''
         parent_type = self.get_root_type()
 
         if parent_type:
@@ -232,7 +248,7 @@ class NWBModelInterpreter(ModelInterpreter, metaclass=Singleton):
         # Geppetto timeseries does not include the time axe; we are using the last path piece to determine whether we
         # are looking for time or data
 
-        if var_to_extract == 'time':
+        if var_to_extract in ['time', 'timestamps'] :
             timestamps = NWBReader.get_timeseries_timestamps(time_series, MAX_SAMPLES)
             timestamps_unit = guessUnits(time_series.timestamps_unit) if hasattr(time_series,
                                                                                  'timestamps_unit') and time_series.timestamps_unit else 's'
@@ -250,18 +266,20 @@ class NWBModelInterpreter(ModelInterpreter, metaclass=Singleton):
             return time_series_value
 
 
-
-    def extract_image_variable(self, metatype, plottable_timeseries): # pytest: no cover
-        img = Img.fromarray(plottable_timeseries, 'RGB')
-        data_bytes = BytesIO()
-        img.save(data_bytes, 'PNG')
-        data_str = base64.b64encode(data_bytes.getvalue()).decode('utf8')
-        values = [Image(data=data_str)]
-        md_time_series_variable = GeppettoModelFactory.createMDTimeSeries('', metatype + "variable", values)
-        return md_time_series_variable
+    # def extract_image_variable(self, metatype, plottable_timeseries): # pytest: no cover
+    #     img = Img.fromarray(plottable_timeseries, 'RGB')
+    #     data_bytes = BytesIO()
+    #     img.save(data_bytes, 'PNG')
+    #     data_str = base64.b64encode(data_bytes.getvalue()).decode('utf8')
+    #     values = [Image(data=data_str)]
+    #     md_time_series_variable = GeppettoModelFactory.createMDTimeSeries('', metatype + "variable", values)
+    #     return md_time_series_variable
 
     def getName(self):
         return "NWB Model Interpreter"
 
     def getDependentModels(self):
         return []
+
+    def get_image(self, name, interface, index):
+        return self.nwb_reader.get_image(name, interface, index)

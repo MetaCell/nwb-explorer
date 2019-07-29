@@ -4,7 +4,10 @@ import numpy as np
 from pynwb import TimeSeries, NWBHDF5IO, ProcessingModule
 from pynwb.core import NWBDataInterface
 from pynwb.image import ImageSeries
-
+import base64
+from io import BytesIO
+from PIL import Image as Img
+import imageio
 NWB_ROOT_NAME = 'root'
 
 
@@ -26,6 +29,9 @@ class NWBReader:
 
     @staticmethod
     def get_timeseries_timestamps(time_series, resampling_size):
+        if isinstance(time_series, ImageSeries):
+            if (time_series.format == "external"):
+                return time_series.timestamps[()].astype(float).tolist()
         data_size = time_series.data.size
         step = NWBReader.calc_resampling_step(data_size, resampling_size)
         if time_series.timestamps is not None:
@@ -253,6 +259,41 @@ class NWBReader:
     #     return self.nwbfile.all_children()
 
 
+    # @staticmethod
+    # def img_to_base64(plottable_image):
+    #     img = Img.fromarray(plottable_image, 'RGB')
+    #     data_bytes = BytesIO()
+    #     img.save(data_bytes, 'PNG')
+    #     return base64.b64encode(data_bytes.getvalue()).decode('utf8')
 
+    @staticmethod
+    def img_to_string(plottable_image):
+        img = Img.fromarray(plottable_image)
+        output = BytesIO()
+        img.save(output, format='PNG')
+        output.seek(0, 0)
+        
+        return output.getvalue()
 
+    def get_image(self, name: str, interface: str, index: str) -> base64:
+        if not index:
+            index = 0
+        else:
+            index = int(index)
 
+        if hasattr(self.nwbfile, interface):
+            container = getattr(self.nwbfile, interface)
+            if name in container:
+                pynwb_obj = container[name]
+                if isinstance(pynwb_obj, ImageSeries):
+                    if (pynwb_obj.format == 'external'):
+                        if (len(pynwb_obj.external_file) > index):
+                            np_image = imageio.imread(pynwb_obj.external_file[index])
+                    else:
+                        np_image = pynwb_obj.data[()]
+                        if len(np_image.shape) > 3:
+                            np_image = np_image[index]
+                    
+                    return NWBReader.img_to_string(np_image)
+
+        return None
