@@ -268,7 +268,7 @@ class NWBReader:
 
     @staticmethod
     def img_to_string(plottable_image):
-        img = Img.fromarray(plottable_image)
+        img = Img.fromarray(plottable_image.astype('uint8'), 'RGBA')
         output = BytesIO()
         img.save(output, format='PNG')
         output.seek(0, 0)
