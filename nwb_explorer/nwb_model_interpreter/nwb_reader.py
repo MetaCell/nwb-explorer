@@ -268,7 +268,10 @@ class NWBReader:
 
     @staticmethod
     def img_to_string(plottable_image):
-        img = Img.fromarray(plottable_image)
+        if plottable_image.dtype == np.uint8:
+            img = Img.fromarray(plottable_image)
+        else:
+            img = Img.fromarray(plottable_image.astype('uint8'))
         output = BytesIO()
         img.save(output, format='PNG')
         output.seek(0, 0)
