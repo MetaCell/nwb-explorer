@@ -65,7 +65,7 @@ def create_image(name, nwbfile, external_storage):
     n = len(formats)
     
     if  external_storage:
-        base_uri = "https://raw.githubusercontent.com/MetaCell/nwb-explorer/feature/60/test/images/"
+        base_uri = "https://raw.githubusercontent.com/MetaCell/nwb-explorer/development/test/images/"
     else:
         base_uri = "test/images/"
     
