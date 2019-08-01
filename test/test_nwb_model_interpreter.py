@@ -92,7 +92,7 @@ def test_importType(nwb_interpreter, nwbfile):
 
     assert len(geppetto_model.variables) == 1
     assert geppetto_model.variables[0].types[0].name == 'nwbfile'
-    assert len(geppetto_model.variables[0].types[0].variables) == 8
+    assert len(geppetto_model.variables[0].types[0].variables) == 10
     assert len(geppetto_model.variables[0].types[0].variables[0].types[0].variables) == 4
 
 
@@ -120,7 +120,7 @@ def test_errors(nwb_interpreter, nwbfile, tmpdir):
     assert isinstance(nwbfile, pynwb.file.NWBFile)
     assert nwb_interpreter.getDependentModels() == []
     assert nwb_interpreter.getName() == 'NWB Model Interpreter'
-    assert nwb_interpreter.nwb_reader.has_all_requirements(['acquisition.TimeSeries', 'TimeSeries', 'ProcessingModule', 'ImageSeries'])
+    assert nwb_interpreter.nwb_reader.has_all_requirements(['acquisition.TimeSeries', 'acquisition.ImageSeries'])
     
     with pytest.raises(KeyError):
         assert _single_file_test(nwb_interpreter, FILES['a_non_existent_file.pynwb'], tmpdir)
