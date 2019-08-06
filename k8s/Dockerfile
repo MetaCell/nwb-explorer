@@ -2,7 +2,7 @@ FROM metacell/jupyter-neuron:development
 
 ARG BRANCH=nwbdev
 
-ENV GIT_URL=https://github.com/MetaCell/nwb-explorer/tarball/development \
+ENV GIT_URL=https://github.com/MetaCell/nwb-explorer/archive/development.zip \
     FOLDER=nwb
 
 USER root
