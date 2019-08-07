@@ -50,6 +50,6 @@ setuptools.setup(
         'seaborn==0.8.1',
         'uuid==1.30',
         'pyecore==0.10.2',
-        'pynwb==1.0.2'
+        'pynwb==1.0.3'
     ],
 )
