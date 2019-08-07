@@ -2,30 +2,26 @@ FROM metacell/jupyter-neuron:development
 
 ARG BRANCH=nwbdev
 
-ENV GIT_URL=https://github.com/MetaCell/nwb-explorer/tarball/development \
-    FOLDER=nwb
+ENV GIT_URL=https://github.com/MetaCell/nwb-explorer/archive/development.zip \
+    FOLDER=nwb-explorer-development
 
 USER root
 RUN apt-get update -qq &&\
-    apt-get install python3-tk vim nano -qq
+    apt-get install python3-tk vim nano unzip -qq
 USER $NB_UID
 
 RUN jupyter labextension disable @jupyterlab/hub-extension
-  # jupyter labextension uninstall @jupyterlab/hub-extension &&\
-  # conda remove jupyterlab
 
-# RUN /bin/echo -e "\e[1;93m Installing python requirements\e[0m"
-# COPY requirements.txt requirements.txt
-# RUN pip install -r requirements.txt
+RUN /bin/echo -e "\e[1;93mDownloading nwb-explorer \e[0m"
 
-RUN /bin/echo -e "\e[1;93mDownloading branch $BRANCH for nwb-explorer \e[0m"
+RUN wget --no-verbose ${GIT_URL} &&\
+    unzip development.zip &&\
+    rm development.zip
 
-RUN mkdir ${FOLDER} &&\
-    wget --no-verbose -O - ${GIT_URL} | tar xz -C ${FOLDER} --strip-components 1 &&\
-    cd ${FOLDER}/utilities &&\
+RUN cd ${FOLDER}/utilities &&\
     python install.py branch ${BRANCH}
 
-WORKDIR $HOME/${FOLDER}
+WORKDIR $HOME/$FOLDER
 
 EXPOSE 8000
 

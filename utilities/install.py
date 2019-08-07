@@ -6,9 +6,9 @@ from welcome import donkey
 branch = None
 
 # repos
-PYECORE = 'https://github.com/rodriguez-facundo/pyecore'
+PYECORE = 'https://github.com/pyecore/pyecore.git'
 NWBEXP = 'https://github.com/metacell/geppetto-nwbexplorer'
-PYNWB = 'https://github.com/NeurodataWithoutBorders/pynwb.git'
+# PYNWB = 'https://github.com/NeurodataWithoutBorders/pynwb.git'
 JUPYTER = 'https://github.com/openworm/org.geppetto.frontend.jupyter.git'
 PYGEPPETTO = 'https://github.com/openworm/pygeppetto.git'
 NWBWIDGETS = 'https://github.com/NeurodataWithoutBorders/nwb-jupyter-widgets.git'
@@ -83,7 +83,7 @@ def main(branch=branch, npmSkip=False, skipTest=False):
     cprint("Installing pyecore")
     clone(repository=PYECORE,
           folder='pyecore',
-          default_branch='dev'
+          default_branch='develop'
           )
     execute(cmd=['pip', 'install', '-e', '.'], cwd='pyecore')
 
@@ -105,13 +105,13 @@ def main(branch=branch, npmSkip=False, skipTest=False):
 
 
 
-    # install pynwb
-    cprint("Installing pynwb")
-    clone(repository=PYNWB,
-        folder='pynwb',
-        default_branch='dev'
-    )
-    execute(cmd=['pip', 'install', '-e', '.'], cwd='pynwb')
+    # # install pynwb
+    # cprint("Installing pynwb")
+    # clone(repository=PYNWB,
+    #     folder='pynwb',
+    #     default_branch='dev'
+    # )
+    # execute(cmd=['pip', 'install', '-e', '.'], cwd='pynwb')
 
 
     # install pynwb
