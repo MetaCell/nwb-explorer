@@ -13,9 +13,12 @@ from pygeppetto.managers.geppetto_manager import RuntimeProject
 cache_model = False
 
 from pygeppetto.services.data_manager import DataManagerHelper
-from .nwb_data_manager import NWBDataManager
+import logging
+import os
+from notebook.notebook.handlers import get_custom_frontend_exporters
 
-class NWBController: # pytest: no cover
+
+class NWBController:  # pytest: no cover
     model_interpreter = NWBModelInterpreter()
 
     @classmethod
@@ -99,12 +102,12 @@ class NWBController: # pytest: no cover
             raise e
 
     @get('/api/image', {'Content-type': 'image/png'})
-    def image(self, name: str, interface: str, projectId: str='0', index: str='0') -> str:
+    def image(self, name: str, interface: str, projectId: str = '0', index: str = '0') -> str:
         if not any([name, interface, projectId]):
             return "Bad request"
 
         manager = GeppettoManager()
-        
+
         dataManager = DataManagerHelper.getDataManager()
         project = dataManager.getGeppettoProjectById(project_id=int(projectId))
 
@@ -112,3 +115,18 @@ class NWBController: # pytest: no cover
         nwb_reader = NWBController.model_interpreter.nwb_reader
 
         return nwb_reader.get_image(name=name, interface=interface, index=index)
+
+    @get('/notebook')
+    def new_notebook(self, path):
+        if not os.path.exists(path):
+            logging.info("Creating notebook {}".format(path))
+            from jupyter_geppetto.utils import createNotebook
+            createNotebook(path)
+        return self.render_template('notebook.html',
+                                    notebook_path=path,
+                                    notebook_name=path.split('/')[-1],
+                                    kill_kernel=False,
+                                    mathjax_url=self.mathjax_url,
+                                    mathjax_config=self.mathjax_config,
+                                    get_custom_frontend_exporters=get_custom_frontend_exporters
+                                    )
