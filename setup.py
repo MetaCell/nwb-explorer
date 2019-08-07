@@ -48,6 +48,8 @@ setuptools.setup(
         'Pillow==5.2.0',
         'redis==2.10.6',
         'seaborn==0.8.1',
-        'uuid==1.30'
+        'uuid==1.30',
+        'pyecore==0.10.2',
+        'pynwb==1.0.2'
     ],
 )

@@ -12,9 +12,8 @@
 holoviews_plots
 nwb_files_cache
 test_data
-*.pynwb
+*.ipynb
 .pytest_cache
 .tox
-notebook.ipynb
 tox.ini
 .coverage

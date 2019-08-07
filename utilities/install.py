@@ -6,7 +6,6 @@ from welcome import donkey
 branch = None
 
 # repos
-PYECORE = 'https://github.com/pyecore/pyecore.git'
 NWBEXP = 'https://github.com/metacell/geppetto-nwbexplorer'
 # PYNWB = 'https://github.com/NeurodataWithoutBorders/pynwb.git'
 JUPYTER = 'https://github.com/openworm/org.geppetto.frontend.jupyter.git'
@@ -78,14 +77,6 @@ def main(branch=branch, npmSkip=False, skipTest=False):
         cprint("Installing pytest")
         if subprocess.call(['pip', 'show', 'pytest']):
             subprocess.call(['pip', 'install', 'pytest==4.6.2', 'pytest-cov==2.7.1', 'tox==3.12.1'])
-
-    # install pyecore
-    cprint("Installing pyecore")
-    clone(repository=PYECORE,
-          folder='pyecore',
-          default_branch='develop'
-          )
-    execute(cmd=['pip', 'install', '-e', '.'], cwd='pyecore')
 
     # install pygeppetto
     cprint("Installing pygeppetto")
