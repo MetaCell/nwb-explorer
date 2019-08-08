@@ -11,7 +11,7 @@ from nwb_explorer.nwb_model_interpreter import NWBModelInterpreter
 RouteManager.add_controller(api.NWBController)
 logging.info("Adding NWBModelInterpreter")
 # Add model interpreter
-model_interpreter.add_model_interpreter('nwblib', NWBModelInterpreter())
+
 
 logging.info("Adding NWBDataManager")
 # Replace data manager
