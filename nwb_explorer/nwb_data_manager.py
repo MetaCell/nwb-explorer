@@ -1,12 +1,16 @@
 import logging
 import os
 
+import pygeppetto
 import requests
 from pygeppetto.data_model import GeppettoProject
+from pygeppetto.model import GeppettoLibrary
+from pygeppetto.model.types import ImportType
 from pygeppetto.services.data_manager import GeppettoDataManager
 from pygeppetto.utils import Singleton
+from pygeppetto.services.model_interpreter import add_model_interpreter
 # TODO this path must be a shared storage inside the cluster
-from nwb_explorer.nwb_model_interpreter import NWBModelInterpreter
+from nwb_explorer.nwb_model_interpreter import NWBModelInterpreter, GeppettoModelAccess, GeppettoModelFactory, Variable
 
 CACHE_DEFAULT_DIR = 'nwb_files_cache/'
 
@@ -38,15 +42,33 @@ def get_file_from_url(file_url, fname=None, cache_dir=CACHE_DEFAULT_DIR):
 
 class NWBDataManager(GeppettoDataManager):
     model_interpreter = NWBModelInterpreter()
+    add_model_interpreter(NWBModelInterpreter.lib_name, model_interpreter)
 
     last_id = 0
+
+    def createModel(self, nwb_file_name):
+        logging.debug(f'Creating a Geppetto Model from {nwb_file_name}')
+
+        geppetto_model_access = GeppettoModelAccess('NWB File')
+        geppetto_model = geppetto_model_access.geppetto_model
+        nwb_geppetto_library = GeppettoLibrary(name=NWBModelInterpreter.lib_name, id=NWBModelInterpreter.lib_name)
+
+        geppetto_model.libraries.append(nwb_geppetto_library)
+
+        obj_type = ImportType(url=nwb_file_name, autoresolve=True)
+
+        obj_variable = Variable(id='nwbfile', name='nwbfile', types=(obj_type,))
+        geppetto_model.variables.append(obj_variable)
+
+        return geppetto_model
+
 
     def get_project_from_url(self, nwbfile):
         '''The url we expect here is a nwb file, potentially remote'''
         nwbfilename = get_file_path(nwbfile)
         try:
 
-            geppetto_model = self.model_interpreter.createModel(nwbfilename)
+            geppetto_model = self.createModel(nwbfilename)
             project = GeppettoProject(id=self.last_id, name='NWB file {}'.format(os.path.basename(nwbfilename)),
                                       geppetto_model=geppetto_model, volatile=True, base_url=None, public=False,
                                       experiments=None, view=None)
