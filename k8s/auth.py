@@ -16,16 +16,10 @@ class TmpAuthenticateHandler(BaseHandler):
 
     @gen.coroutine
     def get(self):
-        raw_user = yield self.get_current_user()
-        if raw_user:
-            if self.force_new_server and user.running:
-                status = yield raw_user.spawner.poll_and_notify()
-                if status is None:
-                    yield self.stop_single_user(raw_user)
-        else:
-            username = str(uuid.uuid4())
-            raw_user = self.user_from_username(username)
-            self.set_login_cookie(raw_user)
+
+        username = str(uuid.uuid4())
+        raw_user = self.user_from_username(username)
+        self.set_login_cookie(raw_user)
         user = yield gen.maybe_future(self.process_user(raw_user, self))
         
         if 'hub/nwbfile=' in self.request.uri:
@@ -39,7 +33,7 @@ class TmpAuthenticator(Authenticator):
     login_service = 'tmp'
 
     force_new_server = Bool(
-        True,
+        False,
         help="""
         Stop the user's server and start a new one when visiting /hub/tmplogin
         When set to True, users going to /hub/tmplogin will *always* get a
