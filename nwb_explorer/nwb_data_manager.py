@@ -40,35 +40,23 @@ def get_file_from_url(file_url, fname=None, cache_dir=CACHE_DEFAULT_DIR):
     return file_name
 
 
-class NWBDataManager(GeppettoDataManager):
-    model_interpreter = NWBModelInterpreter()
-    add_model_interpreter(NWBModelInterpreter.lib_name, model_interpreter)
+class NWBDataManager(GeppettoDataManager, metaclass=Singleton):
+
+
 
     last_id = 0
 
-    def createModel(self, nwb_file_name):
-        logging.debug(f'Creating a Geppetto Model from {nwb_file_name}')
 
-        geppetto_model_access = GeppettoModelAccess('NWB File')
-        geppetto_model = geppetto_model_access.geppetto_model
-        nwb_geppetto_library = GeppettoLibrary(name=NWBModelInterpreter.lib_name, id=NWBModelInterpreter.lib_name)
-
-        geppetto_model.libraries.append(nwb_geppetto_library)
-
-        obj_type = ImportType(url=nwb_file_name, autoresolve=True)
-
-        obj_variable = Variable(id='nwbfile', name='nwbfile', types=(obj_type,))
-        geppetto_model.variables.append(obj_variable)
-
-        return geppetto_model
 
 
     def get_project_from_url(self, nwbfile):
         '''The url we expect here is a nwb file, potentially remote'''
         nwbfilename = get_file_path(nwbfile)
+        model_interpreter = NWBModelInterpreter(nwbfilename)
+        add_model_interpreter(model_interpreter.library.id, model_interpreter)
         try:
 
-            geppetto_model = self.createModel(nwbfilename)
+            geppetto_model = model_interpreter.create_model(nwbfilename)
             project = GeppettoProject(id=self.last_id, name='NWB file {}'.format(os.path.basename(nwbfilename)),
                                       geppetto_model=geppetto_model, volatile=True, base_url=None, public=False,
                                       experiments=None, view=None)

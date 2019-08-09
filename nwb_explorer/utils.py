@@ -1,6 +1,7 @@
 import quantities as pq
 
-def guessUnits(label):
+
+def guess_units(label):
     if not hasattr(pq, label):
         l = label.lower().replace(' ', '')
         if 'milisec' in l: return 'ms'
