@@ -26,6 +26,7 @@ from pynwb.core import NWBBaseType
 from pynwb.core import LabelledDict
 from pynwb.file import Subject
 from pynwb.core import DynamicTable
+from pynwb.core import ElementIdentifiers
 from pynwb.device import Device
 from pynwb.image import ImageSeries
 from h5py import Dataset
@@ -64,10 +65,13 @@ class DefaultPyNWBToGeppettoMapper(object):
             return None
 
         elif isinstance(pynwb_obj, DynamicTable):
-            return None
+            return 'unsupported'
 
         elif isinstance(pynwb_obj, Device):
-            return None
+            return 'unsupported'
+    
+        elif isinstance(pynwb_obj, ElementIdentifiers):
+            return 'unsupported'
 
         else:
             return None
@@ -173,7 +177,7 @@ class GeppettoNwbCompositeTypeBuilder(object):
 
                 if isinstance(value, (str, int)):
                     obj_type.variables.append(self.commonLibraryAccess.createTextVariable(id=key, text=str(value)))
-                                        
+
                 if create_composite_type:
                     self.build_geppetto_pynwb_type(id=key,
                                                 obj=value,
