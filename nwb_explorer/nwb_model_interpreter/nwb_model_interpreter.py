@@ -8,97 +8,89 @@ from io import BytesIO
 
 import pygeppetto.model as pygeppetto
 from PIL import Image as Img
+from pygeppetto.model import GeppettoLibrary
 from pygeppetto.model.model_access import GeppettoModelAccess
-from pygeppetto.model.types.types import TextType
+from pygeppetto.model.types.types import TextType, ImportType
 from pygeppetto.model.model_factory import GeppettoModelFactory
-from pygeppetto.model.values import Image, Text
+from pygeppetto.model.values import Image, Text, ImportValue
 from pygeppetto.model.variables import Variable, TypeToValueMap
 from pygeppetto.services.model_interpreter import ModelInterpreter
 from pygeppetto.utils import Singleton
+from pynwb import NWBContainer
 
 from nwb_explorer.nwb_model_interpreter.nwb_geppetto_mappers import *
 from .nwb_reader import NWBReader
 from .settings import *
-from ..utils import guessUnits
+from ..utils import guess_units
 
-nwb_geppetto_mappers = [SubjectMapper, LabeledDictMapper, ImageSeriesMapper, TimeseriesMapper, SummaryNWBGeppettoMapper]
+nwb_geppetto_mappers = [SubjectMapper(), LabeledDictMapper(), ImageSeriesMapper(), TimeseriesMapper(), SummaryMapper()]
+
+
+def assign_name_to_types(pynwb_obj):
+    ''' Use this function to assign custom names to geppetto compositeTypes '''
+
+    return pynwb_obj.__class__.__name__
+    # if isinstance(pynwb_obj, ImageSeries):
+    #     return 'imageseries'
+    #
+    # elif isinstance(pynwb_obj, TimeSeries):
+    #     return 'timeseries'
+    #
+    # elif isinstance(pynwb_obj, LabelledDict):
+    #     if len(pynwb_obj) == 0:
+    #         return None
+    #     return pynwb_obj.label
+    # if isinstance(pynwb_obj, NWBContainer):
+    #     return 'map'
+    # else:
+    #     return None
 
 
 class GeppettoNwbCompositeTypeBuilder(object):
 
-    def __init__(self, nwbfile_or_path, nwb_geppetto_library, model_access: GeppettoModelAccess):
-
-        self.nwb_reader = NWBReader(nwbfile_or_path)
+    def __init__(self, nwb_geppetto_library, model_access: GeppettoModelAccess):
         self.model_factory = GeppettoModelFactory(model_access.geppetto_common_library)
         self.nwb_geppetto_library = nwb_geppetto_library
-        self.geppetto_model = model_access.geppetto_model
 
-    def build_geppetto_pynwb_type(self, variable_id, nwb_obj, parent_geppetto_type):
-        ''' Scan pynwb object and create geppetto CompositeTypes and Variables with a recursive strategy '''
+    def build_geppetto_pynwb_type(self, pynwb_obj):
+        assert hasattr(pynwb_obj, 'fields'), 'Cannot build a pynwb object without fields'
+
+        type_id = str(id(pynwb_obj))
         obj_type = pygeppetto.CompositeType(
-            id=((
-                    parent_geppetto_type.id + '.' if parent_geppetto_type and parent_geppetto_type.id else '') + variable_id),
-            name=None, abstract=False)
+            id=type_id,
+            name=assign_name_to_types(pynwb_obj), abstract=False)
         self.nwb_geppetto_library.types.append(obj_type)
 
-        for mapper in nwb_geppetto_mappers:
-            if mapper.supports(nwb_obj):
-                mapper.add_variables_to_type(nwb_obj, obj_type, self.model_factory)
-
-        else:
-            if hasattr(nwb_obj, 'fields'):
-                nwb_obj = nwb_obj.fields
-
-            for key, value in nwb_obj.items():
-
-
-                if isinstance(value, (str, int)):
+        for key, value in pynwb_obj.fields.items():
+            if value is None:
+                continue
+            if not hasattr(value, 'fields'):
+                if type(value) == Dataset:
+                    import_value = self.model_factory.createImportValue(modelInterpreterId=id(self))
+                    obj_type.variables.append(
+                        self.model_factory.createStateVariable(key, import_value))
+                else:  # Meta data
                     obj_type.variables.append(self.model_factory.createTextVariable(id=key, text=str(value)))
 
-                else:
-                    self.build_geppetto_pynwb_type(variable_id=key,
-                                                   nwb_obj=value,
-                                                   parent_geppetto_type=obj_type)
+            else:
+                newtype = self.build_geppetto_pynwb_type(pynwb_obj=value)
+                obj_variable = Variable(id=key, name=key, types=(newtype,))
+                obj_type.variables.append(obj_variable)
 
-        if parent_geppetto_type is not None:
-            obj_variable = Variable(id=variable_id, name=variable_id, types=(obj_type,))
-            parent_geppetto_type.variables.append(obj_variable)
+        for mapper in nwb_geppetto_mappers:
+            if mapper.supports(pynwb_obj):
+                mapper.add_variables_to_type(pynwb_obj, obj_type, self.model_factory)
+
         return obj_type
 
-    def build(self):
-        type_name = 'nwbfile'
-
-        return self.build_geppetto_pynwb_type(variable_id=type_name,
-                                              nwb_obj=self.nwb_reader.nwbfile,
-                                              geppetto_type_name=type_name,
-                                              parent_geppetto_type=None)
-
-    # builder for compositeTypes created from classes that are not present in pynwb (custom objects)
-    def extended_build(self):
-        ''' Use this method to add objects to the Geppetto model that are not present in nwbfile '''
-        parent_type = self.get_root_type()
-
-        if parent_type:
-            # This function will handle creation of compositeTypes in a recursive fashion.
-            # Just make sure your mapper can handle the classes you define for obj.
-            self.build_geppetto_pynwb_type(variable_id='Summary',
-                                           nwb_obj=Summary(self.nwb_reader.nwbfile),
-                                           geppetto_type_name='map',
-                                           parent_geppetto_type=parent_type)
-
-    def get_root_type(self):
-        try:
-            return self.geppetto_model.variables[0].types[0]
-        except:
-            return None
 
 
 class NWBModelInterpreter(ModelInterpreter):
-    builders = {}
 
-    def __init__(self, nwbfile_or_path):
-        self.nwbfile_or_path = nwbfile_or_path
-        self.nwb_reader = NWBReader(self.nwbfile_or_path)
+    def __init__(self, nwb_file_name):
+        logging.info(f'Creating a Model Interpreter for {nwb_file_name}')
+        self.nwb_reader = NWBReader(nwb_file_name)
+        self.library = GeppettoLibrary(name=str(nwb_file_name), id=str(nwb_file_name))
 
     @staticmethod
     def clean_name_to_variable(group_name):
@@ -107,16 +99,35 @@ class NWBModelInterpreter(ModelInterpreter):
     def get_nwbfile(self):
         return self.nwb_reader.nwbfile
 
+    def create_model(self):
+
+        geppetto_model_access = GeppettoModelAccess('NWB File')
+        geppetto_model = geppetto_model_access.geppetto_model
+
+        geppetto_model.libraries.append(self.library)
+
+        obj_type = ImportType(autoresolve=True)
+        self.library.types.append(obj_type)
+        obj_variable = Variable(id='nwbfile', name='nwbfile', types=(obj_type,))
+        geppetto_model.variables.append(obj_variable)
+
+        return geppetto_model
+
+
     def importType(self, url, typeName, library, geppetto_model_access: GeppettoModelAccess):
-        geppetto_model_builder = GeppettoNwbCompositeTypeBuilder(nwbfile_or_path=url, nwb_geppetto_library=library,
+
+        geppetto_model_builder = GeppettoNwbCompositeTypeBuilder(nwb_geppetto_library=library,
                                                                  model_access=geppetto_model_access)
 
-        self.builders[library.id] = geppetto_model_builder
 
         # build compositeTypes for pynwb objects
-        geppetto_model_builder.build()
+        return geppetto_model_builder.build_geppetto_pynwb_type(self.get_nwbfile())
 
-    def importValue(self, import_value_path, model_access: GeppettoModelAccess):
+    def importValue(self, import_value: ImportValue):
+
+        import_value_path = import_value.eContainer().eContainer().getPath()
+
+
         path_pieces = import_value_path.split(path_separator)
         var_to_extract = path_pieces[-1]
         time_series = self.nwb_reader.retrieve_from_path(path_pieces[1:-1])
@@ -125,8 +136,8 @@ class NWBModelInterpreter(ModelInterpreter):
 
         if var_to_extract in ['time', 'timestamps']:
             timestamps = NWBReader.get_timeseries_timestamps(time_series, MAX_SAMPLES)
-            timestamps_unit = guessUnits(time_series.timestamps_unit) if hasattr(time_series,
-                                                                                 'timestamps_unit') and time_series.timestamps_unit else 's'
+            timestamps_unit = guess_units(time_series.timestamps_unit) if hasattr(time_series,
+                                                                                  'timestamps_unit') and time_series.timestamps_unit else 's'
             return GeppettoModelFactory.createTimeSeries("time_" + time_series.name,
                                                          timestamps,
                                                          timestamps_unit)
@@ -134,7 +145,7 @@ class NWBModelInterpreter(ModelInterpreter):
 
             plottable_timeseries = NWBReader.get_plottable_timeseries(time_series, MAX_SAMPLES)
 
-            unit = guessUnits(time_series.unit)
+            unit = guess_units(time_series.unit)
             time_series_value = GeppettoModelFactory.createTimeSeries("data_" + time_series.name,
                                                                       plottable_timeseries[0],
                                                                       unit)
@@ -149,8 +160,6 @@ class NWBModelInterpreter(ModelInterpreter):
     #     md_time_series_variable = GeppettoModelFactory.createMDTimeSeries('', metatype + "variable", values)
     #     return md_time_series_variable
 
-    def getName(self):
-        return "NWB Model Interpreter"
 
     def getDependentModels(self):
         return []

@@ -2,11 +2,13 @@ import traceback
 import pytest
 import os
 import pynwb
+from pygeppetto.model.utils import pointer_utility
 
 from nwb_explorer import nwb_model_interpreter
-from nwb_explorer.nwb_data_manager import get_file_from_url
-from nwb_explorer.nwb_model_interpreter import NWBModelInterpreter
+from nwb_explorer.nwb_data_manager import get_file_from_url, NWBDataManager
+from nwb_explorer.nwb_model_interpreter import NWBModelInterpreter, GeppettoModelAccess, ImportType
 from .utils import create_nwb_file
+
 
 from nwb_explorer.nwb_model_interpreter.nwb_reader import NWBReader
 
@@ -17,13 +19,16 @@ def write_nwb_file(nwbfile, nwb_file_name):
     print("Written NWB file to %s" % nwb_file_name)
 
 
-@pytest.fixture
-def nwb_interpreter():
-    return NWBModelInterpreter()
+
 
 @pytest.fixture
 def nwbfile():
     return create_nwb_file()
+
+
+@pytest.fixture
+def nwb_data_manager():
+    return NWBDataManager()
 
 FILES = {
     'time_series_data.nwb': 'https://github.com/OpenSourceBrain/NWBShowcase/raw/master/NWB/time_series_data.nwb',
@@ -60,7 +65,7 @@ def _single_file_test(nwb_interpreter, file_path, tmpdir):
     print('Testing file', name)
     try:
         file_path = get_file_from_url(file_url=file_path, fname=name, cache_dir=tmpdir.dirname)
-        nwb_interpreter.createModel(file_path, 'test-model')
+        nwb_interpreter.create_model(file_path, 'test-model')
         print('File read correctly:', name)
 
     except Exception as e:
@@ -68,15 +73,15 @@ def _single_file_test(nwb_interpreter, file_path, tmpdir):
         pytest.fail(f"Error reading file: {name}. Message: {e.args}")
 
 
-@pytest.mark.skip(reason="To be implemented")
-def test_big_file(nwb_interpreter, nwbfile, tmpdir):
+@pytest.mark.skip(reason="Only for dev")
+def test_big_file(nwbfile, tmpdir):
     '''
             Here only for dev/debug purpose. Do not use as a standard unit test
             :return:
     '''
     nwb_model_interpreter.MAX_SAMPLES = 100000
     file_path = "/home/user/nwb-explorer-jupyter/test_data/pynwb/YutaMouse41-150903.nwb"
-    _single_file_test(nwb_interpreter, file_path, tmpdir)
+    _single_file_test(NWBModelInterpreter(file_path), file_path, tmpdir)
 
 
 def test_ferguson(nwb_interpreter, tmpdir):
@@ -87,18 +92,42 @@ def test_ferguson(nwb_interpreter, tmpdir):
     _single_file_test(nwb_interpreter, FILES['ferguson2015.nwb'], tmpdir)
 
 
-def test_importType(nwb_interpreter, nwbfile):
-    geppetto_model = nwb_interpreter.createModel(nwbfile, 'typename')
+def test_create_model(nwbfile):
+    nwb_interpreter = NWBModelInterpreter(nwbfile)
+    geppetto_model = nwb_interpreter.create_model()
 
     assert len(geppetto_model.variables) == 1
-    assert geppetto_model.variables[0].types[0].name == 'nwbfile'
-    assert len(geppetto_model.variables[0].types[0].variables) == 8
-    assert len(geppetto_model.variables[0].types[0].variables[0].types[0].variables) == 4
+    variable = geppetto_model.variables[0]
+    assert variable.name == 'nwbfile'
+    itype = variable.types[0]
+    assert type(itype) == ImportType
+    assert itype.autoresolve == True
+    assert itype.eContainer().name == str(nwbfile)
 
 
-def test_importValue(nwb_interpreter, nwbfile):
-    nwb_interpreter.createModel(nwbfile, 'nwbfile')
-    value = nwb_interpreter.importValue('nwbfile.acquisition.t1.data')
+def test_importType(nwbfile):
+    nwb_interpreter = NWBModelInterpreter(nwbfile)
+    geppetto_model = nwb_interpreter.create_model()
+
+
+    assert len(geppetto_model.variables) == 1
+    variable_type = geppetto_model.variables[0].types[0]
+    assert variable_type.eContainer() == nwb_interpreter.library
+
+    typename = 'typename'
+    geppetto_model_access = GeppettoModelAccess(geppetto_model)
+    imported_type = nwb_interpreter.importType('DUMMY', typename, variable_type.eContainer(), geppetto_model_access)
+    var_names = [var.name for var in imported_type.variables]
+    assert 'acquisition' in var_names
+    assert 'stimulus' in var_names
+    assert len(imported_type.variables[0].types) == 1
+
+
+def test_importValue(nwbfile):
+    nwb_interpreter = NWBModelInterpreter(nwbfile)
+    model = nwb_interpreter.create_model()
+    value = nwb_interpreter.importValue(
+        pointer_utility.find_variable_from_path(model, 'nwbfile.acquisition.t1.data').value)
     from pygeppetto.model.values import TimeSeries
     assert type(value) == TimeSeries
     assert len(value.value) == 100
