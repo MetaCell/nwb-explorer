@@ -2,14 +2,11 @@ import traceback
 import pytest
 import os
 import pynwb
-from pygeppetto.model import CompositeType, StateVariableType
-from pygeppetto.model.types import ImportType
 from pygeppetto.model.utils import pointer_utility
-from pygeppetto.model.values import ImportValue
 
 from nwb_explorer import nwb_model_interpreter
 from nwb_explorer.nwb_data_manager import get_file_from_url, NWBDataManager
-from nwb_explorer.nwb_model_interpreter import NWBModelInterpreter, GeppettoModelAccess
+from nwb_explorer.nwb_model_interpreter import NWBModelInterpreter, GeppettoModelAccess, ImportType
 from .utils import create_nwb_file
 
 
@@ -62,14 +59,13 @@ FILES = {
 #         pytest.fail('Some file failed: {}'.format('; '.join(fails)))
 
 
-def _single_file_test(file_path, tmpdir):
-    name = os.path.basename(file_path)
 
+def _single_file_test(nwb_interpreter, file_path, tmpdir):
+    name = os.path.basename(file_path)
     print('Testing file', name)
     try:
         file_path = get_file_from_url(file_url=file_path, fname=name, cache_dir=tmpdir.dirname)
-        nwb_interpreter = NWBModelInterpreter(file_path)
-        nwb_interpreter.create_model()
+        nwb_interpreter.create_model(file_path, 'test-model')
         print('File read correctly:', name)
 
     except Exception as e:
@@ -88,12 +84,12 @@ def test_big_file(nwbfile, tmpdir):
     _single_file_test(NWBModelInterpreter(file_path), file_path, tmpdir)
 
 
-def test_ferguson(tmpdir):
+def test_ferguson(nwb_interpreter, tmpdir):
     '''
             Here only for dev/debug purpose. Do not use as a standard unit test
             :return:
     '''
-    _single_file_test(FILES['ferguson2015.nwb'], tmpdir)
+    _single_file_test(nwb_interpreter, FILES['ferguson2015.nwb'], tmpdir)
 
 
 def test_create_model(nwbfile):
@@ -122,83 +118,45 @@ def test_importType(nwbfile):
     geppetto_model_access = GeppettoModelAccess(geppetto_model)
     imported_type = nwb_interpreter.importType('DUMMY', typename, variable_type.eContainer(), geppetto_model_access)
     var_names = [var.name for var in imported_type.variables]
-    assert imported_type.id
-    assert imported_type.name
     assert 'acquisition' in var_names
     assert 'stimulus' in var_names
     assert len(imported_type.variables[0].types) == 1
 
-    geppetto_model_access.swap_type(variable_type, imported_type)
-
-    var = pointer_utility.find_variable_from_path(geppetto_model, 'nwbfile.acquisition')
-    variable_type = var.types[0]
-    assert isinstance(variable_type, CompositeType)
-    assert var.name == 'acquisition'
-    assert variable_type.name == 'acquisition'
-
-    var = pointer_utility.find_variable_from_path(geppetto_model, 'nwbfile.acquisition.t1')
-    variable_type = var.types[0]
-    assert isinstance(variable_type, CompositeType)
-    assert var.name == 't1'
-    assert variable_type.name == 'TimeSeries'
-
-    var = pointer_utility.find_variable_from_path(geppetto_model, 'nwbfile.acquisition.t1.data')
-    variable_type = var.types[0]
-    assert isinstance(variable_type, StateVariableType)
-    assert var.id == 'data'
 
 def test_importValue(nwbfile):
     nwb_interpreter = NWBModelInterpreter(nwbfile)
-    # Create the model
     model = nwb_interpreter.create_model()
-
-    # Import the main type
-    variable_type = model.variables[0].types[0]
-    assert variable_type.eContainer() == nwb_interpreter.library
-    typename = 'typename'
-    geppetto_model_access = GeppettoModelAccess(model)
-    imported_type = nwb_interpreter.importType('DUMMY', typename, variable_type.eContainer(), geppetto_model_access)
-    geppetto_model_access.swap_type(variable_type, imported_type)
-
-    # Call import value
-    var_to_import = pointer_utility.find_variable_from_path(model, 'nwbfile.acquisition.t1.data')
-    value = var_to_import.initialValues[0].value
-    assert type(value), ImportValue
-    value = nwb_interpreter.importValue(value)
-
-    #Test
+    value = nwb_interpreter.importValue(
+        pointer_utility.find_variable_from_path(model, 'nwbfile.acquisition.t1.data').value)
     from pygeppetto.model.values import TimeSeries
     assert type(value) == TimeSeries
     assert len(value.value) == 100
     assert value.value[0] == 0.0
 
-    var_to_import = pointer_utility.find_variable_from_path(model, 'nwbfile.acquisition.t1.time')
-    value = var_to_import.initialValues[0].value
-    assert type(value), ImportValue
-    value = nwb_interpreter.importValue(value)
+    value = nwb_interpreter.importValue('nwbfile.acquisition.t1.time')
     assert type(value) == TimeSeries
     assert len(value.value) == 100
     assert value.value[0] == 0.0
     assert value.value[1] == 1.0
 
+    assert nwb_interpreter.importValue('nwbfile.acquisition.t1.data').value[0] == 0.0
+    assert nwb_interpreter.importValue('nwbfile.acquisition.t1.time').value[0] == 0.0
 
-def test_errors(nwbfile, tmpdir):
-    nwb_interpreter = NWBModelInterpreter(nwbfile)
-    nwb_interpreter.create_model()
+def test_errors(nwb_interpreter, nwbfile, tmpdir):
+    nwb_interpreter.createModel(nwbfile, 'typename')
     nwbfile = nwb_interpreter.nwb_reader.get_nwbfile()
     
     assert isinstance(nwbfile, pynwb.file.NWBFile)
     assert nwb_interpreter.getDependentModels() == []
     assert nwb_interpreter.getName() == 'NWB Model Interpreter'
     assert nwb_interpreter.nwb_reader.has_all_requirements(['acquisition.TimeSeries', 'acquisition.ImageSeries'])
+    
+    with pytest.raises(KeyError):
+        assert _single_file_test(nwb_interpreter, FILES['a_non_existent_file.pynwb'], tmpdir)
 
-    with pytest.raises(TypeError):
-        assert _single_file_test('a_non_existent_file.pynwb')
 
-
-def test_imageseries(nwbfile, tmpdir):
-    nwb_interpreter = NWBModelInterpreter(nwbfile)
-    nwb_interpreter.create_model()
+def test_imageseries(nwb_interpreter, nwbfile, tmpdir):
+    nwb_interpreter.createModel(nwbfile, 'typename')
 
     internal_images = [nwb_interpreter.get_image('internal_storaged_image', 'acquisition', i) for i in range(3)]
     external_images = [nwb_interpreter.get_image('external_storaged_image', 'acquisition', i) for i in range(3)]

@@ -20,10 +20,12 @@ from notebook.notebook.handlers import get_custom_frontend_exporters
 from pygeppetto.services.model_interpreter import get_model_interpreter_from_variable
 
 
-def get_model_interpreter(runtime_project) -> NWBModelInterpreter:
+def get_model_interpreter(self, runtime_project) -> NWBModelInterpreter:
     return get_model_interpreter_from_variable(runtime_project.model.variables[0])
 
 class NWBController:  # pytest: no cover
+
+
 
     @get('/api/image', {'Content-type': 'image/png'})
     def image(handler: IPythonHandler, name: str, interface: str, projectId: str = '0', index: str = '0') -> str:
