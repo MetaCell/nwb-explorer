@@ -32,11 +32,16 @@ class TmpAuthenticateHandler(BaseHandler):
 
         user = yield gen.maybe_future(self.process_user(raw_user, self))
         
-        server_name = str(uuid.uuid4()).split('-').pop()
+        server_name = ''
+        redirection = self.get_next_url(user)
+        user.spawners[server_name].environment["NWBFILE"] = ''
+
         if 'hub/nwbfile=' in self.request.uri:
+            server_name = str(uuid.uuid4()).split('-').pop()
+            redirection = f'/hub/spawn/{user.name}/{server_name}'
             user.spawners[server_name].environment["NWBFILE"] = self.request.uri.split('=').pop()
         
-        self.redirect(f'{self.get_next_url(user)}/{user.name}/{server_name}')
+        self.redirect(redirection)
 
 
 class TmpAuthenticator(Authenticator):
