@@ -17,15 +17,26 @@ class TmpAuthenticateHandler(BaseHandler):
     @gen.coroutine
     def get(self):
 
-        username = str(uuid.uuid4())
-        raw_user = self.user_from_username(username)
-        self.set_login_cookie(raw_user)
+        raw_user = yield self.get_current_user()
+
+        if raw_user:
+            if self.force_new_server and raw_user.running:
+                status = yield raw_user.spawner.poll_and_notify()
+                if status is None:
+                    yield self.stop_single_user(raw_user)
+            
+        else:
+            username = str(uuid.uuid4())
+            raw_user = self.user_from_username(username)
+            self.set_login_cookie(raw_user)
+
         user = yield gen.maybe_future(self.process_user(raw_user, self))
         
+        server_name = str(uuid.uuid4()).split('-').pop()
         if 'hub/nwbfile=' in self.request.uri:
-            user.spawners[''].environment["NWBFILE"] = self.request.uri.split('=')[-1]
-
-        self.redirect(self.get_next_url(user))
+            user.spawners[server_name].environment["NWBFILE"] = self.request.uri.split('=').pop()
+        
+        self.redirect(f'{self.get_next_url(user)}/{user.name}/{server_name}')
 
 
 class TmpAuthenticator(Authenticator):
