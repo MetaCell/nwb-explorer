@@ -20,33 +20,28 @@ class NWBReader:
 
     @staticmethod
     def get_plottable_timeseries(time_series, resampling_size=None):
-        step = NWBReader.calc_resampling_step(time_series.data.size, resampling_size)
+
 
         # TODO we may need to rearrange that when dealing with spatial series: a different type of plot (3D or else)
         #  may me more adequate than what we're doing (i.e. splitting in multiple mono dimensional timeseries)
-        time_series_array = NWBReader.get_mono_dimensional_timeseries_aux(time_series.data[::step])
+        time_series_array = NWBReader.get_mono_dimensional_timeseries_aux(time_series.data[::1])
         return time_series_array
 
     @staticmethod
-    def get_timeseries_timestamps(time_series, resampling_size):
+    def get_timeseries_timestamps(time_series):
         if isinstance(time_series, ImageSeries):
             if (time_series.format == "external"):
                 return time_series.timestamps[()].astype(float).tolist()
         data_size = time_series.data.size
-        step = NWBReader.calc_resampling_step(data_size, resampling_size)
+
         if time_series.timestamps is not None:
             timestamps = time_series.timestamps
-            timestamps = timestamps[::step].astype(float).tolist()
+            timestamps = timestamps[::].astype(float).tolist()
         else:
 
-            timestamps = (time_series.rate * step) * np.arange(0, data_size // step) + time_series.starting_time
+            timestamps = (time_series.rate) * np.arange(0, data_size) + time_series.starting_time
             timestamps = timestamps.tolist()
         return timestamps
-
-    @staticmethod
-    def calc_resampling_step(data_size, resampling_size):
-        return data_size // resampling_size if (resampling_size and data_size > resampling_size) else 1
-
 
     # @staticmethod
     # def get_timeseries_image_array(time_series):
