@@ -50,10 +50,10 @@ class TimeseriesMapper(NWBGeppettoMapper):
         ''' Use this function to add variables to a geppetto compositeType '''
 
         geppetto_composite_type.variables.append(
-            model_factory.createStateVariable("time", model_factory.createImportValue()))
+            model_factory.createStateVariable("time", model_factory.createImportValueAndCache(pynwb_obj)))
 
         geppetto_composite_type.variables.append(
-            model_factory.createStateVariable('data', model_factory.createImportValue()))
+            model_factory.createStateVariable('data', model_factory.createImportValueAndCache(pynwb_obj)))
 
 
 class ImageSeriesMapper(NWBGeppettoMapper):
@@ -64,7 +64,7 @@ class ImageSeriesMapper(NWBGeppettoMapper):
 
     def add_variables_to_type(self, pynwb_obj, geppetto_composite_type, model_factory):
         geppetto_composite_type.variables.append(
-            model_factory.createStateVariable("time", model_factory.createImportValue()))
+            model_factory.createStateVariable("time", model_factory.createImportValueAndCache(pynwb_obj)))
 
 
 class SummaryMapper(NWBGeppettoMapper):
