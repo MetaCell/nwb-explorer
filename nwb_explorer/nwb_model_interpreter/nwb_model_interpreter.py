@@ -44,6 +44,7 @@ class NWBModelFactory(GeppettoModelFactory):
 
 class GeppettoNwbCompositeTypeBuilder(object):
     created_types = {}
+
     def __init__(self, nwb_geppetto_library, model_access: GeppettoModelAccess):
         self.model_factory = NWBModelFactory(model_access.geppetto_common_library)
         self.nwb_geppetto_library = nwb_geppetto_library
@@ -63,7 +64,6 @@ class GeppettoNwbCompositeTypeBuilder(object):
         items = obj_dict.items()
 
         type_id = self.get_obj_id(pynwb_obj)
-
 
         obj_type = pygeppetto.CompositeType(
             id=type_id,
@@ -101,7 +101,7 @@ class NWBModelInterpreter(ModelInterpreter):
     def __init__(self, nwb_file_name):
         logging.info(f'Creating a Model Interpreter for {nwb_file_name}')
         self.nwb_reader = NWBReader(nwb_file_name)
-        self.library = GeppettoLibrary(name=str(nwb_file_name), id=str(nwb_file_name))
+        self.library = GeppettoLibrary(name='nwblib', id='nwblib')
 
     @staticmethod
     def clean_name_to_variable(group_name):
