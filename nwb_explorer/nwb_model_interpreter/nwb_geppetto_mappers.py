@@ -48,12 +48,13 @@ class TimeseriesMapper(NWBGeppettoMapper):
 
     def add_variables_to_type(self, pynwb_obj, geppetto_composite_type, model_factory):
         ''' Use this function to add variables to a geppetto compositeType '''
+        if not hasattr(pynwb_obj, 'timestamps'):
+            geppetto_composite_type.variables.append(
+                model_factory.createStateVariable("timestamps", model_factory.createImportValueAndCache(pynwb_obj)))
 
+        num_samples = pynwb_obj.num_samples if hasattr(pynwb_obj, 'num_samples') else 0
         geppetto_composite_type.variables.append(
-            model_factory.createStateVariable("time", model_factory.createImportValueAndCache(pynwb_obj)))
-
-        geppetto_composite_type.variables.append(
-            model_factory.createStateVariable('data', model_factory.createImportValueAndCache(pynwb_obj)))
+            model_factory.createTextVariable(id='num_samples', text=str(num_samples)))
 
 
 class ImageSeriesMapper(NWBGeppettoMapper):
@@ -63,8 +64,8 @@ class ImageSeriesMapper(NWBGeppettoMapper):
         return isinstance(pynwb_obj, ImageSeries)
 
     def add_variables_to_type(self, pynwb_obj, geppetto_composite_type, model_factory):
-        geppetto_composite_type.variables.append(
-            model_factory.createStateVariable("time", model_factory.createImportValueAndCache(pynwb_obj)))
+        ''' Use this function to add variables to a geppetto compositeType '''
+
 
 
 class SummaryMapper(NWBGeppettoMapper):
