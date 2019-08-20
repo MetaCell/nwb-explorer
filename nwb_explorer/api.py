@@ -101,7 +101,7 @@ class NWBController:  # pytest: no cover
             e.args += ["Error creating plot"]
             raise e
 
-    @get('/api/image', {'Content-type': 'image/png'})
+    @get('/api/image', {'Content-type': 'image/png', 'Cache-Control': 'max-age=600'})
     def image(self, name: str, interface: str, projectId: str = '0', index: str = '0') -> str:
         if not any([name, interface, projectId]):
             return "Bad request"
