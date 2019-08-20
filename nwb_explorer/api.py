@@ -25,8 +25,6 @@ def get_model_interpreter(runtime_project) -> NWBModelInterpreter:
 
 class NWBController:  # pytest: no cover
 
-
-
     @get('/api/image', {'Content-type': 'image/png'})
     def image(handler: IPythonHandler, name: str, interface: str, projectId: str = '0', index: str = '0') -> str:
         if not any([name, interface, projectId]):
