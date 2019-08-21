@@ -106,7 +106,7 @@ def test_create_model(nwbfile):
     itype = variable.types[0]
     assert type(itype) == ImportType
     assert itype.autoresolve == True
-    assert itype.eContainer().name == str(nwbfile)
+    assert itype.eContainer().name == 'nwblib'
 
 
 def test_importType(nwbfile):
@@ -172,7 +172,7 @@ def test_importValue(nwbfile):
     assert len(value.value) == 100
     assert value.value[0] == 0.0
 
-    var_to_import = pointer_utility.find_variable_from_path(model, 'nwbfile.acquisition.t1.time')
+    var_to_import = pointer_utility.find_variable_from_path(model, 'nwbfile.acquisition.t1.timestamps')
     value = var_to_import.initialValues[0].value
     assert type(value), ImportValue
     value = nwb_interpreter.importValue(value)

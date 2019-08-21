@@ -17,6 +17,6 @@ def test_get_project_from_url(nwb_data_manager):
     assert project.geppettoModel
     library = project.geppettoModel.variables[0].types[0].eContainer()
     assert library
-    assert library.id == fname
+    assert library.id == 'nwblib'
     model_interpreter = get_model_interpreter(library.id)
     assert model_interpreter
