@@ -54,7 +54,7 @@ class TimeseriesMapper(NWBGeppettoMapper):
 
         num_samples = pynwb_obj.num_samples if hasattr(pynwb_obj, 'num_samples') else 0
         geppetto_composite_type.variables.append(
-            model_factory.createTextVariable(id='num_samples', text=str(num_samples)))
+            model_factory.create_text_variable(id='num_samples', text=str(num_samples)))
 
 
 class ImageSeriesMapper(NWBGeppettoMapper):
@@ -92,4 +92,4 @@ class SummaryMapper(NWBGeppettoMapper):
         for key, value in pynwb_obj.fields.items():
             if isinstance(value, str):
                 geppetto_composite_type.variables.append(
-                    model_factory.createTextVariable(id=key, text=str(value)))
+                    model_factory.create_text_variable(id=key, text=str(value)))

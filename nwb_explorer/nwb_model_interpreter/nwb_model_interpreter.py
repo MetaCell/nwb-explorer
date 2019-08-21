@@ -80,7 +80,7 @@ class GeppettoNwbCompositeTypeBuilder(object):
                 obj_type.variables.append(
                     self.model_factory.createStateVariable(key, import_value))
             elif isinstance(value, (str, int, float, bool)):  # Meta data
-                obj_type.variables.append(self.model_factory.createTextVariable(id=key, text=str(value)))
+                obj_type.variables.append(self.model_factory.create_text_variable(id=key, text=str(value)))
             elif isinstance(value, (list, tuple, set)):
                 pass
                 # obj_type.variables.append(self.model_factory.createTextVariable(id=key, name='json_array', text=json.dumps([v for v in value])))
@@ -143,17 +143,13 @@ class NWBModelInterpreter(ModelInterpreter):
                 timestamps = NWBReader.get_timeseries_timestamps(time_series)
                 timestamps_unit = guess_units(time_series.timestamps_unit) if hasattr(time_series,
                                                                                       'timestamps_unit') and time_series.timestamps_unit else 's'
-                return GeppettoModelFactory.createTimeSeries("time_" + time_series.name,
-                                                             timestamps,
-                                                             timestamps_unit)
+                return GeppettoModelFactory.create_time_series(timestamps, timestamps_unit)
             else:
 
                 plottable_timeseries = NWBReader.get_plottable_timeseries(time_series)
 
                 unit = guess_units(time_series.unit)
-                time_series_value = GeppettoModelFactory.createTimeSeries("data_" + time_series.name,
-                                                                          plottable_timeseries[0],
-                                                                          unit)
+                time_series_value = GeppettoModelFactory.create_time_series(plottable_timeseries[0], unit)
                 return time_series_value
 
     def getName(self):
