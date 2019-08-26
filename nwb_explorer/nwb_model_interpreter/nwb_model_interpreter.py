@@ -30,7 +30,7 @@ class NWBModelInterpreter(ModelInterpreter):
     def __init__(self, nwb_file_name):
         logging.info(f'Creating a Model Interpreter for {nwb_file_name}')
         self.nwb_reader = NWBReader(nwb_file_name)
-        self.library = GeppettoLibrary(name='nwblib', id='nwblib')
+        self.library = GeppettoLibrary(name='nwbfile', id='nwbfile')
 
     @staticmethod
     def clean_name_to_variable(group_name):
@@ -56,7 +56,7 @@ class NWBModelInterpreter(ModelInterpreter):
     def importType(self, url, type_name, library, geppetto_model_access: GeppettoModelAccess):
 
         model_factory = GeppettoModelFactory(geppetto_model_access.geppetto_common_library)
-        mapper = CompositeMapper(model_factory, library)
+        mapper = GenericCompositeMapper(model_factory, library)
         # build compositeTypes for pynwb objects
         return mapper.create_type(self.get_nwbfile(), type_name=type_name, type_id=type_name)
 
