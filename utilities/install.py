@@ -45,7 +45,10 @@ def checkout(folder, default_branch, cwdp):
     python_git = subprocess.Popen("git branch -a", shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     outstd, errstd = python_git.communicate()
     if branch and branch in str(outstd):
-        subprocess.call(['git', 'checkout', branch], cwd='./')
+        if default_branch == 'nwbdev':
+            subprocess.call(['git', 'checkout', default_branch], cwd='./')
+        else:
+            subprocess.call(['git', 'checkout', branch], cwd='./')
     else:
         subprocess.call(['git', 'checkout', default_branch], cwd='./')
     os.chdir(currentPath)
