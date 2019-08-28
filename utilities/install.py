@@ -82,7 +82,7 @@ def main(branch=branch, npmSkip=False, skipTest=False):
           folder='pygeppetto',
           default_branch='development'
           )
-    execute(cmd=['pip', 'install', '-e', '.'], cwd='pygeppetto')
+    execute(cmd=['pip', 'install', '-e', '.'], cwd='nwbdev')
 
 
     # test
