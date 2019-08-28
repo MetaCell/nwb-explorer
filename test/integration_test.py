@@ -11,7 +11,7 @@ import nwb_explorer  # With this import we are assigning the model interpreter a
 model_interpreter = nwb_explorer.model_interpreter  # This is just to say the idle the nwb_explorer import is not useless
 
 
-class TestWebsocketHandler(TornadoGeppettoWebSocketHandler):
+class MockWebsocketHandler(TornadoGeppettoWebSocketHandler):
     sent_messages = {}
 
     def __init__(self, *args, **kwargs):
@@ -26,8 +26,8 @@ class TestWebsocketHandler(TornadoGeppettoWebSocketHandler):
 @pytest.fixture
 def websocket_handler():
     Singleton._instances = {}
-    TestWebsocketHandler.sent_messages = {}
-    return TestWebsocketHandler()
+    MockWebsocketHandler.sent_messages = {}
+    return MockWebsocketHandler()
 
 def test_init_websocket(websocket_handler):
     websocket_handler.open()

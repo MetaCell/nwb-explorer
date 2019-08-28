@@ -50,8 +50,8 @@ def create_nwb_file():
     nwbfile.add_acquisition(pynwb.TimeSeries(name='t2', data=data, unit='pA',rate=1.0))
 
     mod = nwbfile.create_processing_module('mod', 'Mod')
-    interface = mod.add_data_interface(pynwb.TimeSeries(name='t3', data=data, unit='pA', timestamps=timestamps))
-    mod.add_data_interface(pynwb.TimeSeries(name='t4', data=data, unit='UA', timestamps=timestamps))
+    interface = mod.add(pynwb.TimeSeries(name='t3', data=data, unit='pA', timestamps=timestamps))
+    mod.add(pynwb.TimeSeries(name='t4', data=data, unit='UA', timestamps=timestamps))
 
     nwbfile.add_acquisition(create_image('internal_storaged_image', nwbfile, False))
     nwbfile.add_acquisition(create_image('external_storaged_image', nwbfile, True))

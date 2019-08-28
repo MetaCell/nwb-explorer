@@ -118,7 +118,7 @@ def test_create_model(nwbfile):
     itype = variable.types[0]
     assert type(itype) == ImportType
     assert itype.autoresolve == True
-    assert itype.eContainer().name == 'nwblib'
+    assert itype.eContainer().name == 'nwbfile'
 
 
 def test_importType(nwbfile):
