@@ -25,7 +25,7 @@ def get_model_interpreter(runtime_project) -> NWBModelInterpreter:
 
 class NWBController:  # pytest: no cover
 
-    @get('/api/image', {'Content-type': 'image/png'})
+    @get('/api/image', {'Content-type': 'image/png', 'Cache-Control': 'max-age=600'})
     def image(handler: IPythonHandler, name: str, interface: str, projectId: str = '0', index: str = '0') -> str:
         if not any([name, interface, projectId]):
             return "Bad request"
