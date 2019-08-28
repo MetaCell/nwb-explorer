@@ -2,10 +2,10 @@ import traceback
 import pytest
 import os
 import pynwb
-from pygeppetto.model import CompositeType, StateVariableType
+from pygeppetto.model import CompositeType, StateVariableType, SimpleArrayType, ArrayType
 from pygeppetto.model.types import ImportType
 from pygeppetto.model.utils import pointer_utility
-from pygeppetto.model.values import ImportValue
+from pygeppetto.model.values import ImportValue, StringArray, Pointer
 
 from nwb_explorer import nwb_model_interpreter
 from nwb_explorer.nwb_data_manager import get_file_from_url, NWBDataManager
@@ -40,6 +40,7 @@ FILES = {
     'brain_observatory.nwb': 'http://ec2-34-229-132-127.compute-1.amazonaws.com/api/v1/item/5ae9f7896664c640660400b5/download',
 }
 
+HERE = os.path.dirname(os.path.abspath(__file__))
 
 # def _test_samples():
 #     '''
@@ -69,7 +70,11 @@ def _single_file_test(file_path, tmpdir):
     try:
         file_path = get_file_from_url(file_url=file_path, fname=name, cache_dir=tmpdir.dirname)
         nwb_interpreter = NWBModelInterpreter(file_path)
-        nwb_interpreter.create_model()
+        geppetto_model = nwb_interpreter.create_model()
+        geppetto_model_access = GeppettoModelAccess(geppetto_model)
+        variable_type = geppetto_model.variables[0].types[0]
+        imported_type = nwb_interpreter.importType('DUMMY', 'whatever', variable_type.eContainer(),
+                                                   geppetto_model_access)
         print('File read correctly:', name)
 
     except Exception as e:
@@ -95,6 +100,13 @@ def test_ferguson(tmpdir):
     '''
     _single_file_test(FILES['ferguson2015.nwb'], tmpdir)
 
+
+def test_simple_timeseries(tmpdir):
+    '''
+            Here only for dev/debug purpose. Do not use as a standard unit test
+            :return:
+    '''
+    _single_file_test(FILES['ferguson2015.nwb'], tmpdir)
 
 def test_create_model(nwbfile):
     nwb_interpreter = NWBModelInterpreter(nwbfile)
@@ -126,15 +138,17 @@ def test_importType(nwbfile):
     assert imported_type.name
     assert 'acquisition' in var_names
     assert 'stimulus' in var_names
+
     assert len(imported_type.variables[0].types) == 1
 
     geppetto_model_access.swap_type(variable_type, imported_type)
 
     var = pointer_utility.find_variable_from_path(geppetto_model, 'nwbfile.acquisition')
     variable_type = var.types[0]
+    assert len(variable_type.variables) == 4
     assert isinstance(variable_type, CompositeType)
     assert var.name == 'acquisition'
-    assert variable_type.name == 'acquisition'
+    assert variable_type.name == 'LabelledDict'
 
     var = pointer_utility.find_variable_from_path(geppetto_model, 'nwbfile.acquisition.t1')
     variable_type = var.types[0]
@@ -147,19 +161,13 @@ def test_importType(nwbfile):
     assert isinstance(variable_type, StateVariableType)
     assert var.id == 'data'
 
+
 def test_importValue(nwbfile):
     nwb_interpreter = NWBModelInterpreter(nwbfile)
     # Create the model
     model = nwb_interpreter.create_model()
 
-    # Import the main type
-    variable_type = model.variables[0].types[0]
-    assert variable_type.eContainer() == nwb_interpreter.library
-    typename = 'typename'
-    geppetto_model_access = GeppettoModelAccess(model)
-    imported_type = nwb_interpreter.importType('DUMMY', typename, variable_type.eContainer(), geppetto_model_access)
-    geppetto_model_access.swap_type(variable_type, imported_type)
-
+    import_main_type(model, nwb_interpreter)
     # Call import value
     var_to_import = pointer_utility.find_variable_from_path(model, 'nwbfile.acquisition.t1.data')
     value = var_to_import.initialValues[0].value
@@ -180,6 +188,25 @@ def test_importValue(nwbfile):
     assert len(value.value) == 100
     assert value.value[0] == 0.0
     assert value.value[1] == 1.0
+
+    var_to_import = pointer_utility.find_variable_from_path(model, 'nwbfile.acquisition.t2.timestamps')
+    value = var_to_import.initialValues[0].value
+    assert type(value), ImportValue
+    value = nwb_interpreter.importValue(value)
+    assert type(value) == TimeSeries
+    assert len(value.value) == 100
+    assert value.value[0] == 0.0
+    assert value.value[1] == 1.0
+
+
+def import_main_type(model, nwb_interpreter):
+    typename = 'typename'
+    # Import the main type
+    variable_type = model.variables[0].types[0]
+    geppetto_model_access = GeppettoModelAccess(model)
+    imported_type = nwb_interpreter.importType('DUMMY', typename, variable_type.eContainer(), geppetto_model_access)
+    geppetto_model_access.swap_type(variable_type, imported_type)
+    assert variable_type.eContainer() == nwb_interpreter.library
 
 
 def test_errors(nwbfile, tmpdir):
@@ -208,3 +235,36 @@ def test_imageseries(nwbfile, tmpdir):
     np_images = [imageio.imread(img) for img in internal_images + external_images]
     
     assert all([img.shape == (2, 2, 3) for img in np_images])
+
+
+def test_sweep_table():
+    nwb_interpreter = NWBModelInterpreter(os.path.join(HERE, 'nwb_files', 'pynwb_test_files', 'test_SweepTable.nwb'))
+
+    geppetto_model = nwb_interpreter.create_model()
+    import_main_type(geppetto_model, nwb_interpreter)
+
+    var = pointer_utility.find_variable_from_path(geppetto_model, 'nwbfile.sweep_table')
+
+    assert type(var.types[0]) == CompositeType
+
+    var = pointer_utility.find_variable_from_path(geppetto_model, 'nwbfile.sweep_table.colnames')
+
+    assert type(var.types[0]) == SimpleArrayType
+    colnames = var.initialValues[0].value
+    assert type(colnames) == StringArray
+    assert len(colnames.elements) == 2
+
+    var = pointer_utility.find_variable_from_path(geppetto_model, 'nwbfile.sweep_table.columns')
+
+    assert type(var.types[0]) == CompositeType
+
+    variables = var.types[0].variables
+    assert len(variables) == 3
+    assert variables[1].name == colnames.elements[0]
+    assert variables[2].name == colnames.elements[1]
+
+    references_time_series = variables[1].initialValues[0].value.elements
+
+    assert len(references_time_series) == 1
+    assert type(references_time_series[0]) == Pointer
+    assert references_time_series[0].path == 'nwbfile.acquisition.pcs'

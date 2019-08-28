@@ -2,7 +2,7 @@ import logging
 import sys
 import numpy as np
 from h5py.h5r import Reference
-from pygeppetto.model import Pointer, GenericArray
+from pygeppetto.model import Pointer, GenericArray, PointerElement
 
 from pynwb import TimeSeries
 from pynwb.core import NWBBaseType, ElementIdentifiers, VectorData
@@ -151,12 +151,19 @@ class GenericCompositeMapper(NWBGeppettoMapper):
                 try:
                     mapper.modify_type(pynwb_obj, obj_type)
                 except Exception as e:
-                    logging.error(str(e))
+                    logging.error(e, exc_info=True)
                     UnsupportedMapper.handle_unsupported(obj_type, self.model_factory, 'unsupported')
 
         return obj_type
 
     def create_variable(self, name, pynwb_obj, parent_obj):
+        if id(pynwb_obj) in self.created_variables:
+            variable = self.created_variables[id(pynwb_obj)]
+            return self.model_factory.create_pointer_variable(id=name,
+                                                              initialValue=Pointer(elements=[
+                                                                  PointerElement(variable=variable,
+                                                                                 type=variable.types[0])])
+                                                              )
         type_id = self.generate_obj_id(pynwb_obj)
 
         type_name = self.assign_name_to_type(pynwb_obj)
@@ -166,14 +173,7 @@ class GenericCompositeMapper(NWBGeppettoMapper):
         return Variable(id=name, name=name, types=(obj_type,))
 
     def modify_type(self, pynwb_obj, obj_type):
-        obj_dict = pynwb_obj.fields if hasattr(pynwb_obj, 'fields') else pynwb_obj
-
-        if hasattr(obj_dict, 'items'):
-            items = obj_dict.items()
-        elif is_collection(obj_dict):
-            items = ((obj_dict[k].name, obj_dict[k]) for k in range(len(obj_dict)))
-        else:
-            items = ()
+        items = self.get_object_items(pynwb_obj)
 
         for key, value in items:
             if value is None:
@@ -191,6 +191,16 @@ class GenericCompositeMapper(NWBGeppettoMapper):
             variable = supportingmapper.create_variable(self.sanitize(key), value, pynwb_obj)
             self.created_variables[id(value)] = variable
             obj_type.variables.append(variable)
+
+    def get_object_items(self, pynwb_obj):
+        obj_dict = pynwb_obj.fields if hasattr(pynwb_obj, 'fields') else pynwb_obj
+        if hasattr(obj_dict, 'items'):
+            items = obj_dict.items()
+        elif is_collection(obj_dict):
+            items = ((obj_dict[k].name, obj_dict[k]) for k in range(len(obj_dict)))
+        else:
+            items = ()
+        return items
 
     def sanitize(self, key):
         return ''.join(k if k.isalnum() else '_' for k in key)
@@ -282,32 +292,32 @@ class VectorDataMapper(NWBGeppettoMapper):
         return Text(str(v))
 
 
-class SubjectMapper(NWBGeppettoMapper):
-    ''' Add mappers for objects that are not present in pynwb but you want to have a compositeType
-        in Geppetto model for them. For example: aggregation data about number of acquisiton or stimulus'''
-
-    def modifies(self, pynwb_obj):
-        ''' return the supported pynwb types '''
-        return isinstance(pynwb_obj, Subject)
-
-    def modify_type(self, pynwb_obj, geppetto_composite_type):
-        pass
-        # geppetto_composite_type.name = 'map'
-
-
-class TimeseriesMapper(NWBGeppettoMapper):
+class TimeseriesMapper(GenericCompositeMapper):
     ''' Extend this class to handle extra pynwb objects '''
+
+    def creates(self, pynwb_obj):
+        ''' return the supported pynwb types '''
+        return isinstance(pynwb_obj, TimeSeries)
 
     def modifies(self, pynwb_obj):
         ''' return the supported pynwb types '''
         return isinstance(pynwb_obj, TimeSeries)
 
     def modify_type(self, pynwb_obj, geppetto_composite_type):
+        super().modify_type(pynwb_obj, geppetto_composite_type)
         ''' Use this function to add variables to a geppetto compositeType '''
         if pynwb_obj.timestamps is None:
             geppetto_composite_type.variables.append(
                 self.model_factory.create_state_variable(id="timestamps",
                                                          initialValue=ImportValueMapper.create_import_value(pynwb_obj)))
+
+        if pynwb_obj.timestamp_link:  # A set with linked timestamps
+            variable = self.model_factory.create_text_variable(id="timestamp_link",
+                                                               text=next(iter(pynwb_obj.timestamp_link)).name)
+            geppetto_composite_type.variables.append(variable)
+
+    def get_object_items(self, pynwb_obj):
+        return ((key, value) for key, value in super().get_object_items(pynwb_obj) if key != 'timestamp_link')
 
 
 class ImageSeriesMapper(NWBGeppettoMapper):
@@ -339,7 +349,7 @@ class SummaryMapper(NWBGeppettoMapper):
         if aqc:
             summary['Num. of acquisitions'] = f"{aqc}"
         if stim:
-            summary['Num. of stimulus'] = f"{stim}"
+            summary['Num. of stimuli'] = f"{stim}"
 
         return summary
 
