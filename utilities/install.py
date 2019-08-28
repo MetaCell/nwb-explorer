@@ -6,8 +6,6 @@ from welcome import donkey
 branch = None
 
 # repos
-NWBEXP = 'https://github.com/metacell/geppetto-nwbexplorer'
-# PYNWB = 'https://github.com/NeurodataWithoutBorders/pynwb.git'
 JUPYTER = 'https://github.com/openworm/org.geppetto.frontend.jupyter.git'
 PYGEPPETTO = 'https://github.com/openworm/pygeppetto.git'
 NWBWIDGETS = 'https://github.com/NeurodataWithoutBorders/nwb-jupyter-widgets.git'
@@ -95,16 +93,6 @@ def main(branch=branch, npmSkip=False, skipTest=False):
         execute(cmd=['coverage', 'run', '--source', 'pygeppetto', '-m', 'pytest', '-v', '-c', 'tox.ini'], cwd=os.path.join(DEPS_DIR, 'pygeppetto'))
 
 
-
-    # # install pynwb
-    # cprint("Installing pynwb")
-    # clone(repository=PYNWB,
-    #     folder='pynwb',
-    #     default_branch='dev'
-    # )
-    # execute(cmd=['pip', 'install', '-e', '.'], cwd='pynwb')
-
-
     # install pynwb
     cprint("Installing nwb jupyter widgets")
     clone(repository=NWBWIDGETS,
@@ -125,16 +113,7 @@ def main(branch=branch, npmSkip=False, skipTest=False):
         execute(cmd=['npm', 'run', 'build-dev'], cwd=os.path.join(JUPYTER_DIR, 'js'))
 
 
-    # install nwb explorer
     os.chdir(ROOT_DIR)
-    cprint("Installing nwb-explorer frontend")
-    clone(repository=NWBEXP,
-          folder=WEBAPP_DIR,
-          default_branch='development'
-          )
-
-
-    # back to finish jupyter installation
     cprint("Installing extensions")
     # FIXME for some reason it fails the first time on a clean conda env 
     # (pip version, conda version, jupyter installation?)

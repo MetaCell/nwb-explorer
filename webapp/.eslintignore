@@ -1,0 +1,6 @@
+etc/*
+node/*
+build/*
+META-INF/*
+**/tests/casperjs/**/*.js
+**/*min.js
