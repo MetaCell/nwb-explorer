@@ -8,7 +8,7 @@ import {
 
 import { ADD_WIDGET, UPDATE_WIDGET, ADD_PLOT_TO_EXISTING_WIDGET, updateDetailsWidget, showSweeps } from '../actions/flexlayout';
 import { waitData } from '../actions/general';
-import { NOTEBOOK_READY } from '../actions/notebook';
+import { NOTEBOOK_READY, notebookReady } from '../actions/notebook';
 
 
 function handleShowWidget (store, next, action) {
@@ -79,6 +79,17 @@ const nwbMiddleware = store => next => action => {
 
   case LOAD_NWB_FILE:
     Project.loadFromURL(action.data.nwbFileUrl);
+    GEPPETTO.on('jupyter_geppetto_extension_ready', data => { // It's triggered once
+
+      console.log("Initializing Python extension");
+      
+      store.dispatch(notebookReady);
+           
+      /*
+       * 
+       * Utils.execPythonMessage('utils.start_notebook_server()');
+       */
+    });
     break;
   case NWB_FILE_LOADED:
     
@@ -102,6 +113,7 @@ const nwbMiddleware = store => next => action => {
     // FIXME for some reason the callback for python messages is not being always called
     Utils.execPythonMessage('from nwb_explorer.nwb_main import main');
     store.dispatch(loadNWBFileInNotebook);
+    
     break;
 
   case UPDATE_WIDGET:

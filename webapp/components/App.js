@@ -67,20 +67,7 @@ export default class App extends React.Component{
 
       }
     });
-    
    
-    // When the extension is ready we can communicate with the notebook kernel
-    GEPPETTO.on('jupyter_geppetto_extension_ready', data => {
-
-      console.log("Initializing Python extension");
-      
-      notebookReady();
-           
-      /*
-       * 
-       * Utils.execPythonMessage('utils.start_notebook_server()');
-       */
-    });
     
     GEPPETTO.on(GEPPETTO.Events.Model_loaded, () => {
       nwbFileLoaded(Model);
@@ -113,6 +100,7 @@ export default class App extends React.Component{
     } else {
       GEPPETTO.trigger(GEPPETTO.Events.Hide_spinner);
     }
+   
     
   }
  
