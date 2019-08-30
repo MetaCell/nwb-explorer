@@ -8,21 +8,15 @@ from pygeppetto.model.model_access import GeppettoModelAccess
 from pygeppetto.model.model_factory import GeppettoModelFactory
 from pygeppetto.services.model_interpreter import ModelInterpreter
 
-
-
 from nwb_explorer.nwb_model_interpreter.nwb_geppetto_mappers import *
 from .nwb_reader import NWBReader
 from .settings import *
 from ..utils import guess_units
 
 
-
 def assign_name_to_type(pynwb_obj):
     ''' Use this function to assign custom names to geppetto compositeTypes '''
     return pynwb_obj.__class__.__name__
-
-
-
 
 
 class NWBModelInterpreter(ModelInterpreter):

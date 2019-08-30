@@ -233,8 +233,8 @@ def test_imageseries(nwbfile, tmpdir):
     import imageio
 
     np_images = [imageio.imread(img) for img in internal_images + external_images]
-    
-    assert all([img.shape == (2, 2, 3) for img in np_images])
+
+    assert all(img.shape == (2, 2, 3) for img in np_images)
 
 
 def test_sweep_table():
