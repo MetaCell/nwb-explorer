@@ -1,15 +1,38 @@
-import React, { Fragment } from 'react';
+import React, { Component, Fragment } from 'react';
 import Icon from '@material-ui/core/Icon';
 import Grid from '@material-ui/core/Grid';
+import Tooltip from '@material-ui/core/Tooltip';
 
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
 import { WidgetStatus } from './constants';
+import { withStyles } from '@material-ui/core/styles';
 
+const styles = theme => ({
+  lightTooltip: {
+    fontSize: 12,
+    boxShadow: theme.shadows[1],
+    color: theme.palette.common.black,
+    backgroundColor: theme.palette.common.white
+  },
+  popper: { paddingRight: "10px" }
+});
 
-export default class Appbar extends React.Component {
+const CustomTooltip = withStyles(styles)(({ tooltip, children, classes }) => (
+  <Tooltip 
+    title={tooltip} 
+    placement="bottom-end"
+    disableFocusListener
+    disableTouchListener
+    classes={{ tooltip: classes.lightTooltip, popper: classes.popper }}
+  >
+    {children}
+  </Tooltip>
+))
+
+export default class Appbar extends Component {
   constructor (props) {
     super(props);
     this.exit = this.props.exit ? this.props.exit : () => console.debug('exit not defined in ' + typeof this);
@@ -60,24 +83,31 @@ export default class Appbar extends React.Component {
 
               <Grid item className="icon-container">
 
-                <IconButton
-                  onClick={() => this.handleClickBack()}
-                >
-                  <Icon color="error" className='fa fa-home' title="Back" />
-                </IconButton>
+                <CustomTooltip tooltip="Back">
+                  <IconButton
+                    onClick={() => this.handleClickBack()}
+                  >
+                    <Icon color="error" className='fa fa-home'/>
+                  </IconButton>
+                </CustomTooltip>
                 
                 
-                <IconButton 
-                  onClick={() => this.handleShowLists()}
-                >
-                  <Icon color="error" className='fa fa-sitemap' title="Restore tabs" />
-                </IconButton>
-
-                <IconButton 
-                  onClick={() => this.handleShowAll()}
-                >
-                  <Icon color="error" className='fa fa-list' title="Show all content" />
-                </IconButton>
+                <CustomTooltip tooltip="Restore tabs">
+                  <IconButton 
+                    onClick={() => this.handleShowLists()}
+                  >
+                    <Icon color="error" className='fa fa-sitemap' />
+                  </IconButton>
+                </CustomTooltip>
+                
+                <CustomTooltip tooltip="Show all content">
+                  <IconButton 
+                    onClick={() => this.handleShowAll()}
+                  >
+                    <Icon color="error" className='fa fa-list' />
+                  </IconButton>
+                </CustomTooltip>
+                
               </Grid>
             </Grid>
           </Toolbar>
