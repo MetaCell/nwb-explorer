@@ -53,7 +53,10 @@ export default class App extends React.Component{
       }
     })
 
-    
+    if (nwbFileService.getNWBFileUrl()){
+      loadNWBFile(nwbFileService.getNWBFileUrl());
+    }
+
     // A message from the parent frame can specify the file to load
     window.addEventListener('message', event => {
 

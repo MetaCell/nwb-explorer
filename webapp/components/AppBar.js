@@ -70,7 +70,7 @@ export default class Appbar extends React.Component {
                 <IconButton 
                   onClick={() => this.handleShowLists()}
                 >
-                  <Icon color="error" className='fa fa-sitemap' title="restore default lists" />
+                  <Icon color="error" className='fa fa-sitemap' title="Restore tabs" />
                 </IconButton>
 
                 <IconButton 
