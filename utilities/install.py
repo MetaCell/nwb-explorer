@@ -80,7 +80,7 @@ def main(branch=branch, npmSkip=False, skipTest=False):
     cprint("Installing pygeppetto")
     clone(repository=PYGEPPETTO,
           folder='pygeppetto',
-          default_branch='nwbdev'
+          default_branch='development'
           )
     execute(cmd=['pip', 'install', '-e', '.'], cwd='pygeppetto')
 
