@@ -1,0 +1,34 @@
+{
+  "name": "nwb-explorer",
+  "version": "0.2.0",
+  "description": "NWB Explorer is an application that can be used by scientists to read, visualize and explore the content of NWB 2 files.",
+  "repository": "https://github.com/MetaCell/geppetto-nwbexplorer",
+  "license": "MIT",
+  "scripts": {
+    "prebuild": "eslint . --color",
+    "build": "webpack -p --progress",
+    "prebuild-dev": "eslint . --color",
+    "build-dev": "webpack --devtool eval",
+    "prebuild-dev-noTest": "eslint . ",
+    "build-dev-noTest": "webpack --devtool source-map --env.noTest=true",
+    "prebuild-dev-noTest:watch": "eslint . --color",
+    "build-dev-noTest:watch": "webpack --devtool source-map --env.noTest=true --progress --watch",
+    "start": "node --max_old_space_size=2048 node_modules/webpack-dev-server/bin/webpack-dev-server.js --progress  --config webpack.config.dev.js"
+  },
+  "dependencies": {
+    "@geppettoengine/geppetto-client": "openworm/geppetto-client#nwbdev",
+    "babel-polyfill": "^6.26.0",
+    "react-collapsible": "^2.3.1",
+    "react-redux": "^7.0.3",
+    "react-scripts": "0.9.5",
+    "redux": "^4.0.1"
+  },
+  "buildOptions": {
+    "emitEntryPoint": true,
+    "compile": {
+      "exclude": [
+        "node_modules"
+      ]
+    }
+  }
+}
