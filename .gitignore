@@ -3,7 +3,9 @@
 *pyc
 /static/
 /dependencies/
-/webapp/
+/webapp/build/
+/webapp/node_modules/
+/webapp/geppetto-client/
 .DS_Store
 *.egg-info/
 *.nwb

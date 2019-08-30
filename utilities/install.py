@@ -6,8 +6,6 @@ from welcome import donkey
 branch = None
 
 # repos
-NWBEXP = 'https://github.com/metacell/geppetto-nwbexplorer'
-# PYNWB = 'https://github.com/NeurodataWithoutBorders/pynwb.git'
 JUPYTER = 'https://github.com/openworm/org.geppetto.frontend.jupyter.git'
 PYGEPPETTO = 'https://github.com/openworm/pygeppetto.git'
 NWBWIDGETS = 'https://github.com/NeurodataWithoutBorders/nwb-jupyter-widgets.git'
@@ -47,7 +45,10 @@ def checkout(folder, default_branch, cwdp):
     python_git = subprocess.Popen("git branch -a", shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     outstd, errstd = python_git.communicate()
     if branch and branch in str(outstd):
-        subprocess.call(['git', 'checkout', branch], cwd='./')
+        if default_branch == 'nwbdev':
+            subprocess.call(['git', 'checkout', default_branch], cwd='./')
+        else:
+            subprocess.call(['git', 'checkout', branch], cwd='./')
     else:
         subprocess.call(['git', 'checkout', default_branch], cwd='./')
     os.chdir(currentPath)
@@ -82,7 +83,7 @@ def main(branch=branch, npmSkip=False, skipTest=False):
     cprint("Installing pygeppetto")
     clone(repository=PYGEPPETTO,
           folder='pygeppetto',
-          default_branch='development'
+          default_branch='nwbdev'
           )
     execute(cmd=['pip', 'install', '-e', '.'], cwd='pygeppetto')
 
@@ -93,16 +94,6 @@ def main(branch=branch, npmSkip=False, skipTest=False):
     else:
         cprint("Testing pygeppetto")
         execute(cmd=['coverage', 'run', '--source', 'pygeppetto', '-m', 'pytest', '-v', '-c', 'tox.ini'], cwd=os.path.join(DEPS_DIR, 'pygeppetto'))
-
-
-
-    # # install pynwb
-    # cprint("Installing pynwb")
-    # clone(repository=PYNWB,
-    #     folder='pynwb',
-    #     default_branch='dev'
-    # )
-    # execute(cmd=['pip', 'install', '-e', '.'], cwd='pynwb')
 
 
     # install pynwb
@@ -125,16 +116,7 @@ def main(branch=branch, npmSkip=False, skipTest=False):
         execute(cmd=['npm', 'run', 'build-dev'], cwd=os.path.join(JUPYTER_DIR, 'js'))
 
 
-    # install nwb explorer
     os.chdir(ROOT_DIR)
-    cprint("Installing nwb-explorer frontend")
-    clone(repository=NWBEXP,
-          folder=WEBAPP_DIR,
-          default_branch='development'
-          )
-
-
-    # back to finish jupyter installation
     cprint("Installing extensions")
     # FIXME for some reason it fails the first time on a clean conda env 
     # (pip version, conda version, jupyter installation?)
