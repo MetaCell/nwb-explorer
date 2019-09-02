@@ -5,7 +5,7 @@
 # NWB Explorer
 
 NWB Explorer is a web application that can be used by scientists to read, visualize and explore
-the content of NWB files.
+the content of NWB:N 2 files.
 
 Learn more about the [Neurodata Without Borders](https://www.nwb.org/).
 
@@ -71,7 +71,7 @@ For further information about the Python API, see the [PyNWB docs](https://pynwb
 
 ### Python code from sources
 
-In order to have all the Python files served from sources, the application and the dependencies must be installed in development mode, i.e. with the command
+In order to have all the Python files NWB:N 2 ed from sources, the application and the dependencies must be installed in development mode, i.e. with the command
 
 ```bash
 pip install -e .
@@ -79,11 +79,13 @@ pip install -e .
 
 ### Javascript code from sources
 
-JS/HTML code can be found inside `static/org.geppetto.frontend/src/main/webapp/`. The code needs to be rebuilt with webpack everytime there is a change. The recommended way is to do so using the Webpack development serverer running in `/static/org.geppetto.frontend/src/main/webapp/` this command:
+JS/HTML code can be found inside `static/org.geppetto.frontend/src/main/webapp/`. The code needs to be rebuilt with webpack everytime there is a change. To avoid having to do so you can use the Webpack development server running in `/static/org.geppetto.frontend/src/main/webapp/` this command:
 
 ```bash
 npm run build-dev-noTest:watch
 ```
+
+This will spawn a process that while left running will watch for any changes on the `webapp` folder and automatically deploy them each time a file is saved.
 
 To check if a dependency is installed in development mode, run `pip list`.
 
@@ -99,8 +101,8 @@ docker run -it -p8888:8888 nwb-explorer
 
 ## Built With
 
-* [Geppetto](http://www.geppetto.org/) - Used to build a web-based application to interpret and visualize the NWB:2 files.
-* [PyNWB](https://github.com/NeurodataWithoutBorders/pynwb) - Used to read and manipulate NWB:2 files
+* [Geppetto](http://www.geppetto.org/) - Used to build a web-based application to interpret and visualize the NWB:N 2 files.
+* [PyNWB](https://github.com/NeurodataWithoutBorders/pynwb) - Used to read and manipulate NWB:N 2 files
 * [Jupyter notebook](https://jupyter.org/) - Jupyter notebook is used as a backend.
 
 
@@ -109,7 +111,7 @@ docker run -it -p8888:8888 nwb-explorer
 The NWB Explorer was initially created by MetaCell to showcase the features of the Geppetto platform to share
 neurophysiological data in Neurodata Without Borders format. It was further developed as part of a
 Google Summer of Code project with the OpenWorm project. It is currently being extended as part of the Open Source Brain
-project to provide both a standalone and online application for visualising and analysing the contents of NWB files.
+project to provide both a standalone and online application for visualising and analysing the contents of NWB:N 2 files.
 This work is currently funded by the Wellcome Trust.
 
 ## Authors
