@@ -1,6 +1,8 @@
 {
   "global": {
-    "sideBorders": 8
+    "sideBorders": 8,
+    "tabSetHeaderHeight": 26,
+    "tabSetTabStripHeight": 26
   },
   "layout": {
     "type": "tabset",

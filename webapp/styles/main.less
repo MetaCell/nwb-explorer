@@ -1,13 +1,14 @@
 @import "colors.less";
 @import url('https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700&display=swap');
 
-@darkcolor: rgba(66,66,66,1);
 @panelradius: 5px;
 @gutter: 16px;
 @icon-padding: 12px;
-@font-size-panels: 14px;
+@font-size-panels: 16px;
 @font: 'Source Sans Pro', sans-serif;
 @inputradius: 30px;
+@font-weight-content: 300;
+@font-weight-label: 400;
 
 h1, h2, h3 {
     font-weight: 300;
@@ -41,7 +42,7 @@ sub{
 
 #logo{
     background-image: url("images/nwbExplorer.png");
-    width: 200px;
+    width: 300px;
     height:76px;
 }
 
@@ -104,7 +105,7 @@ iframe{
     
     .flexlayout__tab {
         padding: 1em 0.5em;
-        background-color: @darkcolor;
+        background-color: @box_color;
         border-top-right-radius: @panelradius;
         border-bottom-right-radius: @panelradius;
         border-bottom-left-radius: @panelradius;
@@ -132,7 +133,7 @@ iframe{
     }
 
     .flexlayout__tabset {
-        background-color: #2a2a2a;
+        background-color: @background_color_body_0;
         overflow: visible;
         border-radius: 0px @panelradius @panelradius @panelradius
     }
@@ -147,12 +148,19 @@ iframe{
 
   
     .flexlayout__tab_button--selected {
-            background-color: @darkcolor;
+            background-color: @box_color;
             border-top-right-radius: @panelradius;
             border-top-left-radius: @panelradius;
             color: white;
-            margin-right: 10px;
+            margin-right: 2px;
     }
+
+    .flexlayout__tab_button--unselected {
+        color: gray;
+        background-color: #2d2d2d;
+        border-top-right-radius: @panelradius;
+        border-top-left-radius: @panelradius;
+     }
 
     .flexlayout__border_bottom {
         overflow: visible;
@@ -165,7 +173,7 @@ iframe{
     .flexlayout__border_button {
         .flexlayout__border_button_content{
             font-family: @font;
-            font-weight: bold;
+            // font-weight: bold;
             color: @secondary_color;
             
             font-size: @font-size-panels;
@@ -175,7 +183,7 @@ iframe{
         margin-right: 3px;
         border-top-right-radius: @panelradius;
         border-top-left-radius: @panelradius;
-        background-color: @darkcolor;
+        background-color: @box_color;
         
     }
     
@@ -190,7 +198,7 @@ iframe{
         font-size: @font-size-panels;
         margin-top: -3px;
         padding: 0;
-        font-weight: bold;
+        font-weight: normal;
     }
 
     // Thin white tab icons
@@ -227,7 +235,7 @@ iframe{
     }
     .flexlayout__popup_menu_item {
         color: white;
-        background-color: @darkcolor;
+        background-color: @box_color;
     }
 }
 
@@ -254,6 +262,17 @@ iframe{
 }
 .listviewer {
     height: 100%;
+    td, th {
+        
+        font-size: @font-size-panels;
+     }
+
+     td {
+        font-weight: @font-weight-content;
+     }
+     th {
+         font-weight: @font-weight-label;
+     }
 }
 .listviewer .list-icon {
     font-size: 20px;
@@ -312,7 +331,7 @@ iframe{
 
     p{
         font-size: 1em;
-        font-weight: 300;
+        font-weight: @font-weight-content;
     }
 
     header {
@@ -423,17 +442,18 @@ iframe{
         text-align: justify;
         margin-bottom: 1em;
         margin-top: 0.1em;
+        font-weight: @font-weight-content;
 
         p {
             margin-bottom: 0.1em;
             font-size: @font-size-panels;
             line-height: 1.3em;
             text-align: left;
-
+            font-weight: @font-weight-content;
         }
 
         .meta-label {
-            font-weight: 600;
+            font-weight: @font-weight-label;
         }
 
         p:last-child {
@@ -445,7 +465,7 @@ iframe{
         display: block;
         color: @secondary_color !important;
         text-transform: capitalize;
-        font-weight: 600;
+        font-weight: @font-weight-label;
         font-size: @font-size-panels;
         color: @primary_color;
         position: relative;
@@ -497,7 +517,7 @@ iframe{
     color: white !important;
     border-top-left-radius: @panelradius;
     border-top-right-radius: @panelradius;
-    background-color: @darkcolor;
+    background-color: @box_color;
 
     &:hover {
         opacity: 0.9;
