@@ -120,5 +120,7 @@ This work is currently funded by the Wellcome Trust.
 * Giovanni Idili ([MetaCell](http://metacell.us))
 * Filippo Ledda ([MetaCell](http://metacell.us))
 * Rodriguez Facundo ([MetaCell](http://metacell.us))
+* Afonso Pinto ([MetaCell](http://metacell.us))
+
 
 See also the list of [contributors](https://github.com/Metacell/nwb-explorer/contributors) who participated in this project.
