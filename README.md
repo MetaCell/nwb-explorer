@@ -47,7 +47,7 @@ cd nwb-explorer/utilities
 python install.py
 ```
 
-## How to run
+## How to run NWB Explorer
 
 After the installation is complete, run the script:
 
@@ -68,7 +68,7 @@ docker build -t nwb-explorer .
 docker run -it -p8888:8888 nwb-explorer
 ```
 
-## How to use
+## How to use NWB Explorer
 
 When the application is started, no file will be loaded.
 
@@ -81,12 +81,12 @@ For further information about the Python API, see the [PyNWB docs](https://pynwb
 
 ## How to develop
 
-The application is built as a Jupyter notebook extension by means of the [jupyter-geppetto extension](https://github.com/openworm/org.geppetto.frontend.jupyter).
-The Jupyter notebook web application is hence used as a backend, the application pages, the web resources and apis are served by Tornado handlers.
+The application is built as a Jupyter extenesion via [Geppetto Jupyter].(https://github.com/openworm/org.geppetto.frontend.jupyter).
+The application pages, the web resources and apis are served by Tornado handlers.
 
 ### Python code
 
-In order to have all the python files redeployed, the application and the dependencies must be installed in development mode, i.e. with the command
+In order to have all the Python files redeployed, the application and the dependencies must be installed in development mode, i.e. with the command
 
 ```bash
 pip install -e .
@@ -94,9 +94,9 @@ pip install -e .
 
 ### Javascript code
 
-To check if a dependency is installed in development mode, run pip list.
+To check if a dependency is installed in development mode, run `pip list`.
 
-JS/HTML code can be found inside `static/org.geppetto.frontend/src/main/webapp/`. The code needs to be rebuilt with webpack everytime there is a change. The recommended way is to run in `/static/org.geppetto.frontend/src/main/webapp/` this command:
+JS/HTML code can be found inside `static/org.geppetto.frontend/src/main/webapp/`. The code needs to be rebuilt with webpack everytime there is a change. The recommended way is to do so using the Webpack development serverer running in `/static/org.geppetto.frontend/src/main/webapp/` this command:
 
 ```bash
 npm run build-dev-noTest:watch
@@ -104,9 +104,10 @@ npm run build-dev-noTest:watch
 
 ## Built With
 
-* [PyNWB](https://github.com/NeurodataWithoutBorders/pynwb) - Used to read and manipulate NWB files
-* [Jupyter notebook](https://jupyter.org/) - The Jupyter notebook web application is used as a backend.
-* [Geppetto](http://www.geppetto.org/) - Used to build a web-based application to visualize and simulate the NWB 2.0 files.
+* [Geppetto](http://www.geppetto.org/) - Used to build a web-based application to interpret and visualize the NWB:2 files.
+* [PyNWB](https://github.com/NeurodataWithoutBorders/pynwb) - Used to read and manipulate NWB:2 files
+* [Jupyter notebook](https://jupyter.org/) - Jupyter notebook is used as a backend.
+
 
 ## Background
 
