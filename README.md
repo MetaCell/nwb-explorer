@@ -11,7 +11,7 @@ Learn more about the [Neurodata Without Borders](https://www.nwb.org/).
 
 ## Getting Started
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
+These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system. 
 
 ### Prerequisites
 
@@ -58,17 +58,7 @@ cd nwb-explorer
 
 If everything worked, the default browser will open on `http://localhost:8888/geppetto`
 
-### Run with docker
-
-Under k8s folder we can find the dockerfile required to build a container for NWB-Explorer:
-
-```bash
-cd nwb-explorer/k8s
-docker build -t nwb-explorer .
-docker run -it -p8888:8888 nwb-explorer
-```
-
-## How to use NWB Explorer
+## Getting started with NWB Explorer
 
 When the application is started, no file will be loaded.
 
@@ -79,27 +69,32 @@ After the file is loaded, a Jupyter notebook will be available.
 From the notebook the current loaded file can be accessed through the variable `nwbfile`.
 For further information about the Python API, see the [PyNWB docs](https://pynwb.readthedocs.io/en/stable/)
 
-## How to develop
+### Python code from sources
 
-The application is built as a Jupyter extenesion via [Geppetto Jupyter].(https://github.com/openworm/org.geppetto.frontend.jupyter).
-The application pages, the web resources and apis are served by Tornado handlers.
-
-### Python code
-
-In order to have all the Python files redeployed, the application and the dependencies must be installed in development mode, i.e. with the command
+In order to have all the Python files served from sources, the application and the dependencies must be installed in development mode, i.e. with the command
 
 ```bash
 pip install -e .
 ```
 
-### Javascript code
-
-To check if a dependency is installed in development mode, run `pip list`.
+### Javascript code from sources
 
 JS/HTML code can be found inside `static/org.geppetto.frontend/src/main/webapp/`. The code needs to be rebuilt with webpack everytime there is a change. The recommended way is to do so using the Webpack development serverer running in `/static/org.geppetto.frontend/src/main/webapp/` this command:
 
 ```bash
 npm run build-dev-noTest:watch
+```
+
+To check if a dependency is installed in development mode, run `pip list`.
+
+### Run via Docker
+
+Under k8s folder we can find the dockerfile required to build a container for NWB-Explorer:
+
+```bash
+cd nwb-explorer/k8s
+docker build -t nwb-explorer .
+docker run -it -p8888:8888 nwb-explorer
 ```
 
 ## Built With
