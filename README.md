@@ -43,8 +43,8 @@ Instructions to get a development environment running.
 
 ```bash
 git clone -b development https://github.com/MetaCell/nwb-explorer
-cd nwb-explorer/utilities
-python install.py
+cd nwb-explorer
+python utilities/install.py
 ```
 
 ## How to run NWB Explorer

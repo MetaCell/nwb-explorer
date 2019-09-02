@@ -1,9 +1,11 @@
 import os
 import subprocess
 import sys
-from welcome import donkey
+
 
 branch = None
+
+HERE = os.path.dirname(os.path.abspath(__file__))
 
 # repos
 JUPYTER = 'https://github.com/openworm/org.geppetto.frontend.jupyter.git'
@@ -12,7 +14,7 @@ NWBWIDGETS = 'https://github.com/NeurodataWithoutBorders/nwb-jupyter-widgets.git
 
 WEBAPP_DIR = "webapp"
 JUPYTER_DIR = 'org.geppetto.frontend.jupyter'
-ROOT_DIR = os.path.join(os.getcwd(), os.pardir)
+ROOT_DIR = os.path.join(HERE, os.pardir)
 DEPS_DIR = os.path.join(ROOT_DIR, 'dependencies')
 
 def cprint(string):
@@ -56,14 +58,14 @@ def execute(cmd, cwd='.'):
         raise SystemExit('Error installing NWB-Explorer')
 
 
-def main(branch=branch, npmSkip=False, skipTest=False):
+def main(branch=branch, skipNpm=False, skipTest=False, development=False):
 
 
 
     if not os.path.exists(DEPS_DIR):
         os.mkdir(DEPS_DIR)
     os.chdir(DEPS_DIR)
-    print(f"{donkey}\n")    
+    print(f"{steps()}\n")
     sys.stdout.flush()
     
     # install requirements
@@ -76,31 +78,31 @@ def main(branch=branch, npmSkip=False, skipTest=False):
         if subprocess.call(['pip', 'show', 'pytest']):
             subprocess.call(['pip', 'install', 'pytest==4.6.2', 'pytest-cov==2.7.1', 'tox==3.12.1'])
 
-    # install pygeppetto
-    cprint("Installing pygeppetto")
-    clone(repository=PYGEPPETTO,
-          folder='pygeppetto',
-          default_branch='development'
-          )
-    execute(cmd=['pip', 'install', '-e', '.'], cwd='pygeppetto')
+    if development:
+        # install pygeppetto
+        cprint("Installing pygeppetto")
+        clone(repository=PYGEPPETTO,
+              folder='pygeppetto',
+              default_branch='development'
+              )
+        execute(cmd=['pip', 'install', '-e', '.'], cwd='pygeppetto')
 
+        # test
+        if skipTest:
+            cprint("Skipping pygeppetto tests")
+        else:
+            cprint("Testing pygeppetto")
+            execute(cmd=['coverage', 'run', '--source', 'pygeppetto', '-m', 'pytest', '-v', '-c', 'tox.ini'],
+                    cwd=os.path.join(DEPS_DIR, 'pygeppetto'))
 
-    # test
-    if skipTest:
-        cprint("Skipping pygeppetto tests")
-    else:
-        cprint("Testing pygeppetto")
-        execute(cmd=['coverage', 'run', '--source', 'pygeppetto', '-m', 'pytest', '-v', '-c', 'tox.ini'], cwd=os.path.join(DEPS_DIR, 'pygeppetto'))
-
-
-    # install pynwb
-    cprint("Installing nwb jupyter widgets")
-    clone(repository=NWBWIDGETS,
-          folder='nwbwidgets',
-          default_branch='master'
-          )
-    subprocess.call(['git', 'reset', '--hard', '9756e601b2c99384b4dc6a4fc1a164f1990d7b1b'], cwd='nwbwidgets')
-    subprocess.call(['pip', 'install', '-e', '.'], cwd='nwbwidgets')
+        # install jupyter widgets
+        cprint("Installing nwb jupyter widgets")
+        clone(repository=NWBWIDGETS,
+              folder='nwbwidgets',
+              default_branch='master'
+              )
+        subprocess.call(['git', 'reset', '--hard', '9756e601b2c99384b4dc6a4fc1a164f1990d7b1b'], cwd='nwbwidgets')
+        subprocess.call(['pip', 'install', '-e', '.'], cwd='nwbwidgets')
 
 
     # install jupyter notebook
@@ -118,8 +120,12 @@ def main(branch=branch, npmSkip=False, skipTest=False):
     cprint("Installing extensions")
     # FIXME for some reason it fails the first time on a clean conda env 
     # (pip version, conda version, jupyter installation?)
-    if subprocess.call(['pip', 'install', '-e', '.'], cwd=os.path.join(DEPS_DIR, JUPYTER_DIR)):
-        execute(cmd=['pip', 'install', '-e', '.'], cwd=os.path.join(DEPS_DIR, JUPYTER_DIR))
+    if development:
+        if subprocess.call(['pip', 'install', '-e', '.'], cwd=os.path.join(DEPS_DIR, JUPYTER_DIR)):
+            execute(cmd=['pip', 'install', '-e', '.'], cwd=os.path.join(DEPS_DIR, JUPYTER_DIR))
+    else:
+        if subprocess.call(['pip', 'install', '.'], cwd=os.path.join(DEPS_DIR, JUPYTER_DIR)):
+            execute(cmd=['pip', 'install', '.'], cwd=os.path.join(DEPS_DIR, JUPYTER_DIR))
 
     execute(cmd=['jupyter', 'nbextension', 'install', '--py', '--symlink', '--sys-prefix', 'jupyter_geppetto'])
     execute(cmd=['jupyter', 'nbextension', 'enable', '--py', '--sys-prefix', 'jupyter_geppetto'])
@@ -146,7 +152,46 @@ def main(branch=branch, npmSkip=False, skipTest=False):
 
     # install app
     cprint("Installing UI python package...")
-    execute(cmd=['pip', 'install', '-e', '.', '--no-deps'])
+    if development:
+        execute(cmd=['pip', 'install', '-e', '.', '--no-deps'])
+    else:
+        execute(cmd=['pip', 'install', '.', '--no-deps'])
+
+
+def steps():
+    return f'''\033[0m {'_' * (58)}
+    (                                                           )
+    (  \U0001F604 Welcome to \033[36;3mNWB-Explorer\033[0m development installation      )
+    (                                                           )
+    (  \U0001F463 We will execute the following steps:                  )
+    (                                                           )
+    (    \U0001F40D Install Python requirements.                        )
+    (                                                           )
+    (    \U0001F63C Clone some GitHub repositories                      )
+    (                                                           )
+    (    \U0001F9D9  Setup a custom Geppetto Application:                )
+    (                                                           )
+    (      \U0001F41E Install frontend NPM packages.                    )
+    (                                                           )
+    (      \U0001F9F1  Build frontend bundle.                            )
+    (                                                           )
+    (      \U0001F316 Enable Jupyter extensions.                        )
+    (                                                           )
+    (      \U0001F52C Test NWB-Explorer.                                )
+    (                                                           )
+    (    \U0001F433  Wrap-up and tag the Docker image.                  )
+    (                                                           )
+    (  \U0000231B The  whole process takes between 3 to 5 minutes.      )
+    (                                                           )
+    (  \U0001F3C4 Thank you for using NWB-Explorer!                     )
+    ({"_" * 59})
+              o
+               o   ^__^
+                o  (oo)\_________
+                   (__)\         )\\/\\
+                       ||------W |
+                       ||       ||
+    '''
 
 
 if __name__ == "__main__":
@@ -162,10 +207,14 @@ if __name__ == "__main__":
     parser.add_argument('--no-test', dest='skipTest', action="store_true", default=False,
                         help='Skip python tests.')
 
+    parser.add_argument('--dev', dest='development', action="store_true", default=False,
+                        help='Prepare development environment.')
+
     args = parser.parse_args([arg if arg != 'branch' else '-b' for arg in sys.argv[1:]])
     print(args)
     branch = args.branch
 
     skipNpm = args.skipNpm
     skipTest = args.skipTest
-    main(branch, skipNpm, skipTest)
+    development = args.development
+    main(branch, skipNpm, skipTest, development)
