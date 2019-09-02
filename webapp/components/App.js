@@ -1,13 +1,11 @@
 import React from 'react';
 import { grey } from '@material-ui/core/colors';
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
-import ConsoleTabs from './ConsoleTabs';
 import SplashPage from './pages/SplashPage';
 import nwbFileService from '../services/NWBFileService';
 import FileExplorerPage from './pages/FileExplorerPage';
-import PythonConsole from 'geppetto-client/js/components/interface/pythonConsole/PythonConsole';
 // import { Route, Switch, Redirect, BrowserRouter as Router } from 'react-router-dom';
-import { getConsole } from '../services/NotebookService';
+
 
 const theme = createMuiTheme({
   typography: { 
@@ -20,7 +18,7 @@ const theme = createMuiTheme({
   },
   palette: {
     primary: { main: grey[500] },
-    secondary: { main: '#202020' },
+    secondary: { main: '#111111' },
     error: { main: '#ffffff' },
     text: { secondary: "white" }
   }
@@ -42,8 +40,8 @@ export default class App extends React.Component{
     if (nwbCookie) {
       const [_, nwbFileUrl] = nwbCookie.replace(/"/g, '').split("=")
       if (nwbFileUrl && document.location.href.includes("nwbexplorer.opensourcebrain.org")) {
-        document.cookie = `${cookieName}= ; path=/`
-        document.location.href = `${document.location.href}?nwbfile=${nwbFileUrl}`;
+        document.cookie = `${cookieName}= ; path=/`;
+        loadNWBFile(nwbFileUrl);
       }
     }
     
