@@ -63,7 +63,7 @@ export const showList = (name, pathPattern, typePattern, status = WidgetStatus.A
 
 export const showAcquisition = showList('Acquisition', "^nwbfile\\.acquisition\\.", /Series$/);
 
-export const showStimulus = showList('Stimulus', /^nwbfile\\.stimulus\\./, /Series$/, WidgetStatus.HIDDEN);
+export const showStimulus = showList('Stimulus', "^nwbfile\\.stimulus\\.", /Series$/, WidgetStatus.HIDDEN);
 
 export const showSweeps = { 
   type: ADD_WIDGET,
