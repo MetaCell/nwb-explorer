@@ -236,7 +236,7 @@ def test_imageseries(nwbfile, tmpdir):
 
     assert all(img.shape == (2, 2, 3) for img in np_images)
 
-@pytest.mark.skip(reason="io.read() is broken for timeseries created with arg 'rate' instead of 'timestamps'")
+
 def test_sweep_table():
     nwb_interpreter = NWBModelInterpreter(os.path.join(HERE, 'nwb_files', 'pynwb_test_files', 'test_SweepTable.nwb'))
 
