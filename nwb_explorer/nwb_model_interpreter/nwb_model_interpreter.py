@@ -3,6 +3,7 @@ netpyne_model_interpreter.py
 Model interpreter for NWB. This class creates a geppetto type
 """
 import os
+import logging
 
 from pygeppetto.model import GeppettoLibrary
 from pygeppetto.model.model_access import GeppettoModelAccess
@@ -52,23 +53,23 @@ class NWBModelInterpreter(ModelInterpreter):
         return geppetto_model
 
     def importType(self, url, type_name, library, geppetto_model_access: GeppettoModelAccess):
-
+        logging.info(f"Importing type {type_name}, url: {url}")
         model_factory = GeppettoModelFactory(geppetto_model_access.geppetto_common_library)
         mapper = GenericCompositeMapper(model_factory, library)
         # build compositeTypes for pynwb objects
         root_type = mapper.create_type(self.get_nwbfile(), type_name=type_name, type_id=type_name)
-
-        from nwb_explorer.nwb_data_manager import CACHE_DIRNAME
-        root_type.variables.append(
-            model_factory.create_url_variable(
-                id='source file',
-                url=f"{settings.home_page}/{CACHE_DIRNAME}/{os.path.basename(self.nwb_file_name)}"
+        if isinstance(self.nwb_file_name, str) and url == 'nwbfile':
+            from nwb_explorer.nwb_data_manager import CACHE_DIRNAME
+            root_type.variables.append(
+                model_factory.create_url_variable(
+                    id='source file',
+                    url=f"{settings.home_page}/{CACHE_DIRNAME}/{os.path.basename(self.nwb_file_name)}"
+                )
             )
-        )
         return root_type
 
     def importValue(self, import_value: ImportValue):
-
+        logging.info(f"Importing value {import_value.eContainer().eContainer().getPath()}")
         nwb_obj = ImportValueMapper.import_values[import_value]
         var_to_extract = import_value.eContainer().eContainer().id
 
