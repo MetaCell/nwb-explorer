@@ -45,10 +45,13 @@ class NWBDataManager(GeppettoDataManager, metaclass=Singleton):
 
     def get_project_from_url(self, nwbfile):
         '''The url we expect here is a nwb file, potentially remote'''
-        nwbfilename = get_file_path(nwbfile)
-        model_interpreter = NWBModelInterpreter(nwbfilename)
-        add_model_interpreter(model_interpreter.library.id, model_interpreter)
         try:
+            nwbfilename = get_file_path(nwbfile)
+        except Exception as e:
+            raise Exception("Error retrieving file" + nwbfile) from e
+        try:
+            model_interpreter = NWBModelInterpreter(nwbfilename)
+            add_model_interpreter(model_interpreter.library.id, model_interpreter)
 
             geppetto_model = model_interpreter.create_model()
             project = GeppettoProject(id=self.last_id, name='NWB file {}'.format(os.path.basename(nwbfilename)),
@@ -57,5 +60,7 @@ class NWBDataManager(GeppettoDataManager, metaclass=Singleton):
             self.last_id += 1
             self.projects[project.id] = project
             return project
-        except ValueError as e:
-            raise Exception("File error", e)
+
+        except Exception as e:
+            os.remove(nwbfilename)
+            raise Exception("NWB file error") from e
