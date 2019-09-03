@@ -148,14 +148,14 @@ function extractPanelName (action) {
 function fileLoadedLayout () {
   const widgets = { [showGeneral.data.id]: showGeneral.data };
 
+  if (Instances.getInstance('nwbfile.stimulus') && Instances.getInstance('nwbfile.stimulus').getType().getVariables().length) {
+    widgets[showStimulus.data.id] = showStimulus.data;
+  }
+
   if (Instances.getInstance('nwbfile.acquisition')) {
     widgets[showAcquisition.data.id] = showAcquisition.data;
   }
 
-
-  if (Instances.getInstance('nwbfile.stimulus')) {
-    widgets[showStimulus.data.id] = showStimulus.data;
-  }
   if (Instances.getInstance('nwbfile.sweep_table')) {
     widgets[showSweeps.data.id] = showSweeps.data;
   }
