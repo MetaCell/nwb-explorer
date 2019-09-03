@@ -1,6 +1,6 @@
 import React from 'react';
 import Collapsible from 'react-collapsible';
-
+import Linkify from 'react-linkify';
 const Type = require('geppetto-client/js/geppettoModel/model/Type');
 
 export default class Metadata extends React.Component {
@@ -14,10 +14,8 @@ export default class Metadata extends React.Component {
   }
 
   prettyContent (string) {
-    if (string.startsWith('http')) {
-      return <a href={string} target="_blank">{string}</a>;
-    }
-    return string;
+    
+    return <Linkify>{string}</Linkify>;
   }
 
   getContent (geppettoInstanceOrType) {
@@ -41,20 +39,24 @@ export default class Metadata extends React.Component {
         )
       );
     }
-    
+
 
     type.getChildren().forEach(variable => {
       const variableType = variable.getType();
-  
+
       let name = variable.getId();
       const { prettyLabel } = this;
       let metadata;
 
       if (variableType.getName() == 'Text') {
         let value = variable.getInitialValue().value.text;
-        
+
         metadata = this.prettyContent(value);
 
+      } else if (variableType.getName() == 'HTML') {
+        metadata = <span dangerouslySetInnerHTML={{ __html: variable.getInitialValue().value.html }}></span>;
+      } else if (variableType.getName() == 'URL') {
+        metadata = <a target='_blank' title="Download file" href={ variable.getInitialValue().value.url }>{ variable.getInitialValue().value.url.split('/').slice(-1) }</a>;
       } else if (variableType.getChildren && variableType.getChildren()) {
         metadata = variable.getType().getChildren().filter(v => v.getType().getName() == 'Text').map(v => this.formatField(prettyLabel(v.getId()), this.prettyContent(v.getInitialValue().value.text)));
       }
@@ -70,7 +72,7 @@ export default class Metadata extends React.Component {
     return content;
 
   }
-  
+
   getTypeSupport (typeName) {
     if (typeName == 'TimeSeries' || typeName == 'ImageSeries') {
       return 'metadata and experimental data';

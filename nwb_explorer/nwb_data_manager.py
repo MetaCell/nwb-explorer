@@ -1,18 +1,18 @@
 import logging
 import os
-
-import pygeppetto
+import shutil
 import requests
+
 from pygeppetto.data_model import GeppettoProject
-from pygeppetto.model import GeppettoLibrary
-from pygeppetto.model.types import ImportType
 from pygeppetto.services.data_manager import GeppettoDataManager
 from pygeppetto.utils import Singleton
 from pygeppetto.services.model_interpreter import add_model_interpreter
-# TODO this path must be a shared storage inside the cluster
-from nwb_explorer.nwb_model_interpreter import NWBModelInterpreter, GeppettoModelAccess, GeppettoModelFactory, Variable
 
-CACHE_DEFAULT_DIR = 'nwb_files_cache/'
+from nwb_explorer.nwb_model_interpreter import NWBModelInterpreter
+
+CACHE_DIRNAME = 'nwb_files_cache'
+# TODO this path must be a shared storage inside the cluster
+CACHE_DEFAULT_DIR = f"webapp/{CACHE_DIRNAME}/"
 
 
 class NWBFileNotFound(FileNotFoundError): pass
@@ -20,15 +20,21 @@ class NWBFileNotFound(FileNotFoundError): pass
 
 def get_file_path(file_name_or_url):
     if file_name_or_url.startswith('http'):
-        nwbfile = get_file_from_url(file_name_or_url)
-        return nwbfile
-    if not os.path.exists(file_name_or_url):
+        file_name = get_file_from_url(file_name_or_url)
+        return file_name
+    elif not os.path.exists(file_name_or_url):
         raise NWBFileNotFound("NWB file not found", file_name_or_url)
-    return file_name_or_url
+    else:
+        file_name = get_cache_path(file_name_or_url)
+        if not os.path.exists(file_name):
+            if not os.path.exists(os.path.dirname(file_name)):
+                os.makedirs(os.path.dirname(file_name))
+            shutil.copyfile(file_name_or_url, file_name)
+        return file_name
 
 
 def get_file_from_url(file_url, fname=None, cache_dir=CACHE_DEFAULT_DIR):
-    file_name = os.path.join(cache_dir, (os.path.basename(file_url) if not fname else fname))
+    file_name = get_cache_path(file_url, fname, cache_dir)
     if not os.path.exists(file_name):
         if not os.path.exists(os.path.dirname(file_name)):
             os.makedirs(os.path.dirname(file_name))
@@ -37,7 +43,12 @@ def get_file_from_url(file_url, fname=None, cache_dir=CACHE_DEFAULT_DIR):
         with open(file_name, 'wb') as f:
             f.write(response.content)
         logging.info('Downloaded file to: {}'.format(file_name))
+
     return file_name
+
+
+def get_cache_path(file_url, fname=None, cache_dir=CACHE_DEFAULT_DIR):
+    return os.path.join(cache_dir, (os.path.basename(file_url) if not fname else fname))
 
 
 class NWBDataManager(GeppettoDataManager, metaclass=Singleton):
