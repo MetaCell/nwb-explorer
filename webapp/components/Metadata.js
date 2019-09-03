@@ -15,7 +15,7 @@ export default class Metadata extends React.Component {
 
   prettyContent (string) {
     
-    return <Linkify>string</Linkify>;
+    return <Linkify>{string}</Linkify>;
   }
 
   getContent (geppettoInstanceOrType) {
