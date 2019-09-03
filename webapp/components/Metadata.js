@@ -7,9 +7,17 @@ export default class Metadata extends React.Component {
 
   state = { content: [] }
 
-  prettyFormat (string) {
+  prettyLabel (string) {
+
     let output = string.charAt(0).toUpperCase() + string.slice(1);
     return output.replace('_interface_map', '').replace('_', ' ')
+  }
+
+  prettyContent (string) {
+    if (string.startsWith('http')) {
+      return <a href={string} target="_blank">{string}</a>;
+    }
+    return string;
   }
 
   getContent (geppettoInstanceOrType) {
@@ -39,18 +47,19 @@ export default class Metadata extends React.Component {
       const variableType = variable.getType();
   
       let name = variable.getId();
-      const { prettyFormat } = this;
+      const { prettyLabel } = this;
       let metadata;
 
       if (variableType.getName() == 'Text') {
         let value = variable.getInitialValue().value.text;
-        metadata = value;
+        
+        metadata = this.prettyContent(value);
 
       } else if (variableType.getChildren && variableType.getChildren()) {
-        metadata = variable.getType().getChildren().filter(v => v.getType().getName() == 'Text').map(v => this.formatField(prettyFormat(v.getId()), v.getInitialValue().value.text));
+        metadata = variable.getType().getChildren().filter(v => v.getType().getName() == 'Text').map(v => this.formatField(prettyLabel(v.getId()), this.prettyContent(v.getInitialValue().value.text)));
       }
 
-      if (metadata && metadata.length) {
+      if (metadata && (metadata.length || metadata.type)) {
         content.push(
           this.formatCollapsible(name, metadata)
         );
@@ -75,13 +84,14 @@ export default class Metadata extends React.Component {
   }
 
   formatCollapsible (name, metadata) {
-    const { prettyFormat } = this;
-    return <Collapsible open={true} trigger={prettyFormat(name)}>
+    const { prettyLabel } = this;
+    return <Collapsible open={true} trigger={prettyLabel(name)}>
       <div>{metadata}</div>
     </Collapsible>;
   }
 
   formatField (name, value) {
+
     return <p key={name}><span className="meta-label">{name}</span>: {value}</p>;
   }
 

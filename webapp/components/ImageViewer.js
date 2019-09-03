@@ -61,33 +61,45 @@ const styles = theme => ({
 });
 
 class ImageViewer extends Component {
-  state = { 
-    activeStep: 0,
-    imageLoading: true
-  };
-  cachedImage = []
-  headerButtons = ["download", "play", "pause"]
+
+  cachedImage = [];
+  headerButtons = ["download", "play", "pause"];
   showNextImage = this.showNextImage.bind(this);
+
+  constructor (props) {
+    super(props);
+    this.state = { 
+      activeStep: 0,
+      imageLoading: true,
+    };
+  }
   
   componentDidMount () {
     const { imagePaths } = this.props;
     if (imagePaths === undefined) {
       console.warn("Prop imagePaths in geppetto-client/ImageViewer shouldn't be undefined.")
     } else {
-      this.cachedImage = imagePaths.map(() => false)
+      this.cachedImage = imagePaths.map(() => false);
     }
     
   }
 
-  handleNext = step => {
-    const { activeStep } = this.state
-    const { timestamps } = this.props
+  componentDidUpdate () {
 
-    let nextImageIndex = activeStep + step
+    if (this.state.imageLoading && this.cachedImage[this.state.activeStep]) {
+      this.setState({ imageLoading: false });
+    }
+  }
+
+  handleNext = step => {
+    const { activeStep } = this.state;
+    const { timestamps } = this.props;
+
+    let nextImageIndex = activeStep + step;
     if (nextImageIndex == timestamps.length) {
-      nextImageIndex = 0
+      nextImageIndex = 0;
     } else if (nextImageIndex < 0){
-      nextImageIndex = timestamps.length - 1
+      nextImageIndex = timestamps.length - 1;
     }
 
     this.setState({ 
@@ -95,48 +107,44 @@ class ImageViewer extends Component {
       imageLoading: !this.cachedImage[nextImageIndex]
     });
     
-  };
+  }
 
   clickImage = (e, num_samples) => {
-    const { activeStep } = this.state
-    const { offsetX } = e.nativeEvent
-    const { offsetWidth } = e.target
-    const className = e.target.className
+    const { activeStep } = this.state;
+    const { offsetX } = e.nativeEvent;
+    const { offsetWidth } = e.target;
+    const className = e.target.className;
     
     if (!this.headerButtons.some(iconName => className.includes(iconName))) {
       if (offsetX > offsetWidth / 2) {
-        this.handleNext(+1)
+        this.handleNext(+1);
       } else {
-        this.handleNext(-1)
+        this.handleNext(-1);
       }
     }
   }
 
   showNextImage () {
-    const { timestamps } = this.props
-    const { activeStep } = this.state
-    const nextImageIndex = activeStep < timestamps.length - 1 ? activeStep + 1 : 0
+    const { timestamps } = this.props;
+    const { activeStep, imageLoading } = this.state;
+
+    const nextImageIndex = activeStep < timestamps.length - 1 ? activeStep + 1 : 0;
+    if (!this.cachedImage[activeStep]){
+      this.setState({ imageLoading: true });
+      return;
+    }
     
-    this.setState({ 
-      activeStep: nextImageIndex,
-      imageLoading: !this.cachedImage[nextImageIndex]
-    })
+    this.setState({ activeStep: nextImageIndex, imageLoading: !this.cachedImage[nextImageIndex] });
   }
 
-  onLoadImage (activeStep, numberOfImages, numberOfImagesToPreload) {
+  onLoadImage (imageIndex) {
     // hide spinning wheel
-    if (!this.cachedImage[activeStep]) {
-      this.cachedImage[activeStep] = true
-      this.setState({ imageLoading: false })
+    
+    if (this.state.imageLoading && this.cachedImage[imageIndex]) {
+      this.setState({ imageLoading: false });
     }
-    // preload next images
-    if (activeStep < numberOfImages - numberOfImagesToPreload && !this.cachedImage[activeStep + 1]) {
-      const { imagePaths } = this.props
-      Array(numberOfImagesToPreload).fill(false).forEach((el, index) => {
-        let img = new Image()
-        img.src = imagePaths[activeStep + index + 1]
-      })
-    }
+    this.cachedImage[imageIndex] = true;
+    
   }
 
   autoPlay () {
@@ -145,15 +153,17 @@ class ImageViewer extends Component {
       this.interval = null;
     } else {
       this.showNextImage()
-      this.interval = setInterval(this.showNextImage, 5000);
+      this.interval = setInterval(this.showNextImage, 500);
     }
-    this.setState(({ autoplayToggled }) => ({ autoplayToggled: !autoplayToggled }))
-  } 
+    this.setState(({ autoplayToggled }) => ({ autoplayToggled: !autoplayToggled }));
+
+  }
+
   
   render () {
-    const { imagePaths, timestamps, numberOfImagesToPreload = 1, classes } = this.props;
+    const { imagePaths, timestamps, classes } = this.props;
     const { activeStep, hoverImg, imageLoading, autoplayToggled } = this.state;
-    
+
     return (
       <div 
         className={classes.root}
@@ -168,11 +178,7 @@ class ImageViewer extends Component {
           </div>
         </Zoom>
 
-        <img
-          className={classes.img}
-          src={imagePaths[activeStep]}
-          onLoad={() => this.onLoadImage(activeStep, timestamps.length, numberOfImagesToPreload)}
-        />
+        { this.renderImages() }
 
         {imageLoading && <CircularProgress
           size={24}
@@ -208,6 +214,19 @@ class ImageViewer extends Component {
         
       </div>
     );
+  }
+
+  renderImages () {
+    const { activeStep } = this.state;
+    const { imagePaths, classes } = this.props;
+    return imagePaths.map((image, index) => {
+      if (image == imagePaths[activeStep]) {
+        return <img key="active" className={classes.img} src={image} onLoad={() => this.onLoadImage(index)} />;
+      } else {
+        return <img key={image} className={classes.img} src={image} style={{ display: "none" }} onLoad={() => this.onLoadImage(index)}/>;
+      }
+    });
+    
   }
 }
 
