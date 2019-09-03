@@ -40,7 +40,7 @@ require(["jquery"], function ($) {
     window.location.reload();
   })
   // hook up event-stream for progress
-  var evtSource = new EventSource("{{ progress_url }}");
+  var evtSource = new MyReplacementForEventSource("{{ progress_url }}");
   var progressMessage = $("#progress-message");
   var progressBar = $("#progress-bar");
   var srProgress = $("#sr-progress");
