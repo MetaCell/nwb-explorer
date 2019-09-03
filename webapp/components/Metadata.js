@@ -64,13 +64,13 @@ export default class Metadata extends React.Component {
   
   getTypeSupport (typeName) {
     if (typeName == 'TimeSeries' || typeName == 'ImageSeries') {
-      return 'Metadata and experimental data';
+      return 'metadata and experimental data';
     } else if (typeName === 'Unsupported') {
       return 'Unsupported';
     } else if (typeName.includes('Series')) {
-      return 'Partial: metadata and possibly experimental data';
+      return 'partial - metadata and possibly experimental data';
     } else {
-      return 'Partial: metadata only';
+      return 'partial - metadata only';
     }
   }
 

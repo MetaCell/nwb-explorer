@@ -7,12 +7,12 @@ export const RESET_LAYOUT = 'RESET_LAYOUT';
 export const DESTROY_WIDGET = 'DESTROY_WIDGET';
 export const ADD_PLOT_TO_EXISTING_WIDGET = 'ADD_PLOT_TO_EXISTING_WIDGET'
 
-export const showPlot = ({ path, color = 'red' }) => ({ 
+export const showPlot = ({ path, color = 'red' }) => ({
   type: ADD_WIDGET,
   data: {
-    id: 'plot@' + path, 
+    id: 'plot@' + path,
     instancePath: path,
-    component: 'Plot', 
+    component: 'Plot',
     type: 'TimeSeries',
     name: path.slice(FILEVARIABLE_LENGTH),
     status: WidgetStatus.ACTIVE,
@@ -23,7 +23,7 @@ export const showPlot = ({ path, color = 'red' }) => ({
   }
 });
 
-export const addToPlot = ({ hostId, instancePath, color }) => ({ 
+export const addToPlot = ({ hostId, instancePath, color }) => ({
   type: ADD_PLOT_TO_EXISTING_WIDGET,
   data: {
     hostId,
@@ -33,12 +33,12 @@ export const addToPlot = ({ hostId, instancePath, color }) => ({
   }
 });
 
-export const showImageSeries = ({ path, type }) => ({ 
+export const showImageSeries = ({ path, type }) => ({
   type: ADD_WIDGET,
   data: {
-    id: 'img@' + path, 
+    id: 'img@' + path,
     instancePath: path,
-    component: 'ImageSeries', 
+    component: 'ImageSeries',
     type: 'ImageSeries',
     name: path.slice(FILEVARIABLE_LENGTH),
     status: WidgetStatus.ACTIVE,
@@ -48,13 +48,13 @@ export const showImageSeries = ({ path, type }) => ({
 });
 
 
-export const showList = (name, pathPattern, typePattern, status = WidgetStatus.ACTIVE) => ({ 
+export const showList = (name, pathPattern, typePattern, status = WidgetStatus.ACTIVE) => ({
   type: ADD_WIDGET,
   data: {
-    id: 'list@' + pathPattern, 
-    pathPattern: pathPattern instanceof RegExp ? pathPattern.source : pathPattern, 
+    id: 'list@' + pathPattern,
+    pathPattern: pathPattern instanceof RegExp ? pathPattern.source : pathPattern,
     typePattern: typePattern instanceof RegExp ? typePattern.source : typePattern,
-    component: 'ListViewer', 
+    component: 'ListViewer',
     name: name,
     status: status,
     panelName: 'rightTop'
@@ -65,67 +65,89 @@ export const showAcquisition = showList('Acquisition', "^nwbfile\\.acquisition\\
 
 export const showStimulus = showList('Stimulus', "^nwbfile\\.stimulus\\.", /Series$/, WidgetStatus.HIDDEN);
 
-export const showSweeps = { 
+export const showSweeps = {
   type: ADD_WIDGET,
   data: {
-    id: 'sweep_table', 
-    component: 'SweepTable', 
+    id: 'sweep_table',
+    component: 'SweepTable',
     name: 'Sweeps',
     status: WidgetStatus.HIDDEN,
     panelName: 'rightTop'
   }
 }
 
-
-export const newWidget = ({ path, component, panelName }) => ({ 
+export const showGeneral = {
   type: ADD_WIDGET,
   data: {
-    id: path, 
-    instancePath: path, 
-    component: component, 
+    id: 'general',
+    name: 'General',
+    status: WidgetStatus.ACTIVE,
+    instancePath: 'nwbfile',
+    component: 'Metadata',
+    panelName: "leftPanel",
+    enableClose: false
+  }
+}
+
+
+export const newWidget = ({ path, component, panelName }) => ({
+  type: ADD_WIDGET,
+  data: {
+    id: path,
+    instancePath: path,
+    component: component,
     name: path.slice(FILEVARIABLE_LENGTH),
     status: WidgetStatus.ACTIVE,
     panelName: panelName
   }
 });
 
-export const updateWidget = (newConf => ({ 
+export const updateWidget = (newConf => ({
   type: UPDATE_WIDGET,
   data: newConf
 }))
 
 
-export const minimizeWidget = id => ({ 
+export const minimizeWidget = id => ({
   type: UPDATE_WIDGET,
   data: {
     id,
     status: WidgetStatus.MINIMIZED
   }
-  
+
 });
 
-export const maximizeWidget = id => ({ 
+export const maximizeWidget = id => ({
   type: UPDATE_WIDGET,
   data: {
     id,
     status: WidgetStatus.MAXIMIZED
   }
 });
-export const activateWidget = id => ({ 
+export const activateWidget = id => ({
   type: ACTIVATE_WIDGET,
   data: { id }
 
 });
 
-export const updateDetailsWidget = path => ({ 
-  type: UPDATE_WIDGET,
-  data: { id: 'details', instancePath: path, showObjectInfo: true, status: WidgetStatus.ACTIVE }
+export const updateDetailsWidget = path => ({
+  type: ADD_WIDGET,
+  data: {
+    id: 'details', 
+    name: 'Details', 
+    instancePath: path,
+    status: WidgetStatus.ACTIVE, 
+    component: 'Metadata', 
+    panelName: "leftPanel",
+    enableClose: false,
+    showObjectInfo: true
+  }
 });
 
-export const destroyWidget = id => ({ 
+export const destroyWidget = id => ({
   type: DESTROY_WIDGET,
   data: { id }
-  
+
 });
 
 export const resetLayout = { type: RESET_LAYOUT, };

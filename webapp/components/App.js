@@ -113,10 +113,10 @@ export default class App extends React.Component{
   }
 
   render () {
-    const { model, embedded, showNotebook, isLoadedInNotebook } = this.props;
+    const { model, embedded, showNotebook, isLoadedInNotebook, nwbFileUrl } = this.props;
     
     var page;
-    if (model) {
+    if (nwbFileUrl) {
       page = <FileExplorerPage/>
     } else if (!embedded) {
       page = <SplashPage />

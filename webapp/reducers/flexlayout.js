@@ -5,8 +5,10 @@ import {
   DESTROY_WIDGET,
   ACTIVATE_WIDGET,
   ADD_PLOT_TO_EXISTING_WIDGET,
-  showList, showAcquisition, showStimulus
+  showList, showAcquisition, showStimulus, showSweeps, showGeneral
 } from '../actions/flexlayout';
+
+import { NWB_FILE_LOADED } from '../actions/nwbfile'
 
 import { WidgetStatus } from '../components/constants';
 
@@ -17,23 +19,7 @@ function removeUndefined (obj) {
 
 export const FLEXLAYOUT_DEFAULT_STATUS = { 
   widgets: {
-    'general': { 
-      id: 'general', 
-      name: 'General', 
-      status: WidgetStatus.ACTIVE, 
-      instancePath: 'nwbfile', 
-      component: 'Metadata', 
-      panelName: "leftPanel" ,
-      enableClose: false
-    },
-    'details': { 
-      id: 'details', 
-      name: 'Details', 
-      status: WidgetStatus.HIDDEN, 
-      component: 'Metadata', 
-      panelName: "leftPanel",
-      enableClose: false
-    },
+    
     'python': { 
       id: 'python', 
       name: 'Python', 
@@ -43,13 +29,12 @@ export const FLEXLAYOUT_DEFAULT_STATUS = {
       panelName: "bottomPanel",
       enableClose: false
     },
-    
-    [showAcquisition.data.id]: showAcquisition.data ,
-    [showStimulus.data.id]: showStimulus.data ,
+
     
   },
 
 };
+
 
 export default (state = FLEXLAYOUT_DEFAULT_STATUS, action) => {
   if (action.data) {
@@ -125,6 +110,9 @@ export default (state = FLEXLAYOUT_DEFAULT_STATUS, action) => {
     return state
   }
 
+  case NWB_FILE_LOADED:
+    return { widgets: { ...state.widgets, ...fileLoadedLayout() } };
+
   default:
     return state
   }
@@ -155,3 +143,25 @@ function updateWidgetStatus (widgets, { status, panelName }) {
 function extractPanelName (action) {
   return action.data.component == "Plot" ? "bottomPanel" : "leftPanel";
 }
+
+
+function fileLoadedLayout () {
+  const widgets = { [showGeneral.data.id]: showGeneral.data };
+
+  if (Instances.getInstance('nwbfile.acquisition')) {
+    widgets[showAcquisition.data.id] = showAcquisition.data;
+  }
+
+
+  if (Instances.getInstance('nwbfile.stimulus')) {
+    widgets[showStimulus.data.id] = showStimulus.data;
+  }
+  if (Instances.getInstance('nwbfile.sweep_table')) {
+    widgets[showSweeps.data.id] = showSweeps.data;
+  }
+  return widgets;
+  
+
+} 
+
+    

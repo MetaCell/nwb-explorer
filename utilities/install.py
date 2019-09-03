@@ -60,8 +60,6 @@ def execute(cmd, cwd='.'):
 
 def main(branch=branch, skipNpm=False, skipTest=False, development=False):
 
-
-
     if not os.path.exists(DEPS_DIR):
         os.mkdir(DEPS_DIR)
     os.chdir(DEPS_DIR)
