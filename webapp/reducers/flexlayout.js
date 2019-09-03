@@ -23,10 +23,17 @@ export const FLEXLAYOUT_DEFAULT_STATUS = {
     'python': { 
       id: 'python', 
       name: 'Python', 
-      status: WidgetStatus.HIDDEN, 
+      status: WidgetStatus.MINIMIZED, 
       icon: 'fa-python',
       component: 'PythonConsole', 
       panelName: "bottomPanel",
+      enableClose: false
+    },
+    'general': { 
+      id: 'general', 
+      name: 'General', 
+      status: WidgetStatus.ACTIVE, 
+      panelName: "leftPanel",
       enableClose: false
     },
 

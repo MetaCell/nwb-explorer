@@ -2,6 +2,7 @@
 netpyne_model_interpreter.py
 Model interpreter for NWB. This class creates a geppetto type
 """
+import os
 
 from pygeppetto.model import GeppettoLibrary
 from pygeppetto.model.model_access import GeppettoModelAccess
@@ -13,6 +14,8 @@ from .nwb_reader import NWBReader
 from .settings import *
 from ..utils import guess_units
 
+from jupyter_geppetto import settings, PathService
+
 
 def assign_name_to_type(pynwb_obj):
     ''' Use this function to assign custom names to geppetto compositeTypes '''
@@ -23,6 +26,7 @@ class NWBModelInterpreter(ModelInterpreter):
 
     def __init__(self, nwb_file_name):
         logging.info(f'Creating a Model Interpreter for {nwb_file_name}')
+        self.nwb_file_name = nwb_file_name
         self.nwb_reader = NWBReader(nwb_file_name)
         self.library = GeppettoLibrary(name='nwbfile', id='nwbfile')
 
@@ -52,7 +56,16 @@ class NWBModelInterpreter(ModelInterpreter):
         model_factory = GeppettoModelFactory(geppetto_model_access.geppetto_common_library)
         mapper = GenericCompositeMapper(model_factory, library)
         # build compositeTypes for pynwb objects
-        return mapper.create_type(self.get_nwbfile(), type_name=type_name, type_id=type_name)
+        root_type = mapper.create_type(self.get_nwbfile(), type_name=type_name, type_id=type_name)
+
+        from nwb_explorer.nwb_data_manager import CACHE_DIRNAME
+        root_type.variables.append(
+            model_factory.create_url_variable(
+                id='source file',
+                url=f"{settings.home_page}/{CACHE_DIRNAME}/{os.path.basename(self.nwb_file_name)}"
+            )
+        )
+        return root_type
 
     def importValue(self, import_value: ImportValue):
 
