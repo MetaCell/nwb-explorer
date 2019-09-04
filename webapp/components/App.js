@@ -21,7 +21,8 @@ const theme = createMuiTheme({
     secondary: { main: '#111111' },
     error: { main: '#ffffff' },
     text: { secondary: "white" }
-  }
+  },
+  overrides: { MuiIcon: { root: { fontSize: "2.5rem" } } }
 });
 
 

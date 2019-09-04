@@ -165,11 +165,11 @@ module.exports = function (env){
           loader: 'ignore-loader'
         },
         {
-          test: /\.(py|jpeg|svg|gif|css|jpg|md|hbs|dcm|gz|xmi|dzi|sh|obj|yml|nii)$/,
+          test: /\.(py|jpeg|svg|gif|css|md|hbs|dcm|gz|xmi|dzi|sh|obj|yml|nii)$/,
           loader: 'ignore-loader'
         },
         {
-          test: /\.(png|eot|ttf|woff|woff2|svg)(\?[a-z0-9=.]+)?$/,
+          test: /\.(png|jpg|eot|ttf|woff|woff2|svg)(\?[a-z0-9=.]+)?$/,
           loader: 'url-loader?limit=100000'
         },
         {
