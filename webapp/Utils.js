@@ -36,7 +36,7 @@ const Utils = {
 
   getErrorResponse (data){
     let parsedData = this.convertToJSON(data)
-    if (parsedData.hasOwnProperty("type") && parsedData['type'] == 'ERROR'){
+    if (parsedData["type"] && parsedData['type'] == 'ERROR'){
       return { 'message': parsedData['message'], 'details' : parsedData['details'] }
     }
     return null;

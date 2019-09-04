@@ -13,7 +13,7 @@ PYGEPPETTO = 'https://github.com/openworm/pygeppetto.git'
 NWBWIDGETS = 'https://github.com/NeurodataWithoutBorders/nwb-jupyter-widgets.git'
 
 WEBAPP_DIR = "webapp"
-JUPYTER_DIR = 'org.geppetto.frontend.jupyter'
+JUPYTER_DIR = 'jupyter-geppetto'
 ROOT_DIR = os.path.join(HERE, os.pardir)
 DEPS_DIR = os.path.join(ROOT_DIR, 'src')
 

@@ -4,7 +4,7 @@ import {
   WAIT_DATA
 } from '../actions/general';
 
-import { NWB_FILE_NOT_FOUND_ERROR,MODULE_NOT_FOUND_ERROR, NAME_ERROR } from 'constants';
+import { NWB_FILE_NOT_FOUND_ERROR,MODULE_NOT_FOUND_ERROR, NAME_ERROR } from '../components/constants';
 import * as nwbfileActions from '../actions/nwbfile';
 import * as notebookActions from '../actions/notebook';
 
@@ -31,21 +31,16 @@ function reduceGeneral (state, action) {
     return { loading: { ...state.loading, [action.data.offAction] : action.data.message } }
   
   case RAISE_ERROR:
-    return { error: action.error }
+    return { error: action.error, loading: [] }
 
   case RECOVER_FROM_ERROR:{
     switch (state.error.ename) {
-      
     case NWB_FILE_NOT_FOUND_ERROR:
-      return { error: false }
-  
     case MODULE_NOT_FOUND_ERROR:
-      return { error: false }
-    
     case NAME_ERROR:
-      return { error: false }
+      return { error: false, loading: [] }
     default:
-      return { error: false }
+      return { error: false, loading: [] }
     }
   }
 
