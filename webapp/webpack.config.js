@@ -2,7 +2,7 @@ var path = require('path');
 var webpack = require('webpack');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 var CopyWebpackPlugin = require('copy-webpack-plugin');
-var ExtractTextPlugin = require("extract-text-webpack-plugin");
+var MiniCssExtractPlugin = require("mini-css-extract-plugin");
 /*
  *var BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
  * <%=htmlWebpackPlugin.options.GEPPETTO_CONFIGURATION._webapp_folder%>
@@ -17,10 +17,7 @@ try {
 }
 var geppetto_client_path = 'node_modules/@geppettoengine/geppetto-client'
 
-var publicPath = path.join(geppettoConfig.contextPath, "geppetto/build/");
-// var publicPath = ((geppettoConfig.contextPath == '/') ? '' : geppettoConfig.contextPath + "/") + "geppetto/build/";
-
-
+var publicPath = path.join("/", geppettoConfig.contextPath, "geppetto/build/");
 console.log("\nThe public path (used by the main bundle when including split bundles) is: " + publicPath);
 
 var isProduction = process.argv.indexOf('-p') >= 0;
@@ -65,6 +62,20 @@ module.exports = function (env){
   return {
     entry: entries,
     
+    optimization: {
+      splitChunks: {
+        cacheGroups: {
+          commons: {
+            name: 'common',                   
+            minChunks: 2, // Minimum # of chunks which need to contain a module before it's moved into the commons chunk.
+            chunks: 'initial', // initial, async or all
+            reuseExistingChunk: true, // use existing chunk if available instead of creating new one
+            enforce: true // form this chunk irrespective of the size of the chunk
+          }
+        }
+      }
+    },
+      
     output: {
       path: path.resolve(__dirname, 'build'),
       filename: '[name].bundle.js',
@@ -76,7 +87,6 @@ module.exports = function (env){
        *     analyzerMode: 'static'
        * }),
        */
-      new webpack.optimize.CommonsChunkPlugin(['common']),
       new CopyWebpackPlugin(availableExtensions),
       new HtmlWebpackPlugin({
         filename: 'geppetto.vm',
@@ -89,34 +99,31 @@ module.exports = function (env){
          */
         chunks: []
       }),
-      /*
-       * new HtmlWebpackPlugin({
-       *   filename: 'admin.vm',
-       *   template: path.resolve(__dirname, geppetto_client_path, 'js/pages/admin/admin.ejs'),
-       *   GEPPETTO_CONFIGURATION: geppettoConfig,
-       *   
-       *    * chunks: ['admin'] Not specifying the chunk since its not possible
-       *    * yet (need to go to Webpack2) to specify UTF-8 as charset without
-       *    * which we have errors
-       *    
-       *   chunks: []
-       * }),
-       * new HtmlWebpackPlugin({
-       *   filename: 'dashboard.vm',
-       *   template: path.resolve(__dirname, geppetto_client_path, 'js/pages/dashboard/dashboard.ejs'),
-       *   GEPPETTO_CONFIGURATION: geppettoConfig,
-       *   chunks: []
-       * }),
-       *
-       * new HtmlWebpackPlugin({
-       *   filename: '../WEB-INF/web.xml',
-       *   template: path.resolve(__dirname, 'WEB-INF/web.ejs'),
-       *   GEPPETTO_CONFIGURATION: geppettoConfig,
-       *   chunks: []
-       * }),
-       */
+      // new HtmlWebpackPlugin({
+      //   filename: 'admin.vm',
+      //   template: path.resolve(__dirname, geppetto_client_path, 'js/pages/admin/admin.ejs'),
+      //   GEPPETTO_CONFIGURATION: geppettoConfig,
+      //   /*
+      //    * chunks: ['admin'] Not specifying the chunk since its not possible
+      //    * yet (need to go to Webpack2) to specify UTF-8 as charset without
+      //    * which we have errors
+      //    */
+      //   chunks: []
+      // }),
+      // new HtmlWebpackPlugin({
+      //   filename: 'dashboard.vm',
+      //   template: path.resolve(__dirname, geppetto_client_path, 'js/pages/dashboard/dashboard.ejs'),
+      //   GEPPETTO_CONFIGURATION: geppettoConfig,
+      //   chunks: []
+      // }),
+      // new HtmlWebpackPlugin({
+      //   filename: '../WEB-INF/web.xml',
+      //   template: path.resolve(__dirname, 'WEB-INF/web.ejs'),
+      //   GEPPETTO_CONFIGURATION: geppettoConfig,
+      //   chunks: []
+      // }),
       new webpack.DefinePlugin({ 'process.env': { 'NODE_ENV': JSON.stringify(isProduction ? 'production' : 'development'), } }),
-      new ExtractTextPlugin("[name].css"),
+      new MiniCssExtractPlugin({ filename: '[name].css' })
     ],
       
     resolve: {
@@ -126,7 +133,6 @@ module.exports = function (env){
         geppetto: path.resolve(__dirname, geppetto_client_path, 'js/pages/geppetto/GEPPETTO.js'),
         'geppetto-client-initialization': path.resolve(__dirname, geppetto_client_path, 'js/pages/geppetto/main'),
         handlebars: 'handlebars/dist/handlebars.js'
-  
       },
       extensions: ['*', '.js', '.json', '.ts', '.tsx', '.jsx'],
     },
@@ -136,10 +142,20 @@ module.exports = function (env){
         {
           test: /\.(js|jsx)$/,
           exclude: [/ami.min.js/, /node_modules\/(?!(@geppettoengine\/geppetto-client)\/).*/], 
-          loader: 'babel-loader',
-          query: { presets: [['babel-preset-env', { "modules": false }], 'stage-2', 'react'] }
+          use: {
+            loader: "babel-loader",
+            options: { 
+              presets: [
+                '@babel/preset-env',
+                '@babel/preset-react'
+              ],
+              plugins: [
+                "@babel/plugin-syntax-dynamic-import",
+                "@babel/plugin-proposal-class-properties"
+              ]
+            }
+          }
         },
-        // All files with a '.ts' or '.tsx' extension will be handled by 'awesome-typescript-loader'.
         {
           test: /\.tsx?$/,
           loader: "awesome-typescript-loader"
@@ -149,25 +165,30 @@ module.exports = function (env){
           loader: 'ignore-loader'
         },
         {
-          test: /\.(py|svg|gif|css|md|hbs|dcm|gz|xmi|dzi|sh|obj|yml|nii)$/,
+          test: /\.(py|jpeg|svg|gif|css|jpg|md|hbs|dcm|gz|xmi|dzi|sh|obj|yml|nii)$/,
           loader: 'ignore-loader'
         },
         {
-          test: /\.(jpg|png|eot|ttf|woff|woff2|svg)(\?[a-z0-9=.]+)?$/,
+          test: /\.(png|eot|ttf|woff|woff2|svg)(\?[a-z0-9=.]+)?$/,
           loader: 'url-loader?limit=100000'
         },
         {
-                  
           test: /\.css$/,
-          use: ExtractTextPlugin.extract({
-            fallback: "style-loader",
-            use: "css-loader"
-          })
-                    
+          use: [
+            { loader: MiniCssExtractPlugin.loader },
+            { loader: "css-loader" }
+          ]
         },
         {
           test: /\.less$/,
-          loader: 'style-loader!css-loader!less-loader?{"modifyVars":{"url":"\'' + path.resolve(__dirname, geppettoConfig.themes) + '\'"}}'
+          use: [
+            { loader: 'style-loader' },
+            { loader: 'css-loader' },
+            {
+              loader: 'less-loader',
+              options: { modifyVars: { url: path.resolve(__dirname, geppettoConfig.themes) } },
+            },
+          ],
         },
         {
           test: /\.html$/,
