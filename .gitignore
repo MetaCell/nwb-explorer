@@ -19,3 +19,5 @@ test_data
 .tox
 tox.ini
 .coverage
+/src
+geppetto-client

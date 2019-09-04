@@ -15,15 +15,15 @@ NWBWIDGETS = 'https://github.com/NeurodataWithoutBorders/nwb-jupyter-widgets.git
 WEBAPP_DIR = "webapp"
 JUPYTER_DIR = 'org.geppetto.frontend.jupyter'
 ROOT_DIR = os.path.join(HERE, os.pardir)
-DEPS_DIR = os.path.join(ROOT_DIR, 'dependencies')
+DEPS_DIR = os.path.join(ROOT_DIR, 'src')
 
 def cprint(string):
     print(f"\033[35;4m\U0001f560 {string} \033[0m \n")
     sys.stdout.flush()
 
 # by default clones branch (which can be passed as a parameter python install.py branch test_branch)
-# if branch doesnt exist clones the default_branch
-def clone(repository, folder, default_branch, cwdp='', recursive=False):
+# if branch doesnt exist clones the default_branch_or_tag
+def clone(repository, folder, default_branch_or_tag, cwdp='', recursive=False):
     global branch
     print("Cloning " + repository)
     if os.path.exists(os.path.join(cwdp, folder)):
@@ -36,9 +36,10 @@ def clone(repository, folder, default_branch, cwdp='', recursive=False):
                 subprocess.call(['git', 'clone', repository, folder], cwd='./' + cwdp)
             else:
                 subprocess.call(['git', 'clone', repository], cwd='./' + cwdp)
-    checkout(folder, default_branch, cwdp)
+    checkout(folder, default_branch_or_tag, cwdp)
 
-def checkout(folder, default_branch, cwdp):
+
+def checkout(folder, default_branch_or_tag, cwdp):
     currentPath = os.getcwd()
     print(currentPath)
     newPath = os.path.join(currentPath, cwdp, folder)
@@ -49,7 +50,7 @@ def checkout(folder, default_branch, cwdp):
     if branch and branch in str(outstd):
         subprocess.call(['git', 'checkout', branch], cwd='./')
     else:
-        subprocess.call(['git', 'checkout', default_branch], cwd='./')
+        subprocess.call(['git', 'checkout', default_branch_or_tag], cwd='./')
     os.chdir(currentPath)
 
 def execute(cmd, cwd='.'):
@@ -72,16 +73,15 @@ def main(branch=branch, skipNpm=False, skipTest=False, development=False):
 
     # install pytest if needed
     if not skipTest:
-        cprint("Installing pytest")
-        if subprocess.call(['pip', 'show', 'pytest']):
-            subprocess.call(['pip', 'install', 'pytest==4.6.2', 'pytest-cov==2.7.1', 'tox==3.12.1'])
+        cprint("Installing test libraries")
+        execute(cmd=['pip', 'install', '-r', 'requirements-test.txt'], cwd=ROOT_DIR)
 
     if development:
         # install pygeppetto
         cprint("Installing pygeppetto")
         clone(repository=PYGEPPETTO,
               folder='pygeppetto',
-              default_branch='development'
+              default_branch_or_tag='development'
               )
         execute(cmd=['pip', 'install', '-e', '.'], cwd='pygeppetto')
 
@@ -97,21 +97,20 @@ def main(branch=branch, skipNpm=False, skipTest=False, development=False):
         cprint("Installing nwb jupyter widgets")
         clone(repository=NWBWIDGETS,
               folder='nwbwidgets',
-              default_branch='master'
+              default_branch_or_tag='master'
               )
         subprocess.call(['git', 'reset', '--hard', '9756e601b2c99384b4dc6a4fc1a164f1990d7b1b'], cwd='nwbwidgets')
         subprocess.call(['pip', 'install', '-e', '.'], cwd='nwbwidgets')
 
-
-    # install jupyter notebook
-    cprint("Installing org.geppetto.frontend.jupyter")
-    clone(repository=JUPYTER,
-          folder='org.geppetto.frontend.jupyter',
-          default_branch='development'
-          )
-    if not skipNpm:
+        # install jupyter geppetto
+        cprint("Installing org.geppetto.frontend.jupyter")
+        clone(repository=JUPYTER,
+              folder='org.geppetto.frontend.jupyter',
+              default_branch_or_tag='development'
+              )
+    if not skipNpm and os.path.exists(JUPYTER_DIR):
         execute(cmd=['npm', 'install'], cwd=os.path.join(JUPYTER_DIR, 'js'))
-        execute(cmd=['npm', 'run', 'build-dev'], cwd=os.path.join(JUPYTER_DIR, 'js'))
+        execute(cmd=['npm', 'run', 'build-dev' if development else 'build'], cwd=os.path.join(JUPYTER_DIR, 'js'))
 
 
     os.chdir(ROOT_DIR)
@@ -145,7 +144,7 @@ def main(branch=branch, skipNpm=False, skipTest=False, development=False):
     cprint("Installing client packages")
     if not skipNpm:
         execute(cmd=['npm', 'install'], cwd=WEBAPP_DIR)
-        execute(cmd=['npm', 'run', 'build-dev'], cwd=WEBAPP_DIR)
+        execute(cmd=['npm', 'run', 'build-dev' if development else 'build'], cwd=WEBAPP_DIR)
 
 
     # install app
@@ -206,7 +205,7 @@ if __name__ == "__main__":
                         help='Skip python tests.')
 
     parser.add_argument('--dev', dest='development', action="store_true", default=False,
-                        help='Prepare development environment.')
+                        help='Install for development.')
 
     args = parser.parse_args([arg if arg != 'branch' else '-b' for arg in sys.argv[1:]])
     print(args)
