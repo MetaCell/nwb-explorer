@@ -17,7 +17,7 @@ try {
 }
 var geppetto_client_path = 'node_modules/@geppettoengine/geppetto-client'
 
-var publicPath = path.join("/", geppettoConfig.contextPath, "geppetto/build/");
+var publicPath = path.join(geppettoConfig.contextPath, "geppetto/build/");
 console.log("\nThe public path (used by the main bundle when including split bundles) is: " + publicPath);
 
 var isProduction = process.argv.indexOf('-p') >= 0;
