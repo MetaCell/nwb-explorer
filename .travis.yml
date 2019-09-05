@@ -10,7 +10,6 @@ install:
   - pip install --upgrade pip
   - pip install codecov
 script:
-  - npm config set package-lock false
   - cd utilities
   - python install.py branch ${TRAVIS_BRANCH}
   - cd ..
