@@ -6,13 +6,13 @@
   "license": "MIT",
   "scripts": {
     "prebuild": "eslint . --color",
-    "build": "webpack -p --progress",
+    "build": "webpack --mode production -p --progress",
     "prebuild-dev": "eslint . --color",
-    "build-dev": "webpack --devtool eval",
+    "build-dev": "webpack --mode development --devtool eval",
     "prebuild-dev-noTest": "eslint . ",
-    "build-dev-noTest": "webpack --devtool source-map --env.noTest=true",
+    "build-dev-noTest": "webpack --mode development --devtool source-map --env.noTest=true",
     "prebuild-dev-noTest:watch": "eslint . --color",
-    "build-dev-noTest:watch": "webpack --devtool source-map --env.noTest=true --progress --watch",
+    "build-dev-noTest:watch": "webpack --mode development --devtool source-map --env.noTest=true --progress --watch",
     "start": "node --max_old_space_size=2048 node_modules/webpack-dev-server/bin/webpack-dev-server.js --progress  --config webpack.config.dev.js"
   },
   "dependencies": {
@@ -21,7 +21,7 @@
     "@babel/plugin-syntax-dynamic-import": "^7.2.0",
     "@babel/preset-env": "^7.4.5",
     "@babel/preset-react": "^7.0.0",
-    "@geppettoengine/geppetto-client": "file:./geppetto-client",
+    "@geppettoengine/geppetto-client": "openworm/geppetto-client#development",
     "babel-loader": "^8.0.6",
     "babel-polyfill": "^6.26.0",
     "copy-webpack-plugin": "^4.6.0",
