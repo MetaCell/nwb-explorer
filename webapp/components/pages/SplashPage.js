@@ -15,7 +15,7 @@ export default class SplashPage extends React.Component{
 
   render () {
     return <div id="splash">
-      <Grid container className="{classes.root} container" spacing={16}>
+      <Grid container className="{classes.root} container" spacing={2}>
         <Grid item sm={12} >
           <header id="main-header">
             <h1>Welcome to NWB Explorer<sub>beta</sub></h1>
