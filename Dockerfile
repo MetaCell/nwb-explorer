@@ -11,8 +11,7 @@ RUN jupyter labextension disable @jupyterlab/hub-extension
 
 COPY --chown=1000:1000 . ${FOLDER}
 
-RUN python $FOLDER/utilities/install.py &&\
-    rm -rf ${FOLDER}/webapp/node_modules ${FOLDER}/src/jupyter-geppetto/js/node_modules
+RUN python $FOLDER/utilities/install.py
 
 WORKDIR $HOME/$FOLDER
 
