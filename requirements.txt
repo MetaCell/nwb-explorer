@@ -40,7 +40,7 @@ jupyter==1.0.0
 jupyter-client==5.2.3
 jupyter-console==5.2.0
 jupyter-core==4.4.0
-jupyter_geppetto==1.0.0
+jupyter-geppetto==1.0.0
 kiwisolver==1.0.1
 lxml==4.2.4
 MarkupSafe==1.0
@@ -51,10 +51,11 @@ msgpack-python==0.5.6
 multimethod==1.1
 nbconvert==5.4.0
 nbformat==4.4.0
+ndx-grayscalevolume==0.0.2
 nose==1.3.7
 notebook==5.6.0
 numpy==1.15.1
-git+https://github.com/NeurodataWithoutBorders/nwb-jupyter-widgets.git@9756e601b2c99384b4dc6a4fc1a164f1990d7b1b#egg=nwbwidgets
+nwbwidgets==0.0.2
 ordered-set==3.0.1
 packaging==19.1
 pandas==0.25.0
@@ -79,8 +80,6 @@ pymultigen==0.2.0
 pynwb==1.0.3
 pyparsing==2.2.0
 pyrsistent==0.15.4
-pytest==4.6.2
-pytest-cov==2.7.1
 python-dateutil==2.7.3
 pythreejs==2.1.1
 pytz==2018.5
