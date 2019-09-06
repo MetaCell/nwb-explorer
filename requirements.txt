@@ -4,7 +4,6 @@ attrs==19.1.0
 backcall==0.1.0
 bleach==2.1.4
 bokeh==0.13.0
-certifi==2019.6.16
 cffi==1.12.3
 chardet==3.0.4
 colorcet==2.0.1
@@ -41,7 +40,7 @@ jupyter==1.0.0
 jupyter-client==5.2.3
 jupyter-console==5.2.0
 jupyter-core==4.4.0
--e git+https://github.com/openworm/org.geppetto.frontend.jupyter.git@v1.0.0#egg=jupyter_geppetto
+jupyter_geppetto==1.0.0
 kiwisolver==1.0.1
 lxml==4.2.4
 MarkupSafe==1.0
@@ -74,7 +73,7 @@ pycodestyle==2.5.0
 pycparser==2.19
 pyct==0.4.6
 pyecore==0.10.2
-git+https://github.com/openworm/pygeppetto.git@d1df11581fea979529063e7038c3e39173af1e13#egg=pygeppetto
+pygeppetto==0.6.0
 Pygments==2.2.0
 pymultigen==0.2.0
 pynwb==1.0.3
