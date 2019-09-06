@@ -1,5 +1,5 @@
-[![Build Status](https://travis-ci.org/MetaCell/nwb-explorer.svg?branch=development)](https://travis-ci.org/MetaCell/nwb-explorer)
-[![codecov](https://codecov.io/gh/MetaCell/nwb-explorer/branch/development/graph/badge.svg)](https://codecov.io/gh/MetaCell/nwb-explorer)
+[![Build Status](https://travis-ci.org/MetaCell/nwb-explorer.svg?branch=master)](https://travis-ci.org/MetaCell/nwb-explorer)
+[![codecov](https://codecov.io/gh/MetaCell/nwb-explorer/branch/master/graph/badge.svg)](https://codecov.io/gh/MetaCell/nwb-explorer)
 [![Twitter Follow](https://img.shields.io/twitter/follow/metacell.svg?label=follow&style=social)](https://twitter.com/metacell)
 
 # NWB Explorer
