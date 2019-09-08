@@ -114,6 +114,14 @@ def main(branch=branch, skipNpm=False, skipTest=False, development=False):
     execute(cmd=['jupyter', 'nbextension', 'enable', '--py', '--sys-prefix', 'widgetsnbextension'])
     execute(cmd=['jupyter', 'serverextension', 'enable', '--py', '--sys-prefix', 'jupyter_geppetto'])
 
+    cprint("Installing notebook theme")
+    from jupyter_core import paths
+    config_dir = paths.jupyter_config_dir()
+    print('Jupyter configuration dir is {}'.format(config_dir))
+    css_path = os.path.join(config_dir, 'custom')
+    if not os.path.exists(css_path):
+        os.makedirs(css_path)
+    execute(cmd=['cp', 'custom.css', css_path], cwd=HERE)
 
     # test
     if skipTest:

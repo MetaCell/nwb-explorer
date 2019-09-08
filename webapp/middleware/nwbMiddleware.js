@@ -75,6 +75,7 @@ function handlePlotTimeseries (store, next, action) {
 }
 
 const nwbMiddleware = store => next => action => {
+  next(action);
   switch (action.type) {
 
   case LOAD_NWB_FILE:
@@ -117,9 +118,8 @@ const nwbMiddleware = store => next => action => {
   case ADD_PLOT_TO_EXISTING_WIDGET:
     return handlePlotTimeseries(store, next, action)
   }
-  
 
-  next(action);
+  
 }
 
 
