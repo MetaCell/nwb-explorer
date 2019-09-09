@@ -15,4 +15,6 @@ RUN python $FOLDER/utilities/install.py
 
 WORKDIR $HOME/$FOLDER
 
+EXPOSE 8000
+
 CMD ./NWBE
