@@ -37,6 +37,17 @@ export const FLEXLAYOUT_DEFAULT_STATUS = {
       enableClose: false
     },
 
+    'details': {
+      id: 'details',
+      name: 'Details',
+      instancePath: '',
+      status: WidgetStatus.HIDDEN,
+      component: 'Metadata',
+      panelName: "leftPanel",
+      enableClose: false,
+      showObjectInfo: true
+    }
+
     
   },
 
