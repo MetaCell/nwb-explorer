@@ -21,3 +21,5 @@ tox.ini
 .coverage
 /src
 geppetto-client
+.git
+**/__pycache__

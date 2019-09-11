@@ -1,0 +1,18 @@
+language: node_js
+node_js:
+  - "9"
+cache: 
+  - pip
+  - npm
+before_install:
+  - pyenv local 3.7.1
+install:
+  - pip install --upgrade pip
+  - pip install codecov
+script:
+  - cd utilities
+  - python install.py branch ${TRAVIS_BRANCH}
+  - cd ..
+  - python -m pytest --cov=nwb_explorer --cov-report term
+after_success:
+  - codecov

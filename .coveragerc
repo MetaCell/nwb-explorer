@@ -1,0 +1,5 @@
+[report]
+exclude_lines =
+    pytest: no cover
+omit = 
+    nwb_explorer/nwb_main.py
