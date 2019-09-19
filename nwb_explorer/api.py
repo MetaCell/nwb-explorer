@@ -79,11 +79,4 @@ class NWBController:  # pytest: no cover
         if not os.path.exists(path):
             logging.info("Creating notebook {}".format(path))
             createNotebook(path)
-        return handler.render_template('notebook.html',
-                                       notebook_path=path,
-                                       notebook_name=path.split('/')[-1],
-                                       kill_kernel=False,
-                                       mathjax_url=handler.mathjax_url,
-                                       mathjax_config=handler.mathjax_config,
-                                       get_custom_frontend_exporters=get_custom_frontend_exporters
-                                       )
+        handler.redirect('notebooks/' + path)
