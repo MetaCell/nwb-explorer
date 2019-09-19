@@ -16,12 +16,12 @@ function handleShowWidget (store, next, action) {
   if (action.data.type === 'TimeSeries') { // Instances.getInstance(path).getType().wrappedObj.name
     store.dispatch(updateDetailsWidget(action.data.instancePath));
     return handlePlotTimeseries(store, next, action);
-  }
-  if (action.data.type === 'ImageSeries') { // Instances.getInstance(path).getType().wrappedObj.name
+  } else if (action.data.type === 'ImageSeries') { // Instances.getInstance(path).getType().wrappedObj.name
     store.dispatch(updateDetailsWidget(action.data.instancePath));
     return handleImportTimestamps(store, next, action);
+  } else {
+    return next(action);
   }
-  return next(action);
 }
 
 function handleImportTimestamps (store, next, action) {
@@ -75,11 +75,13 @@ function handlePlotTimeseries (store, next, action) {
 }
 
 const nwbMiddleware = store => next => action => {
-  next(action);
+  
   switch (action.type) {
 
   case LOAD_NWB_FILE:
+    next(action);
     Project.loadFromURL(action.data.nwbFileUrl);
+    
     GEPPETTO.on('jupyter_geppetto_extension_ready', data => { // It's triggered once
 
       console.log("Initializing Python extension");
@@ -95,28 +97,33 @@ const nwbMiddleware = store => next => action => {
   
 
   case LOAD_NWB_FILE_IN_NOTEBOOK:
+    next(action);
     nwbFileService.loadNWBFileInNotebook(store.getState().nwbfile.nwbFileUrl).then(
       () => store.dispatch(loadedNWBFileInNotebook)
     );
+    
     break;
 
   case UNLOAD_NWB_FILE_IN_NOTEBOOK:
+    next(action);
     Utils.execPythonMessage('del nwbfile');
+    
     break;
       
   case NOTEBOOK_READY:
+    next(action);
     // FIXME for some reason the callback for python messages is not being always called
     Utils.execPythonMessage('from nwb_explorer.nwb_main import main');
     store.dispatch(loadNWBFileInNotebook);
-    
+
     break;
 
   case UPDATE_WIDGET:
   case ADD_WIDGET:
-    return handleShowWidget(store, next, action);
-  
   case ADD_PLOT_TO_EXISTING_WIDGET:
-    return handlePlotTimeseries(store, next, action)
+    return handleShowWidget(store, next, action);
+    
+  default: next(action);
   }
 
   
