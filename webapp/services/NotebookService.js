@@ -7,7 +7,7 @@ export function getNotebookPath () {
   if (nwbFileParam){
     return "notebook?path=" + nwbFileParam.split('/').slice(-1) + '.ipynb';
   }
-  return "notebooks/notebook.ipynb";
+  return "notebook?path=notebook.ipynb";
 }
 
 var console = null;

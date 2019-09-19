@@ -10,12 +10,13 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 # repos
 JUPYTER = 'https://github.com/openworm/org.geppetto.frontend.jupyter.git'
 PYGEPPETTO = 'https://github.com/openworm/pygeppetto.git'
-NWBWIDGETS = 'https://github.com/NeurodataWithoutBorders/nwb-jupyter-widgets.git'
 
-WEBAPP_DIR = "webapp"
-JUPYTER_DIR = 'jupyter-geppetto'
+
 ROOT_DIR = os.path.join(HERE, os.pardir)
 DEPS_DIR = os.path.join(ROOT_DIR, 'src')
+
+WEBAPP_DIR = os.path.join(ROOT_DIR, 'webapp')
+JUPYTER_DIR = 'jupyter-geppetto'
 
 def cprint(string):
     print(f"\033[35;4m\U0001f560 {string} \033[0m \n")
@@ -61,15 +62,11 @@ def execute(cmd, cwd='.'):
 
 def main(branch=branch, skipNpm=False, skipTest=False, development=False):
 
-    if not os.path.exists(DEPS_DIR):
-        os.mkdir(DEPS_DIR)
-    os.chdir(DEPS_DIR)
+   
     print(f"{steps()}\n")
     sys.stdout.flush()
     
-    # install requirements
-    cprint("Installing requirements")
-    execute(cmd=['pip', 'install', '-r', 'requirements.txt'], cwd=ROOT_DIR)
+
 
     # install pytest if needed
     if not skipTest:
@@ -77,6 +74,11 @@ def main(branch=branch, skipNpm=False, skipTest=False, development=False):
         execute(cmd=['pip', 'install', '-r', 'requirements-test.txt'], cwd=ROOT_DIR)
 
     if development:
+        execute(cmd=['pip', 'install', '-e', '.'], cwd=ROOT_DIR)
+
+        if not os.path.exists(DEPS_DIR):
+            os.mkdir(DEPS_DIR)
+        os.chdir(DEPS_DIR)
         # install pygeppetto
         cprint("Installing pygeppetto")
         clone(repository=PYGEPPETTO,
@@ -85,50 +87,41 @@ def main(branch=branch, skipNpm=False, skipTest=False, development=False):
               )
         execute(cmd=['pip', 'install', '-e', '.'], cwd='pygeppetto')
 
-        # test
-        if skipTest:
-            cprint("Skipping pygeppetto tests")
-        else:
-            cprint("Testing pygeppetto")
-            execute(cmd=['coverage', 'run', '--source', 'pygeppetto', '-m', 'pytest', '-v', '-c', 'tox.ini'],
-                    cwd=os.path.join(DEPS_DIR, 'pygeppetto'))
-
-        # install jupyter widgets
-        cprint("Installing nwb jupyter widgets")
-        clone(repository=NWBWIDGETS,
-              folder='nwbwidgets',
-              default_branch_or_tag='master'
-              )
-        subprocess.call(['git', 'reset', '--hard', '9756e601b2c99384b4dc6a4fc1a164f1990d7b1b'], cwd='nwbwidgets')
-        subprocess.call(['pip', 'install', '-e', '.'], cwd='nwbwidgets')
-
         # install jupyter geppetto
         cprint("Installing org.geppetto.frontend.jupyter")
         clone(repository=JUPYTER,
-              folder='org.geppetto.frontend.jupyter',
+              folder=JUPYTER_DIR,
               default_branch_or_tag='development'
               )
-    if not skipNpm and os.path.exists(JUPYTER_DIR):
-        execute(cmd=['npm', 'install'], cwd=os.path.join(JUPYTER_DIR, 'js'))
-        execute(cmd=['npm', 'run', 'build-dev' if development else 'build'], cwd=os.path.join(JUPYTER_DIR, 'js'))
-
-
-    os.chdir(ROOT_DIR)
-    cprint("Installing extensions")
-    # FIXME for some reason it fails the first time on a clean conda env 
-    # (pip version, conda version, jupyter installation?)
-    if development:
-        if subprocess.call(['pip', 'install', '-e', '.'], cwd=os.path.join(DEPS_DIR, JUPYTER_DIR)):
-            execute(cmd=['pip', 'install', '-e', '.'], cwd=os.path.join(DEPS_DIR, JUPYTER_DIR))
+        os.chdir(ROOT_DIR)
+        execute(cmd=['pip', 'install', '-e', '.'], cwd=os.path.join(DEPS_DIR, JUPYTER_DIR))
     else:
-        if subprocess.call(['pip', 'install', '.'], cwd=os.path.join(DEPS_DIR, JUPYTER_DIR)):
-            execute(cmd=['pip', 'install', '.'], cwd=os.path.join(DEPS_DIR, JUPYTER_DIR))
+        # install requirements
+        cprint("Installing requirements")
+        execute(cmd=['pip', 'install', '-r', 'requirements.txt'], cwd=ROOT_DIR)
+
+        cprint("Installing UI python package...")
+        execute(cmd=['pip', 'install', '.', '--no-deps'], cwd=ROOT_DIR)
+
+    if not skipNpm and os.path.exists(os.path.join(DEPS_DIR, JUPYTER_DIR)):
+        cprint("Building Jupyter Geppetto extension...")
+        execute(cmd=['npm', 'install'], cwd=os.path.join(DEPS_DIR,JUPYTER_DIR, 'js'))
+        execute(cmd=['npm', 'run', 'build-dev' if development else 'build'], cwd=os.path.join(DEPS_DIR, JUPYTER_DIR, 'js'))
+
 
     execute(cmd=['jupyter', 'nbextension', 'install', '--py', '--symlink', '--sys-prefix', 'jupyter_geppetto'])
     execute(cmd=['jupyter', 'nbextension', 'enable', '--py', '--sys-prefix', 'jupyter_geppetto'])
     execute(cmd=['jupyter', 'nbextension', 'enable', '--py', '--sys-prefix', 'widgetsnbextension'])
     execute(cmd=['jupyter', 'serverextension', 'enable', '--py', '--sys-prefix', 'jupyter_geppetto'])
 
+    cprint("Installing notebook theme")
+    from jupyter_core import paths
+    config_dir = paths.jupyter_config_dir()
+    print('Jupyter configuration dir is {}'.format(config_dir))
+    css_path = os.path.join(config_dir, 'custom')
+    if not os.path.exists(css_path):
+        os.makedirs(css_path)
+    execute(cmd=['cp', 'custom.css', css_path], cwd=HERE)
 
     # test
     if skipTest:
@@ -147,12 +140,7 @@ def main(branch=branch, skipNpm=False, skipTest=False, development=False):
         execute(cmd=['npm', 'run', 'build-dev' if development else 'build'], cwd=WEBAPP_DIR)
 
 
-    # install app
-    cprint("Installing UI python package...")
-    if development:
-        execute(cmd=['pip', 'install', '-e', '.', '--no-deps'])
-    else:
-        execute(cmd=['pip', 'install', '.', '--no-deps'])
+
 
 
 def steps():

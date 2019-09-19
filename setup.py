@@ -40,16 +40,19 @@ setuptools.setup(
         'Programming Language :: Python :: 3.7'
     ],
     install_requires=[
-        # 'jupyter_geppetto==0.4.2',
-        'bokeh==0.13.0',
-        'holoviews==1.10.6',
+        'jupyter_geppetto>=1.0.0',
+        'bokeh>=0.13.0',
+        'holoviews>=1.10.6',
         'msgpack-python==0.5.6',
         'nose==1.3.7',
         'Pillow==5.2.0',
         'redis==2.10.6',
         'seaborn==0.8.1',
         'uuid==1.30',
-        'pyecore==0.10.2',
-        'pynwb==1.0.3'
+        'pynwb>=1.0.3',
+        'imageio>=2.5.0',
+        'quantities>=0.12.3',
+        'hdmf==1.1.2',
+        'nwbwidgets==0.0.2'
     ],
 )

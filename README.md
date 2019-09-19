@@ -1,5 +1,5 @@
-[![Build Status](https://travis-ci.org/MetaCell/nwb-explorer.svg?branch=development)](https://travis-ci.org/MetaCell/nwb-explorer)
-[![codecov](https://codecov.io/gh/MetaCell/nwb-explorer/branch/development/graph/badge.svg)](https://codecov.io/gh/MetaCell/nwb-explorer)
+[![Build Status](https://travis-ci.org/MetaCell/nwb-explorer.svg?branch=master)](https://travis-ci.org/MetaCell/nwb-explorer)
+[![codecov](https://codecov.io/gh/MetaCell/nwb-explorer/branch/master/graph/badge.svg)](https://codecov.io/gh/MetaCell/nwb-explorer)
 [![Twitter Follow](https://img.shields.io/twitter/follow/metacell.svg?label=follow&style=social)](https://twitter.com/metacell)
 
 # NWB Explorer
@@ -91,13 +91,14 @@ To check if a dependency is installed in development mode, run `pip list`.
 
 ### Run via Docker
 
-Under k8s folder we can find the dockerfile required to build a container for NWB-Explorer:
+There is a dockerfile ready to build a container for NWB-Explorer:
 
 ```bash
 cd nwb-explorer/k8s
 docker build -t nwb-explorer .
 docker run -it -p8888:8888 nwb-explorer
 ```
+Then, after the docker contained has started, the application is ready http://localhost:8888/geppetto
 
 ## Built With
 

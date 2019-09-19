@@ -1,0 +1,16 @@
+
+.text_cell_render *{
+   background-color: #323232;
+   color: white;
+}
+
+
+
+.text_cell_render a {
+   color: #42A5F5;
+}
+
+.text_cell_render code {
+   color: #EDB53D;
+   background: transparent;
+}
