@@ -26,8 +26,9 @@ def assign_name_to_type(pynwb_obj):
 class NWBModelInterpreter(ModelInterpreter):
 
     def __init__(self, nwb_file_name):
+
         logging.info(f'Creating a Model Interpreter for {nwb_file_name}')
-        self.nwb_file_name = nwb_file_name
+        self.nwb_file_name = nwb_file_name if isinstance(nwb_file_name, str) else 'in-memory file'
         self.nwb_reader = NWBReader(nwb_file_name)
         self.library = GeppettoLibrary(name='nwbfile', id='nwbfile')
 
