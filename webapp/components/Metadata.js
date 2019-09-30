@@ -33,12 +33,13 @@ export default class Metadata extends React.Component {
           [
             this.formatField('Name', type.getId()),
             this.formatField('Type', type.getName()),
+            
             this.formatField('Path', this.props.instancePath),
             this.formatField('NWB Explorer support', this.getTypeSupport(type.getName())),
           ]
         )
       );
-    }
+    } 
 
 
     type.getChildren().forEach(variable => {
