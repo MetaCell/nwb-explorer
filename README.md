@@ -7,6 +7,8 @@
 NWB Explorer is a web application that can be used by scientists to read, visualize and explore
 the content of NWB:N 2 files.
 
+![nwbexplorer](https://user-images.githubusercontent.com/39889/67516734-24c1e380-f66f-11e9-9fba-5151118f5e4d.gif)
+
 Learn more about the [Neurodata Without Borders](https://www.nwb.org/).
 
 ## Getting Started
