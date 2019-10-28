@@ -16,7 +16,7 @@ for root, dirnames, filenames in os.walk('src/jupyter_geppetto/geppetto/src/main
 
 setuptools.setup(
     name="nwb_explorer",
-    version="0.2",
+    version="0.3",
     url="https://github.com/tarelli/nwb-explorer",
     author="MetaCell",
     author_email="info@metacell.us",

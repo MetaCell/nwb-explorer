@@ -36,11 +36,11 @@ export default class App extends React.Component{
     const { loadNWBFile, loadNotebook, notebookReady, nwbFileLoaded, raiseError } = this.props;
     self = this;
     
-    const cookieName = 'nwbloadurl'
+    const cookieName = 'nwbloadurl';
     const nwbCookie = document.cookie.split(';').find(cookie => cookie.includes(cookieName))
     if (nwbCookie) {
-      const [_, nwbFileUrl] = nwbCookie.replace(/"/g, '').split("=")
-      if (nwbFileUrl && document.location.href.includes("nwbexplorer.opensourcebrain.org")) {
+      const [_, nwbFileUrl] = nwbCookie.replace(/"/g, '').split("=");
+      if (nwbFileUrl) {
         document.cookie = `${cookieName}= ; path=/`;
         loadNWBFile(nwbFileUrl);
       }

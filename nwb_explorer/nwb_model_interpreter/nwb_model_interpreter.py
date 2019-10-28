@@ -26,8 +26,9 @@ def assign_name_to_type(pynwb_obj):
 class NWBModelInterpreter(ModelInterpreter):
 
     def __init__(self, nwb_file_name):
+
         logging.info(f'Creating a Model Interpreter for {nwb_file_name}')
-        self.nwb_file_name = nwb_file_name
+        self.nwb_file_name = nwb_file_name if isinstance(nwb_file_name, str) else 'in-memory file'
         self.nwb_reader = NWBReader(nwb_file_name)
         self.library = GeppettoLibrary(name='nwbfile', id='nwbfile')
 
@@ -45,7 +46,7 @@ class NWBModelInterpreter(ModelInterpreter):
 
         geppetto_model.libraries.append(self.library)
 
-        obj_type = ImportType(autoresolve=True)
+        obj_type = ImportType(autoresolve=True, url=self.nwb_file_name, id="nwbfile", name='nwbfile')
         self.library.types.append(obj_type)
         obj_variable = Variable(id='nwbfile', name='nwbfile', types=(obj_type,))
         geppetto_model.variables.append(obj_variable)
@@ -58,7 +59,7 @@ class NWBModelInterpreter(ModelInterpreter):
         mapper = GenericCompositeMapper(model_factory, library)
         # build compositeTypes for pynwb objects
         root_type = mapper.create_type(self.get_nwbfile(), type_name=type_name, type_id=type_name)
-        if isinstance(self.nwb_file_name, str) and url == 'nwbfile':
+        if isinstance(self.nwb_file_name, str) and type_name == 'nwbfile':
             from nwb_explorer.nwb_data_manager import CACHE_DIRNAME
             root_type.variables.append(
                 model_factory.create_url_variable(
