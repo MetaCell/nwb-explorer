@@ -49,10 +49,11 @@ setuptools.setup(
         'redis==2.10.6',
         'seaborn==0.8.1',
         'uuid==1.30',
-        'pynwb>=1.0.3',
+        'pynwb==1.0.3',
         'imageio>=2.5.0',
         'quantities>=0.12.3',
         'hdmf==1.1.2',
-        'nwbwidgets==0.0.2'
+        'nwbwidgets==0.0.2',
+        'pyecore==0.10.2'
     ],
 )
