@@ -93,14 +93,14 @@ To check if a dependency is installed in development mode, run `pip list`.
 
 ### Run via Docker
 
-There is a dockerfile ready to build a container for NWB-Explorer:
+There is a [Dockerfile](./Dockerfile) ready to build a container for NWB-Explorer:
 
 ```bash
-cd nwb-explorer/k8s
+cd nwb-explorer
 docker build -t nwb-explorer .
 docker run -it -p8888:8888 nwb-explorer
 ```
-Then, after the docker contained has started, the application is ready http://localhost:8888/geppetto
+Then, after the Docker contained has started, the application is ready at http://localhost:8888
 
 ## Built With
 
@@ -111,11 +111,11 @@ Then, after the docker contained has started, the application is ready http://lo
 
 ## Background
 
-The NWB Explorer was initially created by MetaCell to showcase the features of the Geppetto platform to share
-neurophysiological data in Neurodata Without Borders format. It was further developed as part of a
-Google Summer of Code project with the OpenWorm project. It is currently being extended as part of the Open Source Brain
+The NWB Explorer was initially created by [MetaCell](http://metacell.us) to showcase the features of the [Geppetto](http://www.geppetto.org/) platform to share
+neurophysiological data in [Neurodata Without Borders](https://www.nwb.org/) format. It was further developed as part of a
+[Google Summer of Code](https://summerofcode.withgoogle.com/) project for the [OpenWorm project](http://openworm.org/). It is currently being extended as part of the [Open Source Brain](http://www.opensourcebrain.org/)
 project to provide both a standalone and online application for visualising and analysing the contents of NWB:N 2 files.
-This work is currently funded by the Wellcome Trust.
+This work is currently funded by the [Wellcome Trust](https://wellcome.ac.uk/).
 
 ## Authors
 
