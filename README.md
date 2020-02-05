@@ -96,7 +96,7 @@ To check if a dependency is installed in development mode, run `pip list`.
 There is a dockerfile ready to build a container for NWB-Explorer:
 
 ```bash
-cd nwb-explorer/k8s
+cd nwb-explorer
 docker build -t nwb-explorer .
 docker run -it -p8888:8888 nwb-explorer
 ```
