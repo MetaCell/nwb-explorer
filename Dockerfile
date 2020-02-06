@@ -5,6 +5,9 @@ ENV FOLDER=nwb-explorer
 USER root
 RUN apt-get update -qq &&\
     apt-get install python3-tk vim nano unzip -qq
+RUN npm i -g npm@6
+
+RUN chown -R 1000:100 $HOME/.npm
 USER $NB_UID
 
 RUN jupyter labextension disable @jupyterlab/hub-extension
