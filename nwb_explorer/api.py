@@ -29,7 +29,7 @@ def createNotebook(filename):
     nb0 = new_notebook(cells=[nbf.v4.new_markdown_cell("""Welcome to the NWB Explorer!
 --
 
-This interface allows you to interact with the data in your NWB file both graphically (click on the icons under the 'Controls' columns in the list above) and programmatically.
+This interface allows you to interact with the data in your NWB file both graphically (click on the icons under the 'Controls' column on the list above) and programmatically.
 
 With this Python console you can programmatically access the loaded data using the [PyNWB Python API](https://pynwb.readthedocs.io/en/stable/).
 
