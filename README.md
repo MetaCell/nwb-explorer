@@ -39,7 +39,7 @@ conda create -n nwb-explorer python=3.7
 conda activate nwb-explorer
 ```
 
-### Clone 'nwb-explorer' repository
+### Clone "nwb-explorer" Repository
 
 Clone repository using the development branch:
 
@@ -58,7 +58,7 @@ docker run -it -p8888:8888 nwb-explorer
 ```
 Then, after the Docker contained has started, the application is ready at http://localhost:8888
 
-### Local installation without Docker
+### Local Installation without Docker
 
 Instructions to get a development environment running.
 
@@ -99,7 +99,7 @@ pip install -e .
 
 ### Javascript code from sources
 
-JS/HTML code can be found inside `static/org.geppetto.frontend/src/main/webapp/`. The code needs to be rebuilt with webpack everytime there is a change. To avoid having to do so you can use the Webpack development server running in `/static/org.geppetto.frontend/src/main/webapp/` this command:
+JS/HTML code can be found inside `webapp/`. The code needs to be rebuilt with webpack everytime there is a change. To avoid having to do so you can use the Webpack development server running in `webapp/` this command:
 
 ```bash
 npm run build-dev-noTest:watch
