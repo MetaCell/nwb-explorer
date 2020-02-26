@@ -47,13 +47,13 @@ const styles = theme => ({
   },
   download: { 
     top: "20px",
-    left: "50px",
+    left: "40px",
     opacity: 1.0,
     position: "absolute"
   },
   play: { 
     top: "20px",
-    left: "24px",
+    left: "16px",
     opacity: 1.0,
     position: "absolute"
   }
