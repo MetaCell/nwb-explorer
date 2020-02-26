@@ -39,19 +39,37 @@ conda create -n nwb-explorer python=3.7
 conda activate nwb-explorer
 ```
 
-### Local installation
+### Clone "nwb-explorer" Repository
+
+Clone repository using the development branch:
+
+```bash
+git clone -b development https://github.com/MetaCell/nwb-explorer
+```
+
+### Run via Docker
+
+There is a [Dockerfile](./Dockerfile) ready to build a container for NWB-Explorer:
+
+```bash
+cd nwb-explorer
+docker build -t nwb-explorer .
+docker run -it -p8888:8888 nwb-explorer
+```
+Then, after the Docker contained has started, the application is ready at http://localhost:8888
+
+### Local Installation without Docker
 
 Instructions to get a development environment running.
 
 ```bash
-git clone -b development https://github.com/MetaCell/nwb-explorer
 cd nwb-explorer
 python utilities/install.py
 ```
 
 ## How to run NWB Explorer
 
-After the installation is complete, run the script:
+After the local installation is complete, run the script:
 
 ```bash
 cd nwb-explorer
@@ -81,7 +99,7 @@ pip install -e .
 
 ### Javascript code from sources
 
-JS/HTML code can be found inside `static/org.geppetto.frontend/src/main/webapp/`. The code needs to be rebuilt with webpack everytime there is a change. To avoid having to do so you can use the Webpack development server running in `/static/org.geppetto.frontend/src/main/webapp/` this command:
+JS/HTML code can be found inside `webapp/`. The code needs to be rebuilt with webpack everytime there is a change. To avoid having to do so you can use the Webpack development server running in `webapp/` this command:
 
 ```bash
 npm run build-dev-noTest:watch
@@ -90,17 +108,6 @@ npm run build-dev-noTest:watch
 This will spawn a process that while left running will watch for any changes on the `webapp` folder and automatically deploy them each time a file is saved.
 
 To check if a dependency is installed in development mode, run `pip list`.
-
-### Run via Docker
-
-There is a [Dockerfile](./Dockerfile) ready to build a container for NWB-Explorer:
-
-```bash
-cd nwb-explorer
-docker build -t nwb-explorer .
-docker run -it -p8888:8888 nwb-explorer
-```
-Then, after the Docker contained has started, the application is ready at http://localhost:8888
 
 ## Built With
 
