@@ -5,7 +5,7 @@ from h5py.h5r import Reference
 from pygeppetto.model import Pointer, GenericArray, PointerElement
 
 from pynwb import TimeSeries
-from pynwb.core import NWBData
+from hdmf.common import ElementIdentifiers, VectorData
 from pynwb.core import LabelledDict
 from pynwb.file import Subject
 from pynwb.core import DynamicTable
@@ -103,7 +103,7 @@ class ImportValueMapper(NWBGeppettoMapper):
 
 class GenericCompositeMapper(NWBGeppettoMapper):
     generic = True
-    excluded_types = (NWBData)
+    excluded_types = (ElementIdentifiers, VectorData)
 
     def __init__(self, model_factory, nwb_geppetto_library):
         super().__init__(model_factory, nwb_geppetto_library)
@@ -197,7 +197,7 @@ class GenericCompositeMapper(NWBGeppettoMapper):
         if hasattr(obj_dict, 'items'):
             items = obj_dict.items()
         elif is_collection(obj_dict):
-            items = ((obj_dict[k].name, obj_dict[k]) for k in range(len(obj_dict)))
+            items = (k if isinstance(obj_dict[k], bool) (obj_dict[k].name, obj_dict[k]) else None for k in range(len(obj_dict)))
         else:
             items = ()
         return items
@@ -272,7 +272,7 @@ class SimpleArrayMapper(NWBGeppettoMapper):
 class VectorDataMapper(NWBGeppettoMapper):
 
     def creates(self, pynwb_obj):
-        return isinstance(pynwb_obj, NWBData)
+        return isinstance(pynwb_obj, VectorData)
 
     def create_variable(self, name, pynwb_obj, parent_obj):
         return self.create_variable_base(name, tuple(self.get_value(v) for v in pynwb_obj.data[()]))
