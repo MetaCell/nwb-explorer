@@ -18,6 +18,7 @@ from pygeppetto.model.types.types import TextType, ImportType, CompositeType
 from pygeppetto.model.values import Image, Text, ImportValue, StringArray
 from pygeppetto.model.variables import Variable, TypeToValueMap
 
+
 nwb_geppetto_mappers = []
 
 
@@ -197,10 +198,19 @@ class GenericCompositeMapper(NWBGeppettoMapper):
         if hasattr(obj_dict, 'items'):
             items = obj_dict.items()
         elif is_collection(obj_dict):
-            items = (k if isinstance(obj_dict[k], bool) (obj_dict[k].name, obj_dict[k]) else None for k in range(len(obj_dict)))
+            items = self.collection_items(obj_dict)
         else:
             items = ()
         return items
+
+    def collection_items(self, obj_dict):
+        items=[]
+        for k in range(len(obj_dict)):
+            if hasattr(obj_dict[k], "name"):
+                items.append((obj_dict[k].name, obj_dict[k]))
+            else:
+                None
+        return items;
 
     def sanitize(self, key):
         return ''.join(k if k.isalnum() else '_' for k in key)
