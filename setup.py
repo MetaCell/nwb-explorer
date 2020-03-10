@@ -53,6 +53,6 @@ setuptools.setup(
         'imageio>=2.5.0',
         'quantities>=0.12.3',
         'hdmf==1.5.4',
-        'nwbwidgets==0.0.2'
+        'nwbwidgets>=0.0.2'
     ],
 )

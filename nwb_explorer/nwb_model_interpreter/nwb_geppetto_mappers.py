@@ -198,19 +198,10 @@ class GenericCompositeMapper(NWBGeppettoMapper):
         if hasattr(obj_dict, 'items'):
             items = obj_dict.items()
         elif is_collection(obj_dict):
-            items = self.collection_items(obj_dict)
+            items = tuple((obj_dict[k].name, obj_dict[k]) for k in range(len(obj_dict)) if hasattr(obj_dict[k], "name"))
         else:
             items = ()
         return items
-
-    def collection_items(self, obj_dict):
-        items=[]
-        for k in range(len(obj_dict)):
-            if hasattr(obj_dict[k], "name"):
-                items.append((obj_dict[k].name, obj_dict[k]))
-            else:
-                None
-        return items;
 
     def sanitize(self, key):
         return ''.join(k if k.isalnum() else '_' for k in key)
