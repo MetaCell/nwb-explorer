@@ -274,7 +274,7 @@ class SimpleArrayMapper(NWBGeppettoMapper):
         return is_collection(value) and value and is_metadata(next(iter(value)))
 
     def create_variable(self, name, pynwb_obj, parent_obj):
-        value = StringArray(str(v) for v in pynwb_obj)
+        value = StringArray(tuple(str(v) for v in pynwb_obj))
         array_variable = self.model_factory.create_simple_array_variable(name, value)
         return array_variable
 
