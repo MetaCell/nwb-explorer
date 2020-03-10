@@ -10,6 +10,8 @@ const SAMPLE_LINK_FERGUSON_5 = 'https://github.com/OpenSourceBrain/NWBShowcase/r
 const SAMPLE_LINK_TIMESERIES = 'https://github.com/OpenSourceBrain/NWBShowcase/raw/master/NWB/time_series_data.nwb';
 const SAMPLE_LINK_TRIPLETT = 'https://github.com/OpenSourceBrain/NWBShowcase/raw/master/TriplettEtAl2018/TriplettEtAl2018.nwb';
 const SAMPLE_LINK_LANTYER = 'https://github.com/OpenSourceBrain/NWBShowcase/raw/master/Lantyer/LantyerEtAl2018.170502_AL_257_CC.nwb';
+const SAMPLE_LINK_LANORE = 'https://github.com/OpenSourceBrain/NWBShowcase/raw/master/IgorPro/141210c3.nwb';
+const SAMPLE_LINK_PACKER = 'https://github.com/OpenSourceBrain/CalciumImagingDriftingGrating/raw/master/neurofinder.01.01.jpg.nwb';
 
 export default class FileSampleSelector extends React.Component {
 
@@ -108,6 +110,24 @@ export default class FileSampleSelector extends React.Component {
           disabled={false}
         >
           Lantyer et al. 2018 
+        </Button>
+        <br />
+        <Button
+          id="loadFile"
+          variant="outlined"
+          onClick={ e => this.handleClickLoadFile(SAMPLE_LINK_LANORE)}
+          disabled={false}
+        >
+          Lanore et al. 2019 
+        </Button>
+        <br />
+        <Button
+          id="loadFile"
+          variant="outlined"
+          onClick={ e => this.handleClickLoadFile(SAMPLE_LINK_PACKER)}
+          disabled={false}
+        >
+          Packer et al. 2015 
         </Button>
       </div>
 
