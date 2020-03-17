@@ -2,15 +2,10 @@ import logging
 
 from jupyter_geppetto.webapi import get
 from notebook.base.handlers import IPythonHandler
-from pygeppetto.model.model_serializer import GeppettoModelSerializer
 
 from nwb_explorer.nwb_model_interpreter import NWBModelInterpreter
-from nwb_explorer.plots_manager import PlotManager
-from . import nwb_data_manager
 
 from pygeppetto.managers import GeppettoManager
-from pygeppetto.managers.geppetto_manager import RuntimeProject
-from traitlets import Instance
 cache_model = False
 
 from pygeppetto.services.data_manager import DataManagerHelper
@@ -34,7 +29,6 @@ This interface allows you to interact with the data in your NWB file both graphi
 With this Python console you can programmatically access the loaded data using the [PyNWB Python API](https://pynwb.readthedocs.io/en/stable/).
 
 The loaded NWB:N 2 file can be accessed from the variable `nwbfile`. 
-If you would like to inspect the content of the file using the [NWB Juypyter widgets](https://pypi.org/project/nwbwidgets/) you can use the `show()` function.
 
 To execute a command type it and press `Shift+Enter`. To execute a command and create a new cell press `Alt+Enter`."""),
                               nbf.v4.new_code_cell('nwbfile')
