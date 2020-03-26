@@ -8,6 +8,8 @@ import base64
 from io import BytesIO
 from PIL import Image as Img
 import imageio
+import numpy as np
+import os
 NWB_ROOT_NAME = 'root'
 
 
@@ -24,7 +26,10 @@ class NWBReader:
 
         # TODO we may need to rearrange that when dealing with spatial series: a different type of plot (3D or else)
         #  may me more adequate than what we're doing (i.e. splitting in multiple mono dimensional timeseries)
-        time_series_array = NWBReader.get_mono_dimensional_timeseries_aux(time_series.data[::1])
+        d = time_series.data[::1]
+        if len(time_series.data.shape)==3 and time_series.data.shape[1]==1 and time_series.data.shape[2]==1:
+            d = np.array([ b[0][0] for b in time_series.data[::1]  ])
+        time_series_array = NWBReader.get_mono_dimensional_timeseries_aux(d)
         return time_series_array
 
     @staticmethod
@@ -108,7 +113,16 @@ class NWBReader:
 
     def __init__(self, nwbfile_or_path):
         if isinstance(nwbfile_or_path, str):
-            try:
+            try:                 
+                from pynwb import get_class, load_namespaces, NWBHDF5IO
+                
+                # This should be temporary. Ideally namespaces should be cached in the NWB files
+                # See https://github.com/SilverLabUCL/PySilverLabNWB/issues/26
+                namespace_dir = 'webapp/namespaces'
+                namespace_file = os.path.join(namespace_dir, 'silverlab/silverlab.namespace.yaml')
+                load_namespaces(namespace_file)
+                get_class('ZplanePockelsDataset', 'silverlab_extended_schema')
+                
                 io = NWBHDF5IO(nwbfile_or_path, 'r')
                 nwbfile = io.read()
             except Exception  as e:
