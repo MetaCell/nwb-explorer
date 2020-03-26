@@ -28,7 +28,7 @@ class NWBReader:
         #  may me more adequate than what we're doing (i.e. splitting in multiple mono dimensional timeseries)
         d = time_series.data[::1]
         if len(time_series.data.shape)==3 and time_series.data.shape[1]==1 and time_series.data.shape[2]==1:
-            d = np.array([ b[0][0] for b in time_series.data[::1]  ])
+            d = d.reshape(time_series.data.shape[0])
         time_series_array = NWBReader.get_mono_dimensional_timeseries_aux(d)
         return time_series_array
 
