@@ -1,7 +1,4 @@
-import collections
-
-import numpy as np
-from pynwb import TimeSeries, NWBHDF5IO, ProcessingModule
+from pynwb import NWBHDF5IO
 from pynwb.core import NWBDataInterface
 from pynwb.image import ImageSeries
 import base64
@@ -9,11 +6,11 @@ from io import BytesIO
 from PIL import Image as Img
 import imageio
 import numpy as np
-import os
-import glob
+
+
 
 NWB_ROOT_NAME = 'root'
-EXTENSION_PATH = 'nwb-extensions'
+
 
 class NWBReader:
     nwb_map_id_api = {'acquisition': 'acquisition',
@@ -111,13 +108,7 @@ class NWBReader:
     def __init__(self, nwbfile_or_path):
         if isinstance(nwbfile_or_path, str):
             try:
-                from pynwb import get_class, load_namespaces, NWBHDF5IO
 
-                # This should be temporary. Ideally namespaces should be cached in the NWB files
-                # See https://github.com/SilverLabUCL/PySilverLabNWB/issues/26
-                for namespace_file in glob.glob(EXTENSION_PATH + '/**/*.namespace.*ml'):
-                    load_namespaces(namespace_file)
-                    # get_class('ZplanePockelsDataset', 'silverlab_extended_schema')
 
                 io = NWBHDF5IO(nwbfile_or_path, 'r')
                 nwbfile = io.read()
