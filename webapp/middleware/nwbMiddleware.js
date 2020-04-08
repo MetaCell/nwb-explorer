@@ -75,7 +75,7 @@ function handlePlotTimeseries (store, next, action) {
 }
 
 const nwbMiddleware = store => next => action => {
-  
+  console.log(action);
   switch (action.type) {
 
   case LOAD_NWB_FILE:
