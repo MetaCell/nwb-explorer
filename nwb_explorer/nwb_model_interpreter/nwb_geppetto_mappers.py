@@ -353,7 +353,7 @@ class SummaryMapper(NWBGeppettoMapper):
         if stim:
             summary['Num. of stimuli'] = f"{stim}"
         if experimenter:
-            summary['experimenter'] = f"{nwbfile.experimenter[0]}"
+            summary['experimenter'] = f"{','.join(nwbfile.experimenter)}"
         return summary
 
     def modify_type(self, pynwb_obj, geppetto_composite_type):
