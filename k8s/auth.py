@@ -36,7 +36,7 @@ class TmpAuthenticateHandler(BaseHandler):
         redirection = self.get_next_url(user)
         user.spawners[server_name].environment["NWBFILE"] = ''
 
-        if 'hub/nwbfile=' in self.request.uri:
+        if 'nwbfile=' in self.request.uri:
             server_name = str(uuid.uuid4()).split('-').pop()
             redirection = f'/hub/spawn/{user.name}/{server_name}'
             url = self.request.uri.split('=').pop()
