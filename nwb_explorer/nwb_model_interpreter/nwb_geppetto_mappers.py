@@ -83,12 +83,12 @@ class MetadataMapper(NWBGeppettoMapper):
     def create_variable(self, name, pynwb_obj, parent_obj):
         return self.model_factory.create_text_variable(id=name, text=str(pynwb_obj))
 
-class ListMapper(NWBGeppettoMapper):
-    def creates(self, value):
-        return is_collection(value) and value and is_metadata(next(iter(value)))
+# class ListMapper(NWBGeppettoMapper):
+#     def creates(self, value):
+#         return is_collection(value) and value and is_metadata(next(iter(value)))
 
-    def create_variable(self, name, pynwb_obj, parent_obj):
-        return self.model_factory.create_text_variable(id=name, text=str(','.join(str(o) for o in pynwb_obj)))
+#     def create_variable(self, name, pynwb_obj, parent_obj):
+#         return self.model_factory.create_text_variable(id=name, text=str(','.join(str(o) for o in pynwb_obj)))
 
 class ImportValueMapper(NWBGeppettoMapper):
 

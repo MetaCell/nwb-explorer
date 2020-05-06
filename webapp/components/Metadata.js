@@ -65,6 +65,11 @@ export default class Metadata extends React.Component {
         
       } else if (variableType.getChildren && variableType.getChildren()) {
         metadata = variable.getType().getChildren().filter(v => v.getType().getName() == 'Text').map(v => this.formatField(prettyLabel(v.getId()), this.prettyContent(v.getInitialValue().value.text)));
+      } else if (variableType.getName() == 'Simple Array') {
+        metadata = variable.getInitialValue().value.elements.join(',');
+        console.log('Array:', metadata);
+      } else {
+        console.debug('Unsupported variable', variable)
       }
 
       if (metadata && (metadata.length || metadata.type)) {
