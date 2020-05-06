@@ -47,8 +47,11 @@ def main(nwbfilename): # pytest: no cover
 
     main = __import__('__main__')
 
-    from nwbwidgets import nwb2widget
-    main.nwb2widget = nwb2widget
-    main.show = lambda: nwb2widget(main.nwbfile)
+    
+    def show():
+        from nwbwidgets import nwb2widget
+        main.nwb2widget = nwb2widget
+        nwb2widget(main.nwbfile)
+    main.show = show 
 
     logging.info("NWB UI initialised")
