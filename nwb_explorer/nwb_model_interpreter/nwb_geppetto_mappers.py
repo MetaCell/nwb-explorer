@@ -346,12 +346,14 @@ class SummaryMapper(NWBGeppettoMapper):
         ''' Use this function to add the fields you want to see in the Geppetto model '''
         aqc = len(nwbfile.acquisition)
         stim = len(nwbfile.stimulus)
+        experimenter = len(nwbfile.experimenter)
         summary = {}
         if aqc:
             summary['Num. of acquisitions'] = f"{aqc}"
         if stim:
             summary['Num. of stimuli'] = f"{stim}"
-
+        if experimenter:
+            summary['experimenter'] = f"{','.join(nwbfile.experimenter)}"
         return summary
 
     def modify_type(self, pynwb_obj, geppetto_composite_type):
