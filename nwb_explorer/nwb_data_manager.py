@@ -61,7 +61,7 @@ class NWBDataManager(GeppettoDataManager, metaclass=Singleton):
         except Exception as e:
             raise Exception("Error retrieving file" + nwbfile) from e
         try:
-            model_interpreter = NWBModelInterpreter(nwbfilename)
+            model_interpreter = NWBModelInterpreter(nwbfilename, source_url=nwbfile)
             add_model_interpreter(model_interpreter.library.id, model_interpreter)
 
             geppetto_model = model_interpreter.create_model()

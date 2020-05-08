@@ -33,12 +33,13 @@ export default class Metadata extends React.Component {
           [
             this.formatField('Name', type.getId()),
             this.formatField('Type', type.getName()),
+            
             this.formatField('Path', this.props.instancePath),
             this.formatField('NWB Explorer support', this.getTypeSupport(type.getName())),
           ]
         )
       );
-    }
+    } 
 
 
     type.getChildren().forEach(variable => {
@@ -56,9 +57,19 @@ export default class Metadata extends React.Component {
       } else if (variableType.getName() == 'HTML') {
         metadata = <span dangerouslySetInnerHTML={{ __html: variable.getInitialValue().value.html }}></span>;
       } else if (variableType.getName() == 'URL') {
-        metadata = <a target='_blank' title="Download file" href={ variable.getInitialValue().value.url }>{ variable.getInitialValue().value.url.split('/').slice(-1) }</a>;
+        if (variable.getInitialValue().value.url.includes("http")){
+          metadata = <a target='_blank' title="Download file" href={ variable.getInitialValue().value.url }>{ variable.getInitialValue().value.url.split('/').slice(-1) }</a>
+        } else {
+          metadata = <span>{ variable.getInitialValue().value.url.split('//').slice(-1) }</span>
+        }
+        
       } else if (variableType.getChildren && variableType.getChildren()) {
         metadata = variable.getType().getChildren().filter(v => v.getType().getName() == 'Text').map(v => this.formatField(prettyLabel(v.getId()), this.prettyContent(v.getInitialValue().value.text)));
+      } else if (variableType.getName() == 'Simple Array') {
+        metadata = variable.getInitialValue().value.elements.join(',');
+        console.log('Array:', metadata);
+      } else {
+        console.debug('Unsupported variable', variable)
       }
 
       if (metadata && (metadata.length || metadata.type)) {

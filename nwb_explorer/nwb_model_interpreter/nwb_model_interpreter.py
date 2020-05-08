@@ -25,11 +25,13 @@ def assign_name_to_type(pynwb_obj):
 
 class NWBModelInterpreter(ModelInterpreter):
 
-    def __init__(self, nwb_file_name):
-
-        logging.info(f'Creating a Model Interpreter for {nwb_file_name}')
-        self.nwb_file_name = nwb_file_name if isinstance(nwb_file_name, str) else 'in-memory file'
-        self.nwb_reader = NWBReader(nwb_file_name)
+    def __init__(self, nwb_file_or_filename, source_url=None):
+        if source_url == None:
+            source_url = nwb_file_or_filename
+        logging.info(f'Creating a Model Interpreter for {nwb_file_or_filename}')
+        self.nwb_file_name = nwb_file_or_filename if isinstance(nwb_file_or_filename, str) else 'in-memory file'
+        self.source_url = source_url
+        self.nwb_reader = NWBReader(nwb_file_or_filename)
         self.library = GeppettoLibrary(name='nwbfile', id='nwbfile')
 
     @staticmethod
@@ -60,11 +62,11 @@ class NWBModelInterpreter(ModelInterpreter):
         # build compositeTypes for pynwb objects
         root_type = mapper.create_type(self.get_nwbfile(), type_name=type_name, type_id=type_name)
         if isinstance(self.nwb_file_name, str) and type_name == 'nwbfile':
-            from nwb_explorer.nwb_data_manager import CACHE_DIRNAME
+
             root_type.variables.append(
                 model_factory.create_url_variable(
                     id='source file',
-                    url=f"{settings.home_page}/{CACHE_DIRNAME}/{os.path.basename(self.nwb_file_name)}"
+                    url=self.source_url if 'http' in self.source_url else 'file://' + self.source_url
                 )
             )
         return root_type

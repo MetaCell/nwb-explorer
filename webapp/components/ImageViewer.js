@@ -19,12 +19,12 @@ const styles = theme => ({
     pointerEvents: "none"
   },
   arrowRight: { 
-    opacity: 0.5,
+    opacity: 1.0,
     marginRight: "10px", 
     pointerEvents: "none"
   },
   arrowLeft: { 
-    opacity: 0.5,
+    opacity: 1.0,
     marginLeft: "10px",
     pointerEvents: "none"
   },
@@ -47,14 +47,14 @@ const styles = theme => ({
   },
   download: { 
     top: "20px",
-    left: "48px",
-    opacity: 0.5,
+    left: "40px",
+    opacity: 1.0,
     position: "absolute"
   },
   play: { 
     top: "20px",
-    left: "24px",
-    opacity: 0.5,
+    left: "16px",
+    opacity: 1.0,
     position: "absolute"
   }
 

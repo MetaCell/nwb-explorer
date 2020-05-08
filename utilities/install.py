@@ -1,6 +1,7 @@
 import os
 import subprocess
 import sys
+import json
 
 
 branch = None
@@ -62,10 +63,10 @@ def execute(cmd, cwd='.'):
 
 def main(branch=branch, skipNpm=False, skipTest=False, development=False):
 
-   
+
     print(f"{steps()}\n")
     sys.stdout.flush()
-    
+
 
 
     # install pytest if needed
@@ -123,20 +124,45 @@ def main(branch=branch, skipNpm=False, skipTest=False, development=False):
         os.makedirs(css_path)
     execute(cmd=['cp', 'custom.css', css_path], cwd=HERE)
 
+    # Enables Compression
+    json_config_path = "{}/jupyter_notebook_config.json".format(config_dir)
+    config = {}
+    if os.path.exists(json_config_path):
+        with open(json_config_path, 'r') as f:
+            try:
+                config = json.load(f)
+            except Exception as e:
+                print("Something went wrong reading the jupyter configuration file.\n{}"
+                      "\nNew configuration will be created".format(str(e)))
+                f.close()
+    with open(json_config_path, 'w+') as f:
+        try:
+            _ = config['NotebookApp']
+        except KeyError:
+            config['NotebookApp'] = {'tornado_settings': {}}
+        try:
+            _ = config['NotebookApp']['tornado_settings']
+        except KeyError:
+            config['NotebookApp']['tornado_settings'] = {}
+        config['NotebookApp']['tornado_settings']['gzip'] = True
+        f.seek(0)
+        json.dump(config, f, indent=4, sort_keys=True)
+        f.truncate()
+
     # test
     if skipTest:
         cprint("Skipping tests")
     else:
         cprint("Testing NWB-Explorer")
-        execute(cmd=['python', '-m', 'pytest', 
+        execute(cmd=['python', '-m', 'pytest',
             '--ignore=dependencies',
             '--ignore=test/test_reader.py',
             ], cwd=ROOT_DIR)
 
-    
+
     cprint("Installing client packages")
     if not skipNpm:
-        execute(cmd=['npm', 'install'], cwd=WEBAPP_DIR)
+        execute(cmd=['npm', 'install' if development else 'ci'], cwd=WEBAPP_DIR)
         execute(cmd=['npm', 'run', 'build-dev' if development else 'build'], cwd=WEBAPP_DIR)
 
 

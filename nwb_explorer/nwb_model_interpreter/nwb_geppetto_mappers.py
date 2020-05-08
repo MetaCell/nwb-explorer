@@ -5,7 +5,7 @@ from h5py.h5r import Reference
 from pygeppetto.model import Pointer, GenericArray, PointerElement
 
 from pynwb import TimeSeries
-from pynwb.core import NWBBaseType, ElementIdentifiers, VectorData
+from hdmf.common import ElementIdentifiers, VectorData
 from pynwb.core import LabelledDict
 from pynwb.file import Subject
 from pynwb.core import DynamicTable
@@ -17,6 +17,7 @@ from pygeppetto.model.types.types import TextType, ImportType, CompositeType
 
 from pygeppetto.model.values import Image, Text, ImportValue, StringArray
 from pygeppetto.model.variables import Variable, TypeToValueMap
+
 
 nwb_geppetto_mappers = []
 
@@ -81,7 +82,6 @@ class MetadataMapper(NWBGeppettoMapper):
 
     def create_variable(self, name, pynwb_obj, parent_obj):
         return self.model_factory.create_text_variable(id=name, text=str(pynwb_obj))
-
 
 class ImportValueMapper(NWBGeppettoMapper):
 
@@ -197,7 +197,7 @@ class GenericCompositeMapper(NWBGeppettoMapper):
         if hasattr(obj_dict, 'items'):
             items = obj_dict.items()
         elif is_collection(obj_dict):
-            items = ((obj_dict[k].name, obj_dict[k]) for k in range(len(obj_dict)))
+            items = tuple((obj_dict[k].name, obj_dict[k]) for k in range(len(obj_dict)) if hasattr(obj_dict[k], "name"))
         else:
             items = ()
         return items
@@ -264,7 +264,7 @@ class SimpleArrayMapper(NWBGeppettoMapper):
         return is_collection(value) and value and is_metadata(next(iter(value)))
 
     def create_variable(self, name, pynwb_obj, parent_obj):
-        value = StringArray(str(v) for v in pynwb_obj)
+        value = StringArray(tuple(str(v) for v in pynwb_obj))
         array_variable = self.model_factory.create_simple_array_variable(name, value)
         return array_variable
 

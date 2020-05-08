@@ -41,8 +41,8 @@ export default class SplashPage extends React.Component{
         <Grid item sm={12} >
           <footer id="nwb-footer">
             <div className="footer-left footer-aligned-container">
-              <a className="footer-aligned" href="https://github.com/MetaCell/nwb-explorer/blob/development/README.md" >Brought to you by</a>
-              <a className="footer-aligned" href="http://www.opensourcebrain.org/"><img src={logo_osb} alt="Open source brain" title="Open source brain"></img></a>
+              <a className="footer-aligned" href="https://github.com/MetaCell/nwb-explorer/blob/development/README.md#background" >Brought to you by</a>
+              <a className="footer-aligned" href="http://www.opensourcebrain.org/"><img src={logo_osb} alt="Open Source Brain" title="Open Source Brain"></img></a>
               <a className="footer-aligned" href="http://openworm.org/"><img src={logo_openworm} alt="OpenWorm Foundation" title="OpenWorm Foundation"></img></a>
               <a className="footer-aligned" href="https://metacell.us/"><img src={logo_metacell} alt="MetaCell" title="MetaCell"></img></a>
             </div>

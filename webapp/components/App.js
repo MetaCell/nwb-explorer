@@ -35,16 +35,7 @@ export default class App extends React.Component{
   componentDidMount () {
     const { loadNWBFile, loadNotebook, notebookReady, nwbFileLoaded, raiseError } = this.props;
     self = this;
-    
-    const cookieName = 'nwbloadurl';
-    const nwbCookie = document.cookie.split(';').find(cookie => cookie.includes(cookieName))
-    if (nwbCookie) {
-      const [_, nwbFileUrl] = nwbCookie.replace(/"/g, '').split("=");
-      if (nwbFileUrl) {
-        document.cookie = `${cookieName}= ; path=/`;
-        loadNWBFile(nwbFileUrl);
-      }
-    }
+
     
     GEPPETTO.on(GEPPETTO.Events.Error_while_exec_python_command, error => {
       if (error) {

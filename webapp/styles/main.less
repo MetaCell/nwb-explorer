@@ -108,9 +108,12 @@ iframe{
     margin-bottom: 0;
 }
 .flexlayout__layout {
-
-    margin-top:20px;
-    margin-bottom:40px;
+    position: relative;
+    top: 0;
+    bottom: 0;
+    margin-bottom: 40px;
+    
+    flex: 1;
     a {
         color: @color-link;
     }
@@ -293,7 +296,12 @@ iframe{
 }
 #mainContainer, #mainContainer > div, #main-container-inner {
     height: 100%;
-
+    display: flex;
+    flex-direction: column;
+    .MuiGrid-item {
+        padding-top: 0;
+        padding-bottom: 0;
+    }
 }
 
 .center-filler {
@@ -575,12 +583,11 @@ iframe{
 }
 
 .imgBtn {
-    font-size: medium!important;
-    color: grey!important;
+    font-size: large!important;
+    color: @secondary_color;
 }
 .imgBtn:hover{
-    color: white!important;
-    opacity: 0.9
+    opacity: 1.0
 }
 
 
@@ -596,3 +603,4 @@ iframe{
     vertical-align: -5px;
     font-size: 23px;
 }
+

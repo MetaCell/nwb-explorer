@@ -281,20 +281,18 @@ export default class LayoutManager extends Component {
       }
     }
   }
+  
   render () {
     
     return (
-      <div >
-        <FlexLayout.Layout
-          ref="layout"
-          model={this.model}
-          factory={this.factory.bind(this)}
-          onAction={action => this.onAction(action)}
-          clickOnBordersAction={node => this.clickOnBordersAction(node)}
-          onRenderTabSet={(node, renderValues) => this.onRenderTabSet(node, renderValues)}
-        />
-     
-      </div>
+      <FlexLayout.Layout
+        ref="layout"
+        model={this.model}
+        factory={this.factory.bind(this)}
+        onAction={action => this.onAction(action)}
+        clickOnBordersAction={node => this.clickOnBordersAction(node)}
+        onRenderTabSet={(node, renderValues) => this.onRenderTabSet(node, renderValues)}
+      />
     )
   }
 }

@@ -1,13 +1,14 @@
-import collections
-
-import numpy as np
-from pynwb import TimeSeries, NWBHDF5IO, ProcessingModule
+from pynwb import NWBHDF5IO
 from pynwb.core import NWBDataInterface
 from pynwb.image import ImageSeries
 import base64
 from io import BytesIO
 from PIL import Image as Img
 import imageio
+import numpy as np
+
+
+
 NWB_ROOT_NAME = 'root'
 
 
@@ -21,10 +22,12 @@ class NWBReader:
     @staticmethod
     def get_plottable_timeseries(time_series, resampling_size=None):
 
-
         # TODO we may need to rearrange that when dealing with spatial series: a different type of plot (3D or else)
         #  may me more adequate than what we're doing (i.e. splitting in multiple mono dimensional timeseries)
-        time_series_array = NWBReader.get_mono_dimensional_timeseries_aux(time_series.data[::1])
+        d = time_series.data[::1]
+        if len(time_series.data.shape) == 3 and time_series.data.shape[1] == 1 and time_series.data.shape[2] == 1:
+            d = d.reshape(time_series.data.shape[0])
+        time_series_array = NWBReader.get_mono_dimensional_timeseries_aux(d)
         return time_series_array
 
     @staticmethod
@@ -102,13 +105,11 @@ class NWBReader:
     # def get_timeseries_dimensions(time_series):
     #     return 1 if len(time_series.data.shape) == 1 else time_series.data.shape[0]
 
-
-
-
-
     def __init__(self, nwbfile_or_path):
         if isinstance(nwbfile_or_path, str):
             try:
+
+
                 io = NWBHDF5IO(nwbfile_or_path, 'r')
                 nwbfile = io.read()
             except Exception  as e:
@@ -118,7 +119,6 @@ class NWBReader:
         self.nwbfile = nwbfile
         self.__data_interfaces = None
         self.__time_series_list = None
-
 
     def retrieve_from_path(self, path_pieces):
         '''Finds paths as extracted by `extract_time_series_path`'''
@@ -139,7 +139,6 @@ class NWBReader:
     #     # This seems a little too custom but not seems to exist an obvious way to traverse the file hierarchically
     #     path = NWBReader.find_from_key_recursive(self.nwbfile.fields, time_series)
     #     return path
-
 
     def get_data_interfaces(self):
         if not self.__data_interfaces:
@@ -167,7 +166,6 @@ class NWBReader:
     #     if not self.__time_series_list:
     #         self.__time_series_list = self._get_timeseries()
     #     return self.__time_series_list
-
 
     def get_nwbfile(self):
         return self.nwbfile
@@ -253,7 +251,6 @@ class NWBReader:
     # def get_all(self):
     #     return self.nwbfile.all_children()
 
-
     # @staticmethod
     # def img_to_base64(plottable_image):
     #     img = Img.fromarray(plottable_image, 'RGB')
@@ -270,7 +267,7 @@ class NWBReader:
         output = BytesIO()
         img.save(output, format='PNG')
         output.seek(0, 0)
-        
+
         return output.getvalue()
 
     def get_image(self, name: str, interface: str, index: str) -> base64:
@@ -291,7 +288,7 @@ class NWBReader:
                         np_image = pynwb_obj.data[()]
                         if len(np_image.shape) > 3:
                             np_image = np_image[index]
-                    
+
                     return NWBReader.img_to_string(np_image)
 
         return None

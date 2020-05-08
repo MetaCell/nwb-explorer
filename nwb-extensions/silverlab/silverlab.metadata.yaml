@@ -1,0 +1,9 @@
+groups:
+- neurodata_type_def: SilverLabMetaData
+  neurodata_type_inc: LabMetaData
+  doc: A place to store Silver lab specific metadata
+  attributes:
+  - name: silverlab_api_version
+    dtype: text
+    doc: For potential future backwards compatibility, store the 'version' of this
+      API that created the file.
