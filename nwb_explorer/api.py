@@ -29,6 +29,7 @@ This interface allows you to interact with the data in your NWB file both graphi
 With this Python console you can programmatically access the loaded data using the [PyNWB Python API](https://pynwb.readthedocs.io/en/stable/).
 
 The loaded NWB:N 2 file can be accessed from the variable `nwbfile`. 
+If you would like to inspect the content of the file using the [NWB Juypyter widgets](https://pypi.org/project/nwbwidgets/) you can use the `show()` function.
 
 To execute a command type it and press `Shift+Enter`. To execute a command and create a new cell press `Alt+Enter`."""),
                               nbf.v4.new_code_cell('nwbfile')

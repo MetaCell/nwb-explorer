@@ -11,21 +11,24 @@ class NWBFileService {
   }
 
   getNWBFileUrl () {
+
     let urlParams = new URLSearchParams(window.location.search);
     if (urlParams.get(NWB_FILE_URL_PARAM)) {
-      return urlParams.get(NWB_FILE_URL_PARAM);
-    }
-
-    const cookieName = 'nwbloadurl';
-    const nwbCookie = document.cookie.split(';').find(cookie => cookie.includes(cookieName))
-    if (nwbCookie) {
-      const [_, nwbFileUrl] = nwbCookie.replace(/"/g, '').split("=");
-      if (nwbFileUrl) {
-        document.cookie = `${cookieName}= ; path=/`;
-        return nwbFileUrl;
+      this.nwbfile = urlParams.get(NWB_FILE_URL_PARAM);
+    } else {
+      const cookieName = 'nwbloadurl';
+      const nwbCookie = document.cookie.split(';').find(cookie => cookie.includes(cookieName))
+      if (nwbCookie) {
+        const [_, nwbFileUrl] = nwbCookie.replace(/"/g, '').split("=");
+        if (nwbFileUrl) {
+          document.cookie = `${cookieName}= ; path=/`;
+          this.nwbfile = nwbFileUrl;
+        }
       }
     }
-    return null;
+
+   
+    return this.nwbfile;
   }
 
 

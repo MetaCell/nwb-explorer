@@ -14,3 +14,13 @@
    color: #EDB53D;
    background: transparent;
 }
+
+.jupyter-widgets-view .p-Widget, .jupyter-widgets-view .widget-label{
+   background-color: transparent !important;
+   color: white !important;
+}
+
+
+.jupyter-widgets-view .output_png {
+   background-color: #aaa !important;
+}
