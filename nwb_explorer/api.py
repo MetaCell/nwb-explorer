@@ -11,7 +11,6 @@ cache_model = False
 from pygeppetto.services.data_manager import DataManagerHelper
 import logging
 import os
-from notebook.notebook.handlers import get_custom_frontend_exporters
 
 from pygeppetto.services.model_interpreter import get_model_interpreter_from_variable
 
