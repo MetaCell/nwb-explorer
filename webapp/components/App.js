@@ -4,24 +4,24 @@ import nwbFileService from '../services/NWBFileService';
 import FileExplorerPage from './pages/FileExplorerPage';
 // import { Route, Switch, Redirect, BrowserRouter as Router } from 'react-router-dom';
 
-export default class App extends React.Component{
+export default class App extends React.Component {
 
-  constructor (props, context) {
+  constructor(props, context) {
     super(props, context);
   }
 
-  componentDidMount () {
+  componentDidMount() {
     const { loadNWBFile, reset, model, nwbFileLoaded, raiseError } = this.props;
     self = this;
 
-    
+
     GEPPETTO.on(GEPPETTO.Events.Error_while_exec_python_command, error => {
       if (error) {
         raiseError(error);
       }
     })
 
-    if (nwbFileService.getNWBFileUrl()){
+    if (nwbFileService.getNWBFileUrl()) {
       loadNWBFile(nwbFileService.getNWBFileUrl());
     }
     const loadFromEvent = event => {
@@ -40,28 +40,28 @@ export default class App extends React.Component{
     window.addEventListener('message', loadFromEvent);
 
     window.load = loadFromEvent;
-   
-    
+
+
     GEPPETTO.on(GEPPETTO.Events.Model_loaded, () => {
       nwbFileLoaded(Model);
     });
 
-    
+
     GEPPETTO.on(GEPPETTO.Events.Hide_spinner, () => {
       // Handles when Geppetto is hiding the spinner on its logic
       if (Object.values(this.props.loading).length !== 0) {
         this.showSpinner(this.props.loading);
       }
     });
-       
+
   }
 
-  componentDidUpdate () {
+  componentDidUpdate() {
     const {
-      notebookReady, model, loading, 
+      notebookReady, model, loading,
       isLoadedInNotebook, isLoadingInNotebook, error
     } = this.props;
-    
+
 
     if (!isLoadedInNotebook && model && notebookReady && !isLoadingInNotebook && !error) {
       // We may have missed the loading if notebook was not initialized at the time of the url change
@@ -73,35 +73,33 @@ export default class App extends React.Component{
     } else {
       GEPPETTO.trigger(GEPPETTO.Events.Hide_spinner);
     }
-   
-    
+
+
   }
- 
- 
-  showSpinner (loading) {
+
+
+  showSpinner(loading) {
     if (Object.values(loading).length !== 0) {
       const msg = Object.values(loading)[0];
       setTimeout(() => {
         GEPPETTO.trigger(GEPPETTO.Events.Show_spinner, msg);
       }, 500);
-    } 
+    }
   }
 
-  render () {
+  render() {
     const { embedded, nwbFileUrl } = this.props;
-    
+
     var page;
     if (nwbFileUrl) {
-      page = <FileExplorerPage/>
-    } else if (!embedded) {
-      page = <WelcomePage />
+      page = <FileExplorerPage />
     } else {
-      return null;
+      page = <WelcomePage />
     }
     return (
       <div style={{ height: '100%', width: '100%' }}>
         <div id="main-container-inner">
-          { page }
+          {page}
         </div>
         <div style={{ display: "none" }}>
           {
@@ -110,7 +108,7 @@ export default class App extends React.Component{
 
           }
         </div>
-        
+
       </div>
     )
   }
