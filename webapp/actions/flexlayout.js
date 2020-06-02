@@ -7,14 +7,14 @@ export const RESET_LAYOUT = 'RESET_LAYOUT';
 export const DESTROY_WIDGET = 'DESTROY_WIDGET';
 export const ADD_PLOT_TO_EXISTING_WIDGET = 'ADD_PLOT_TO_EXISTING_WIDGET'
 
-export const showPlot = ({ path, color = 'red' }) => ({
+export const showPlot = ({ path, color = 'red' , title }) => ({
   type: ADD_WIDGET,
   data: {
     id: 'plot@' + path,
     instancePath: path,
     component: 'Plot',
     type: 'TimeSeries',
-    name: path.slice(FILEVARIABLE_LENGTH),
+    name: title ? title : path.slice(FILEVARIABLE_LENGTH),
     status: WidgetStatus.ACTIVE,
     panelName: 'bottomPanel',
     color: color,

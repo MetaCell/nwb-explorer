@@ -15,6 +15,8 @@ export default class NWBListViewer extends Component {
     this.addToPlot = props.addToPlot ? props.addToPlot : () => console.debug('addToPlot not defined in ' + typeof this);
     this.showImageSeries = props.showImg ? props.showImg : () => console.debug('showImg not defined in ' + typeof this);
     this.updateDetailsWidget = this.props.updateDetailsWidget ? this.props.updateDetailsWidget : () => console.debug('updateDetailsWidget not defined in ' + typeof this);
+    this.plotAllInstances = this.plotAllInstances.bind(this);
+    this.plotAll = this.props.plotAll ? this.props.plotAll : () => console.debug('plotAll not defined in ' + typeof this);
     this.modelSettings = {};
     this.state = { update: 0 }
     this.filter = this.props.filter ? this.props.filter.bind(this) : this.filter.bind(this);
@@ -54,10 +56,10 @@ export default class NWBListViewer extends Component {
     }
   }
 
-  clickShowPlot ({ path, color }) {
+  clickShowPlot ({ path, color, title }) {
     this.modelSettings[path] = { color: color };
     this.setState({ update: this.state.update + 1 });
-    this.showPlot({ path, color });
+    this.showPlot({ path, color, title });
   }
 
   clickShowImg ({ path }) {
@@ -70,6 +72,28 @@ export default class NWBListViewer extends Component {
 
   clickAddToPlot (props) {
     this.addToPlot(props)
+  }
+  
+  plotAllInstances (props) {
+    let instances = this.getInstances();
+    let plotCreated = false;
+    let firstPlot = null;
+    for ( var i = 0; i < instances.length; i++ ) {
+      if ( instances[i].type === 'TimeSeries' ) {
+        if ( !plotCreated ) {
+          this.clickShowPlot( { "path" : instances[i].path , "color" : instances[i].color , title : "All Filtered Instances" } );
+          plotCreated = true;
+          firstPlot = instances[i].path;
+        } else {
+          this.clickAddToPlot( {
+            hostId : "plot@" + firstPlot,
+            instancePath : instances[i].path,
+            type : "timeseries",
+            color : instances[i].color
+          })
+        }
+      }
+    }
   }
 
   filter (pathObj) {
@@ -102,13 +126,24 @@ export default class NWBListViewer extends Component {
   }
 
   render () {
-
-    return <ListViewer
-      columnConfiguration={this.getColumnConfiguration()}
-      instances={this.getInstances()}
-      handler={this}
-      infiniteScroll={true}
-      update={this.state.update} />
+    let instances = this.getInstances();
+    
+    return <div>
+      <ListViewer
+        columnConfiguration={this.getColumnConfiguration()}
+        instances={instances}
+        handler={this}
+        infiniteScroll={true}
+        update={this.state.update} 
+        headingComponent ={
+          <div>
+            <span>
+              {instances.length} Matching Results
+            </span>
+            <span style={{ float : "right" , marginRight : "5vh" }} className="fa fa-area-chart list-icon" onClick={this.plotAllInstances} />
+          </div>
+        }/>
+    </div>
 
 
   }
