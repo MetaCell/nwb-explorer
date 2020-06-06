@@ -74,26 +74,23 @@ export default class NWBListViewer extends Component {
     this.addToPlot(props)
   }
   
-  plotAllInstances (props) {
+  plotAllInstances () {    
     let instances = this.getInstances();
     let plotCreated = false;
     let firstPlot = null;
+    let plots = new Array();
     for ( var i = 0; i < instances.length; i++ ) {
-      if ( instances[i].type === 'TimeSeries' ) {
-        if ( !plotCreated ) {
-          this.clickShowPlot( { "path" : instances[i].path , "color" : instances[i].color , title : "All Filtered Instances" } );
+      if ( instances[i].type === "TimeSeries" ){
+        if ( plotCreated ) {
+          plots.push( { instancePath : instances[i].path, color : instances[i].color , hostId : "plot@" + firstPlot , type : "ADD_PLOT_TO_EXISTING_WIDGET" } );
+        } else {
+          plots.push( { instancePath : instances[i].path, color : instances[i].color, type : "ADD_WIDGET" } );
           plotCreated = true;
           firstPlot = instances[i].path;
-        } else {
-          this.clickAddToPlot( {
-            hostId : "plot@" + firstPlot,
-            instancePath : instances[i].path,
-            type : "timeseries",
-            color : instances[i].color
-          })
         }
       }
     }
+    this.plotAll({ plots : plots, title : "All Matching Instances" } );
   }
 
   filter (pathObj) {
@@ -137,9 +134,10 @@ export default class NWBListViewer extends Component {
         update={this.state.update} 
         headingComponent ={
           <div>
-            <span>
-              {instances.length} Matching Results
-            </span>
+            { instances .length > 0
+              ? <span>{instances.length} Matching Results</span>
+              : null
+            }
             <span style={{ float : "right" , marginRight : "5vh" }} className="fa fa-area-chart list-icon" onClick={this.plotAllInstances} />
           </div>
         }/>

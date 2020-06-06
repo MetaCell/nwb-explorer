@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 import NWBListViewer from '../NWBListViewer';
-import { showPlot, showImageSeries, updateDetailsWidget, addToPlot } from '../../actions/flexlayout';
+import { showPlot, showImageSeries, updateDetailsWidget, addToPlot, plotAll } from '../../actions/flexlayout';
 
 const mapStateToProps = state => ({ modelSettings: state.nwbfile.modelSettings });
 
@@ -9,6 +9,7 @@ const mapDispatchToProps = dispatch => ({
   showImg: instanceDescriptor => dispatch(showImageSeries(instanceDescriptor)),
   addToPlot: instanceDescriptor => dispatch(addToPlot(instanceDescriptor)),
   updateDetailsWidget: path => dispatch(updateDetailsWidget(path)),
+  plotAll: instanceDescriptor => dispatch(plotAll(instanceDescriptor)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(NWBListViewer);
