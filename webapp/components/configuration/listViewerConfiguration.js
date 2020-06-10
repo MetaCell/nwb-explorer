@@ -72,6 +72,16 @@ const conf = [
         },
       },
       {
+        id: "nwbwidget",
+        customComponent: IconComponent,
+        configuration: {
+          icon: "eye",
+          action: "clickShowNWBWidget",
+          label: "NWB widget",
+          tooltip: "Show as NWB widget",
+        }
+      },
+      {
         id: "addToPlot",
         customComponent: AddToPlotComponent,
         visible: entity => Instances.getInstance(entity.path + '.data') && Instances.getInstance(entity.path + '.timestamps'),

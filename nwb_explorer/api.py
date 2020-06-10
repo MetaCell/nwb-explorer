@@ -44,31 +44,33 @@ To execute a command type it and press `Shift+Enter`. To execute a command and c
     f.close()
 
 
-
-
-
-
-def get_model_interpreter(runtime_project) -> NWBModelInterpreter:
-    return get_model_interpreter_from_variable(runtime_project.model.variables[0])
+def get_model_interpreter(clientId, projectId) -> NWBModelInterpreter:
+    data_manager = DataManagerHelper.getDataManager()
+    geppetto_project = data_manager.getGeppettoProjectById(projectId)
+    geppetto_manager = GeppettoManager.get_instance(clientId)
+    runtime_project = geppetto_manager.get_runtime_project(geppetto_project)
+    model_interpreter = get_model_interpreter_from_variable(runtime_project.model.variables[0])
+    return model_interpreter
 
 
 class NWBController:  # pytest: no cover
 
     @get('/api/image', {'Content-type': 'image/png', 'Cache-Control': 'max-age=600'})
-    def image(handler: IPythonHandler, name: str, interface: str, projectId: str = '0', index: str = '0') -> str:
+    def image(handler: IPythonHandler, name: str, interface: str, projectId: str = '0', index: str = '0', clientId=None) -> str:
         if not any([name, interface, projectId]):
             return "Bad request"
 
-        manager = GeppettoManager()
+        model_interpreter = get_model_interpreter(clientId, projectId)
 
-        dataManager = DataManagerHelper.getDataManager()
-        project = dataManager.getGeppettoProjectById(project_id=int(projectId))
+        return model_interpreter.nwb_reader.get_image(name=name, interface=interface, index=index)
 
-        project = manager.get_runtime_project(project)
-        model_interpreter = get_model_interpreter(project)
-        nwb_reader = model_interpreter.nwb_reader
-
-        return nwb_reader.get_image(name=name, interface=interface, index=index)
+    def get_model(self, clientId, projectId):
+        data_manager = DataManagerHelper.getDataManager()
+        geppetto_project = data_manager.getGeppettoProjectById(projectId)
+        geppetto_manager = GeppettoManager.get_instance(clientId)
+        runtime_project = geppetto_manager.get_runtime_project(geppetto_project)
+        model_interpreter = get_model_interpreter(runtime_project)
+        return model_interpreter
 
     @get('/notebook')
     def new_notebook(handler: IPythonHandler, path):
@@ -76,3 +78,26 @@ class NWBController:  # pytest: no cover
             logging.info("Creating notebook {}".format(path))
             createNotebook(path)
         handler.redirect('notebooks/' + path)
+
+    @get('/nwbwidget')
+    def get_nwb_widget(handler: IPythonHandler, path='', projectId: str = '0', clientId=None):
+        from ipywidgets.embed import embed_snippet, html_template
+        from nwbwidgets import nwb2widget
+
+        model_interpreter = get_model_interpreter(clientId, projectId)
+        nwbfile = model_interpreter.get_nwbfile()
+        
+        widget = nwb2widget(nwbfile.acquisition)
+
+        snippet = embed_snippet([widget])
+
+        values = {
+                'title': '',
+                'snippet': snippet,
+        }
+        
+        template = html_template
+        
+
+        return template.format(**values)
+        

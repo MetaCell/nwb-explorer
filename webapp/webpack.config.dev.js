@@ -22,6 +22,10 @@ extended.devServer = {
       target : 'http://localhost:8888'
     },
     {
+      path : '/notebook',
+      target : 'http://localhost:8888'
+    },
+    {
       path : '/api',
       target : 'http://localhost:8888'
     },
@@ -41,6 +45,10 @@ extended.devServer = {
 
     {
       path : '/nbextensions',
+      target : 'http://localhost:8888'
+    },
+    {
+      path : '/nwbwidget',
       target : 'http://localhost:8888'
     },
   ],

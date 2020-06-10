@@ -81,6 +81,14 @@ export default class WidgetFactory{
       return getConsole();
     
     }
+    case "NWBWidget": {
+    
+      return <iframe 
+        src={`/nwbwidget?path=${widgetConfig.path}&projectId=${window.Project.getId()}&clientId=${GEPPETTO.MessageSocket.getClientID()}`} 
+        style={{ width: '100%', flex: 1 }} 
+      />;
+    
+    }
     }
   }
 

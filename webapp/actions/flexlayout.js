@@ -102,6 +102,8 @@ export const newWidget = ({ path, component, panelName }) => ({
   }
 });
 
+export const showNWBWidget = path => (newWidget({ path, component: 'NWBWidget', panelName: 'bottomPanel' }));
+
 export const updateWidget = (newConf => ({
   type: UPDATE_WIDGET,
   data: newConf
