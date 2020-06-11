@@ -7,11 +7,11 @@
   "scripts": {
     "prebuild": "eslint . --color",
     "build": "webpack --mode production -p --devtool source-map",
-    "prebuild-dev": "eslint . --color",
+    "prebuild-dev": "eslint . --color --fix",
     "build-dev": "webpack --mode development --devtool eval",
-    "prebuild-dev-noTest": "eslint . ",
+    "prebuild-dev-noTest": "eslint . --fix",
     "build-dev-noTest": "webpack --mode development --devtool source-map --env.noTest=true",
-    "prebuild-dev-noTest:watch": "eslint . --color",
+    "prebuild-dev-noTest:watch": "eslint . --color --fix",
     "build-dev-noTest:watch": "webpack --mode development --devtool source-map --env.noTest=true --progress --watch",
     "start": "node --max-old-space-size=2048 node_modules/webpack-dev-server/bin/webpack-dev-server.js --progress --env.noTest=true  --config webpack.config.dev.js"
   },

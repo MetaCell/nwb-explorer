@@ -138,7 +138,7 @@ export default class NWBListViewer extends Component {
           ? <i>{instances.length} Matching Results</i>
           : null
         }
-        <a style={{color: 'white', cursor: 'pointer'}} title="Plot all timeseries" onClick={this.plotAllInstances}>
+        <a style={{ color: 'white', cursor: 'pointer' }} title="Plot all timeseries" onClick={this.plotAllInstances}>
           <span className="fa fa-area-chart list-icon" />
         </a>
       </div>

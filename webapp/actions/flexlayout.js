@@ -21,7 +21,7 @@ export const showPlot = ({ path, title }) => ({
   }
 });
 
-export const addToPlot = ({ hostId, instancePath}) => ({
+export const addToPlot = ({ hostId, instancePath }) => ({
   type: ADD_PLOT_TO_EXISTING_WIDGET,
   data: {
     hostId,

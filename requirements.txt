@@ -1,4 +1,4 @@
-jupyter_geppetto==1.1.0
-pyecore==0.11.6
-pygeppetto==0.8.0
-pynwb==1.3.0
+git+https://github.com/openworm/org.geppetto.frontend.jupyter.git@840c78f5ff64a291af5af87332f749df1ee84d48#egg=jupyter_geppetto
+git+https://github.com/openworm/pygeppetto.git@31a59ea3aa069474b10e3c5fe9c838666f602232#egg=pygeppetto
+pynwb==1.3.2
+nwbwidgets==0.0.2
