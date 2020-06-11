@@ -84,7 +84,7 @@ export default class WidgetFactory{
     case "NWBWidget": {
     
       return <iframe 
-        src={`/nwbwidget?path=${widgetConfig.path}&projectId=${window.Project.getId()}&clientId=${GEPPETTO.MessageSocket.getClientID()}`} 
+        src={`/nwbwidget?path=${widgetConfig.instancePath}&projectId=${window.Project.getId()}&clientId=${GEPPETTO.MessageSocket.getClientID()}`} 
         style={{ width: '100%', flex: 1 }} 
       />;
     

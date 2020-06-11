@@ -1,21 +1,24 @@
 {
   "compilerOptions": {
-    "outDir": "./dist/",
-    "sourceMap": true,
-    "noImplicitAny": true,
-    "module": "commonjs",
-    "target": "es5",
-    "stripInternal": true,
-    "alwaysStrict": true,
-    "forceConsistentCasingInFileNames": true,
-    "noImplicitReturns": true,
-    "strict": true,
-    "noUnusedLocals": true,
-    "jsx": "react",
-    "lib": ["dom", "es2015"]
-  },
-  "include": [
-    "./node_modules/@geppettoengine/geppetto-client/js/components/interface/flexLayout2/src/**/*",
-    "./@geppettoengine/geppetto-client/js/components/interface/flexLayout2/examples/demo/*"
-  ]
+      "outDir": "./dist/",
+      "sourceMap": true,
+      "noImplicitAny": false,
+      "module": "commonjs",
+      "target": "es2017",
+      "stripInternal":true,
+      "skipLibCheck": true,
+      "alwaysStrict":false,
+      "forceConsistentCasingInFileNames": true,
+      "noImplicitReturns": false,
+      "strict": false,
+      "noUnusedLocals": false,
+      "jsx": "react",
+      "types": []
+    },
+    "include": [
+      "./node_modules/@geppettoengine/geppetto-client/js/components/interface/flexLayout2/src/**/*", "./@geppettoengine/geppetto-client/js/components/interface/flexLayout2/examples/demo/*"
+      ],
+      "exclude": [
+        "node_modules"
+      ]
 }

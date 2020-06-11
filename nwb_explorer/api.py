@@ -1,14 +1,22 @@
 import logging
 
+from ipywidgets import widgets
 from jupyter_geppetto.webapi import get
+from matplotlib.backends.backend_agg import FigureCanvasAgg
+from matplotlib.figure import Figure
 from notebook.base.handlers import IPythonHandler
 
 from nwb_explorer.nwb_model_interpreter import NWBModelInterpreter
 
 from pygeppetto.managers import GeppettoManager
+
 cache_model = False
 
 from pygeppetto.services.data_manager import DataManagerHelper
+from ipywidgets.embed import embed_snippet, html_template
+
+
+from nwbwidgets import nwb2widget
 import logging
 import os
 
@@ -46,31 +54,37 @@ To execute a command type it and press `Shift+Enter`. To execute a command and c
 
 def get_model_interpreter(clientId, projectId) -> NWBModelInterpreter:
     data_manager = DataManagerHelper.getDataManager()
-    geppetto_project = data_manager.getGeppettoProjectById(projectId)
-    geppetto_manager = GeppettoManager.get_instance(clientId)
+    geppetto_project = data_manager.getGeppettoProjectById(int(projectId))
+    geppetto_manager = GeppettoManager.get_instance(int(clientId))
     runtime_project = geppetto_manager.get_runtime_project(geppetto_project)
     model_interpreter = get_model_interpreter_from_variable(runtime_project.model.variables[0])
     return model_interpreter
 
 
+def nwb_object(nwbfile, path):
+    obj = nwbfile
+    for el in path.split('.')[1:]:
+        if isinstance(obj, dict):
+            if el in obj:
+                obj = obj[el]
+            else:
+                logging.warning("%s not found in %s", el, obj)
+        else:
+            obj = getattr(obj, el)
+    return obj
+
+
 class NWBController:  # pytest: no cover
 
     @get('/api/image', {'Content-type': 'image/png', 'Cache-Control': 'max-age=600'})
-    def image(handler: IPythonHandler, name: str, interface: str, projectId: str = '0', index: str = '0', clientId=None) -> str:
+    def image(handler: IPythonHandler, name: str, interface: str, projectId: str = '0', index: str = '0',
+              clientId=None) -> str:
         if not any([name, interface, projectId]):
             return "Bad request"
 
         model_interpreter = get_model_interpreter(clientId, projectId)
 
         return model_interpreter.nwb_reader.get_image(name=name, interface=interface, index=index)
-
-    def get_model(self, clientId, projectId):
-        data_manager = DataManagerHelper.getDataManager()
-        geppetto_project = data_manager.getGeppettoProjectById(projectId)
-        geppetto_manager = GeppettoManager.get_instance(clientId)
-        runtime_project = geppetto_manager.get_runtime_project(geppetto_project)
-        model_interpreter = get_model_interpreter(runtime_project)
-        return model_interpreter
 
     @get('/notebook')
     def new_notebook(handler: IPythonHandler, path):
@@ -81,23 +95,20 @@ class NWBController:  # pytest: no cover
 
     @get('/nwbwidget')
     def get_nwb_widget(handler: IPythonHandler, path='', projectId: str = '0', clientId=None):
-        from ipywidgets.embed import embed_snippet, html_template
-        from nwbwidgets import nwb2widget
+
 
         model_interpreter = get_model_interpreter(clientId, projectId)
         nwbfile = model_interpreter.get_nwbfile()
-        
-        widget = nwb2widget(nwbfile.acquisition)
+
+        widget = nwb2widget(nwb_object(nwbfile, path))
 
         snippet = embed_snippet([widget])
 
         values = {
-                'title': '',
-                'snippet': snippet,
+            'title': '',
+            'snippet': snippet,
         }
-        
+
         template = html_template
-        
 
         return template.format(**values)
-        
