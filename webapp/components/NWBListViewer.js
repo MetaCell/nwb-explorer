@@ -17,9 +17,11 @@ export default class NWBListViewer extends Component {
     this.updateDetailsWidget = this.props.updateDetailsWidget ? this.props.updateDetailsWidget : () => console.debug('updateDetailsWidget not defined in ' + typeof this);
     this.plotAllInstances = this.plotAllInstances.bind(this);
     this.plotAll = this.props.plotAll ? this.props.plotAll : () => console.debug('plotAll not defined in ' + typeof this);
+    this.availableTimeSeries = this.availableTimeSeries.bind(this);
     this.modelSettings = {};
-    this.state = { update: 0 }
+    this.state = { update: 0, searchText : '' }
     this.filter = this.props.filter ? this.props.filter.bind(this) : this.filter.bind(this);
+    this.onFilter = this.onFilter.bind(this);
   }
 
   componentDidUpdate () {
@@ -74,7 +76,7 @@ export default class NWBListViewer extends Component {
     this.addToPlot(props)
   }
   
-  plotAllInstances () {    
+  plotAllInstances () {
     let instances = this.getInstances();
     let plotCreated = false;
     let firstPlot = null;
@@ -101,10 +103,8 @@ export default class NWBListViewer extends Component {
       if (path.match(pathPattern)) {
         let instance = Instances.getInstance(path);
         if (instance.getPath) {
-          return instance.getType().getName().match(typePattern);
+          return instance.getId().match(this.state.searchText)
         }
-
-
       }
     }
 
@@ -117,30 +117,51 @@ export default class NWBListViewer extends Component {
       filter(this.filter)
       .map(({ path }) => this.mapModelPathToList(path));
   }
+  
+  /**
+   * Check searched instances have available Time Series
+   */
+  availableTimeSeries () {
+    let instances = this.getInstances();
+    let timeSeriesAvailable = false;
+    for ( var i = 0; i < instances.length; i++ ) {
+      if ( instances[i].type === "TimeSeries" && this.state.searchText.length > 0 ){
+        timeSeriesAvailable = true;    
+      }
+    }
+    
+    return timeSeriesAvailable;
+  }
 
   getColumnConfiguration () {
     return listViewerConf;
+  }
+  
+  onFilter (e) {
+    this.setState( { searchText : e } );
   }
 
   render () {
     let instances = this.getInstances();
     
-    return <div>
+    return <div height="100%">
+      {
+        this.availableTimeSeries()
+          ? <div>
+            <span>{instances.length} Matching Results</span>
+            <span style={{ float : "right" , marginRight : "5vh" }} className="fa fa-area-chart list-icon" onClick={this.plotAllInstances} />
+          </div>
+          : null
+      }  
       <ListViewer
         columnConfiguration={this.getColumnConfiguration()}
         instances={instances}
+        style={{ height : "20rem !important" }}
         handler={this}
         infiniteScroll={true}
-        update={this.state.update} 
-        headingComponent ={
-          <div>
-            { instances .length > 0
-              ? <span>{instances.length} Matching Results</span>
-              : null
-            }
-            <span style={{ float : "right" , marginRight : "5vh" }} className="fa fa-area-chart list-icon" onClick={this.plotAllInstances} />
-          </div>
-        }/>
+        update={this.state.update}
+        onFilter={ filteredText => this.onFilter(filteredText) }
+      />
     </div>
 
 

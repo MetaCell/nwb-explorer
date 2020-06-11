@@ -54,6 +54,10 @@ function handlePlotTimeseries (store, next, action) {
     }
   }
 
+  if ( action.data.instancePath === undefined ) {
+    return;
+  }
+  
   store.dispatch(updateDetailsWidget(action.data.instancePath));
   
   const data_path = action.data.instancePath + '.data';
