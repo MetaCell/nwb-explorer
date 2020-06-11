@@ -14,7 +14,6 @@ import { NOTEBOOK_READY, notebookReady } from '../actions/notebook';
 function handleShowWidget (store, next, action) {
   // const instance = Instances.getInstance(path);
   if (action.data.type === 'TimeSeries') { // Instances.getInstance(path).getType().wrappedObj.name
-    store.dispatch(updateDetailsWidget(action.data.instancePath));
     return handlePlotTimeseries(store, next, action);
   } else if (action.data.type === 'ImageSeries') { // Instances.getInstance(path).getType().wrappedObj.name
     store.dispatch(updateDetailsWidget(action.data.instancePath));
@@ -46,6 +45,17 @@ function handleImportTimestamps (store, next, action) {
 }
 
 function handlePlotTimeseries (store, next, action) {
+  // If a set of actions are passed, loop through them and execute each one independently
+  if ( action.data !== undefined ) {
+    if ( Array.isArray(action.data.actions) ) {
+      for ( var i = 0; i < action.data.actions.length; i++ ) {
+        handlePlotTimeseries(store, next, action.data.actions[i])
+      }
+    }
+  }
+
+  store.dispatch(updateDetailsWidget(action.data.instancePath));
+  
   const data_path = action.data.instancePath + '.data';
   let data = Instances.getInstance(data_path);
   const time_path = action.data.instancePath + '.timestamps';
