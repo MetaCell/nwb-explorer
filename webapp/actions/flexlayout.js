@@ -7,70 +7,42 @@ export const RESET_LAYOUT = 'RESET_LAYOUT';
 export const DESTROY_WIDGET = 'DESTROY_WIDGET';
 export const ADD_PLOT_TO_EXISTING_WIDGET = 'ADD_PLOT_TO_EXISTING_WIDGET'
 
-export const showPlot = ({ path, color = 'red' , title }) => ({
+export const showPlot = ({ path, title }) => ({
   type: ADD_WIDGET,
   data: {
     id: 'plot@' + path,
-    instancePath: path,
+    instancePaths: [path],
     component: 'Plot',
     type: 'TimeSeries',
     name: title ? title : path.slice(FILEVARIABLE_LENGTH),
     status: WidgetStatus.ACTIVE,
     panelName: 'bottomPanel',
-    color: color,
-    config: {},
-    guestList: []
+    config: {}
   }
 });
 
-export const addToPlot = ({ hostId, instancePath, color }) => ({
+export const addToPlot = ({ hostId, instancePath}) => ({
   type: ADD_PLOT_TO_EXISTING_WIDGET,
   data: {
     hostId,
     instancePath,
-    color,
     type: 'TimeSeries'
   }
 });
 
-export const formatAction = ( action, title ) => {
-  let actions = [];
-  for ( var i = 0 ; i < action.length; i++ ) {
-    if ( action[i].type === ADD_WIDGET ) {
-      actions.push( {
-        type: ADD_WIDGET,
-        data: {
-          id: 'plot@' + action[i].instancePath,
-          instancePath: action[i].instancePath,
-          component: 'Plot',
-          type: 'TimeSeries',
-          name: title ? title : action[i].instancePath.slice(FILEVARIABLE_LENGTH),
-          status: WidgetStatus.ACTIVE,
-          panelName: 'bottomPanel',
-          color: action[i].color,
-          config: {},
-          guestList: []
-        }
-      } );
-    } else if ( action[i].type === ADD_PLOT_TO_EXISTING_WIDGET ){
-      actions.push( {
-        type: ADD_PLOT_TO_EXISTING_WIDGET,
-        data: {
-          hostId : action[i].hostId,
-          instancePath : action[i].instancePath,
-          color : action[i].color,
-          type: 'TimeSeries'
-        }
-      })
-    }
-  }
-  
-  return actions;
-}
 
 export const plotAll = ({ plots, title }) => ({
   type: ADD_WIDGET,
-  data: { type : "TimeSeries", actions : formatAction(plots, title) }
+  data: {
+    id: 'plot@' + plots.join('-'),
+    instancePaths: plots,
+    component: 'Plot',
+    type: 'TimeSeries',
+    name: title,
+    status: WidgetStatus.ACTIVE,
+    panelName: 'bottomPanel',
+    config: {},
+  }
 });
 
 export const showImageSeries = ({ path, type }) => ({

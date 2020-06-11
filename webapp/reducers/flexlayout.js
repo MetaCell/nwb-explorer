@@ -101,24 +101,20 @@ export default (state = FLEXLAYOUT_DEFAULT_STATUS, action) => {
     return FLEXLAYOUT_DEFAULT_STATUS;
   
   case ADD_PLOT_TO_EXISTING_WIDGET: {
-    const widget = state.widgets[action.data.hostId];
+    const widget = { ...state.widgets[action.data.hostId] };
     const widgets = { ...state.widgets };
     delete widgets[action.data.hostId];
+
+    widget.instancePaths.push(action.data.instancePath);
+    const newId = 'plot@' + widget.instancePaths.join('-');
     if (widget){
       return {
         widgets: { 
           ...updateWidgetStatus(widgets, { panelName: widget.panelName, status: WidgetStatus.ACTIVE }), 
-          [action.data.hostId + action.data.instancePath]: { 
+          [newId]: { 
             ...widget,
-            id: action.data.hostId + action.data.instancePath,
+            id: newId,
             name: widget.name + '+',
-            guestList: [
-              ...widget.guestList, 
-              { 
-                instancePath: action.data.instancePath, 
-                color: action.data.color 
-              }
-            ] 
           } 
         } 
       }

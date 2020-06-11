@@ -60,6 +60,7 @@ export default class NWBListViewer extends Component {
   clickShowPlot ({ path, color, title }) {
     this.modelSettings[path] = { color: color };
     this.setState({ update: this.state.update + 1 });
+    Instances.getInstance(path).color = color; // TODO move to redux
     this.showPlot({ path, color, title });
   }
 
@@ -80,22 +81,12 @@ export default class NWBListViewer extends Component {
   }
   
   plotAllInstances () {    
-    let instances = this.getInstances();
-    let plotCreated = false;
-    let firstPlot = null;
-    let plots = new Array();
-    for ( var i = 0; i < instances.length; i++ ) {
-      if ( instances[i].type === "TimeSeries" ){
-        if ( plotCreated ) {
-          plots.push( { instancePath : instances[i].path, color : instances[i].color , hostId : "plot@" + firstPlot , type : "ADD_PLOT_TO_EXISTING_WIDGET" } );
-        } else {
-          plots.push( { instancePath : instances[i].path, color : instances[i].color, type : "ADD_WIDGET" } );
-          plotCreated = true;
-          firstPlot = instances[i].path;
-        }
-      }
-    }
-    this.plotAll({ plots : plots, title : "All Matching Instances" } );
+    const instances = this.getInstances();
+   
+    this.plotAll({ 
+      plots : instances.filter(instance => instance.type === "TimeSeries").map(instance => instance.path), 
+      title : "All plots: " + instances[0].path.split('.')[1]
+    } );
   }
 
   filter (pathObj) {
@@ -130,22 +121,27 @@ export default class NWBListViewer extends Component {
   render () {
     let instances = this.getInstances();
     
-    return <div>
-      <ListViewer
-        columnConfiguration={this.getColumnConfiguration()}
-        instances={instances}
-        handler={this}
-        infiniteScroll={true}
-        update={this.state.update} 
-        headingComponent ={
-          <div>
-            { instances .length > 0
-              ? <span>{instances.length} Matching Results</span>
-              : null
-            }
-            <span style={{ float : "right" , marginRight : "5vh" }} className="fa fa-area-chart list-icon" onClick={this.plotAllInstances} />
-          </div>
-        }/>
+    return <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'stretch', height: '100%' }}>
+      <div style={{ flex: 1 }}>
+        <ListViewer
+          columnConfiguration={this.getColumnConfiguration()}
+          instances={instances}
+          handler={this}
+          infiniteScroll={true}
+          update={this.state.update} 
+        
+        />
+      </div>
+
+      <div className='list-summary'>
+        { instances .length > 0
+          ? <i>{instances.length} Matching Results</i>
+          : null
+        }
+        <a style={{color: 'white', cursor: 'pointer'}} title="Plot all timeseries" onClick={this.plotAllInstances}>
+          <span className="fa fa-area-chart list-icon" />
+        </a>
+      </div>
     </div>
 
 
