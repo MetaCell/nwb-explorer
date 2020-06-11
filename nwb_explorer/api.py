@@ -2,8 +2,6 @@ import logging
 
 from ipywidgets import widgets
 from jupyter_geppetto.webapi import get
-from matplotlib.backends.backend_agg import FigureCanvasAgg
-from matplotlib.figure import Figure
 from notebook.base.handlers import IPythonHandler
 
 from nwb_explorer.nwb_model_interpreter import NWBModelInterpreter
