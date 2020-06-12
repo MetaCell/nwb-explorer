@@ -19,7 +19,7 @@ export default class NWBListViewer extends Component {
     this.plotAllInstances = this.plotAllInstances.bind(this);
     this.plotAll = this.props.plotAll ? this.props.plotAll : () => console.debug('plotAll not defined in ' + typeof this);
     this.modelSettings = {};
-    this.state = { update: 0 }
+    this.state = { update: 0, searchText : '' }
     this.filter = this.props.filter ? this.props.filter.bind(this) : this.filter.bind(this);
   }
 
@@ -85,7 +85,7 @@ export default class NWBListViewer extends Component {
    
     this.plotAll({ 
       plots : instances.filter(instance => instance.type === "TimeSeries").map(instance => instance.path), 
-      title : "All plots: " + instances[0].path.split('.')[1]
+      title : "All plots: " + instances[0].path.split('.')[1] + this.state.searchText ? `- ${this.state.searchText}` : ''
     } );
   }
 
@@ -97,7 +97,7 @@ export default class NWBListViewer extends Component {
       if (path.match(pathPattern)) {
         let instance = Instances.getInstance(path);
         if (instance.getPath) {
-          return instance.getType().getName().match(typePattern);
+          return instance.getType().getName().match(typePattern) && instance.getId().includes(this.state.searchText);
         }
 
 
@@ -107,6 +107,11 @@ export default class NWBListViewer extends Component {
     return false
 
   }
+
+  onFilter (e) {
+    this.setState( { searchText : e } );
+  }
+
 
   getInstances () {
     return GEPPETTO.ModelFactory.allPaths.
@@ -129,7 +134,7 @@ export default class NWBListViewer extends Component {
           handler={this}
           infiniteScroll={true}
           update={this.state.update} 
-        
+          events={{ onFilter: filteredText => this.onFilter(filteredText) }}
         />
       </div>
 
