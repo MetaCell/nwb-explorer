@@ -85,7 +85,7 @@ export default class NWBListViewer extends Component {
    
     this.plotAll({ 
       plots : instances.filter(instance => instance.type === "TimeSeries").map(instance => instance.path), 
-      title : "All plots: " + instances[0].path.split('.')[1] + this.state.searchText ? `- ${this.state.searchText}` : ''
+      title : "All plots: " + instances[0].path.split('.')[1] + (this.state.searchText ? `- ${this.state.searchText}` : '')
     } );
   }
 
