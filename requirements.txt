@@ -1,4 +1,4 @@
-git+https://github.com/openworm/org.geppetto.frontend.jupyter.git@8987221c85fe063e8670b13fc73c0be2f2b343a4#egg=jupyter_geppetto
+git+https://github.com/openworm/org.geppetto.frontend.jupyter.git@113521491b0fe475beff6faea9ff0487f7f7cbd4#egg=jupyter_geppetto
 git+https://github.com/openworm/pygeppetto.git@4f3422ba5e30e01a58b214a7f74db81c5b513b5d#egg=pygeppetto
 pynwb==1.3.2
 nwbwidgets==0.2.3
