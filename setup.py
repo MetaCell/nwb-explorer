@@ -52,6 +52,7 @@ setuptools.setup(
         'pynwb>=1.2.1',
         'imageio>=2.5.0',
         'quantities>=0.12.3',
-        'nwbwidgets>=0.2.0'
+        'nwbwidgets>=0.2.0',
+        'ipywidgets>=7.5.1'
     ],
 )

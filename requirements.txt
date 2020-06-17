@@ -12,3 +12,4 @@ seaborn==0.8.1
 uuid==1.30
 imageio>=2.5.0
 quantities>=0.12.3
+ipywidgets==7.5.1
