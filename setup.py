@@ -40,7 +40,7 @@ setuptools.setup(
         'Programming Language :: Python :: 3.7'
     ],
     install_requires=[
-        'jupyter_geppetto>=1.0.0',
+        'jupyter_geppetto>=1.1.0',
         'bokeh>=0.13.0',
         'holoviews>=1.10.6',
         'msgpack-python==0.5.6',

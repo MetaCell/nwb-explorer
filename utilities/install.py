@@ -106,7 +106,7 @@ def main(branch=branch, skipNpm=False, skipTest=False, development=False):
 
     if not skipNpm and os.path.exists(os.path.join(DEPS_DIR, JUPYTER_DIR)):
         cprint("Building Jupyter Geppetto extension...")
-        execute(cmd=['npm', 'install'], cwd=os.path.join(DEPS_DIR,JUPYTER_DIR, 'js'))
+        execute(cmd=['npm', 'ci'], cwd=os.path.join(DEPS_DIR,JUPYTER_DIR, 'js'))
         execute(cmd=['npm', 'run', 'build-dev' if development else 'build'], cwd=os.path.join(DEPS_DIR, JUPYTER_DIR, 'js'))
 
 
