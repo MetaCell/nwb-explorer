@@ -14,8 +14,8 @@ RUN jupyter labextension disable @jupyterlab/hub-extension
 
 COPY --chown=1000:1000 . ${FOLDER}
 
-RUN python $FOLDER/utilities/install.py
-
+RUN python $FOLDER/utilities/install.py --dev
+RUN pip freeze
 WORKDIR $HOME/$FOLDER
 
 EXPOSE 8000
