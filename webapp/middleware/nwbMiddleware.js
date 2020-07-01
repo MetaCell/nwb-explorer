@@ -14,7 +14,6 @@ import { NOTEBOOK_READY, notebookReady } from '../actions/notebook';
 function handleShowWidget (store, next, action) {
   // const instance = Instances.getInstance(path);
   if (action.data.type === 'TimeSeries') { // Instances.getInstance(path).getType().wrappedObj.name
-    store.dispatch(updateDetailsWidget(action.data.instancePath));
     return handlePlotTimeseries(store, next, action);
   } else if (action.data.type === 'ImageSeries') { // Instances.getInstance(path).getType().wrappedObj.name
     store.dispatch(updateDetailsWidget(action.data.instancePath));
@@ -24,11 +23,54 @@ function handleShowWidget (store, next, action) {
   }
 }
 
+
+async function handlePlotTimeseries (store, next, action) {
+  // If a set of actions are passed, loop through them and execute each one independently
+  const instancePaths = action.data.instancePaths ? action.data.instancePaths : [action.data.instancePath];
+
+  store.dispatch(updateDetailsWidget(instancePaths[0]));
+  const promises = [];
+  for (const instancePath of instancePaths) {
+    const data_path = instancePath + '.data';
+    let data = Instances.getInstance(data_path);
+    const time_path = instancePath + '.timestamps';
+    let time = Instances.getInstance(time_path);
+  
+    if (data.getValue().resolve) {
+      
+      
+      // Trick to resolve with the instance path instead than the type path. TODO remove when fixed 
+      promises.push(retrieveImportValue(time, time_path));
+      promises.push(retrieveImportValue(data, data_path));
+    }
+  }
+  if (promises.length) {
+    store.dispatch(waitData('Loading timeseries data...', action.type));
+    Promise.allSettled(promises).then(() => next(action));
+  } else {
+    next(action);
+  }
+  
+  
+}
+
+async function retrieveImportValue (data, data_path) {
+  return new Promise((resolve, reject) => {
+    data.getValue().getPath = () => data.getPath();
+    data.getValue().resolve(dataValue => {
+      GEPPETTO.ModelFactory.deleteInstance(data);
+      Instances.getInstance(data_path);
+      resolve();
+    });
+  });
+  
+}
+
 function handleImportTimestamps (store, next, action) {
   const time_path = action.data.instancePath + '.timestamps';
   const timestamps = Instances.getInstance(time_path);
 
-  if (timestamps.getValue().wrappedObj.value.eClass == 'ImportValue') {
+  if (timestamps.getValue().resolve == 'ImportValue') {
 
     store.dispatch(waitData('Loading timestamps data...', action.type));
     timestamps.getValue().getPath = () => timestamps.getPath()
@@ -45,34 +87,6 @@ function handleImportTimestamps (store, next, action) {
   }
 }
 
-function handlePlotTimeseries (store, next, action) {
-  const data_path = action.data.instancePath + '.data';
-  let data = Instances.getInstance(data_path);
-  const time_path = action.data.instancePath + '.timestamps';
-  let time = Instances.getInstance(time_path);
-
-  if (data.getValue().wrappedObj.value.eClass == 'ImportValue') {
-
-    store.dispatch(waitData('Loading timeseries data...', action.type));
-    // Trick to resolve with the instance path instead than the type path. TODO remove when fixed 
-    data.getValue().getPath = () => data.getPath()
-    time.getValue().getPath = () => time.getPath()
-
-    data.getValue().resolve(dataValue => {
-      time.getValue().resolve(timeValue => {      
-        GEPPETTO.ModelFactory.deleteInstance(data),
-        GEPPETTO.ModelFactory.deleteInstance(time),
-        Instances.getInstance(data_path),
-        Instances.getInstance(time_path)
-        
-        next(action);
-      })
-    });
-     
-  } else {
-    next(action);
-  }
-}
 
 const nwbMiddleware = store => next => action => {
   // console.log(action);

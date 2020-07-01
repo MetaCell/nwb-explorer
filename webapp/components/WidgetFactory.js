@@ -1,5 +1,5 @@
 import React, { lazy, Suspense } from 'react';
-const NWBPlot = lazy(() => import('./NWBPlot'));
+import NWBPlot from './NWBPlot';
 import FileExplorerPage from './pages/FileExplorerPage';
 import Metadata from './Metadata';
 import NWBListViewer from './reduxconnect/NWBListViewerContainer';
@@ -58,14 +58,12 @@ export default class WidgetFactory{
       />
     }
     case "Plot": { 
-      const { instancePath, color, guestList } = widgetConfig;
-      if (!instancePath){
+      const { instancePaths } = widgetConfig;
+      if (!instancePaths){
         throw new Error('Plot widget instancePath must be configured')
       }
       return (
-        <Suspense fallback={<div>Loading...</div>}>
-          <NWBPlot instancePath={ instancePath } color={ color } guestList={guestList}/>
-        </Suspense>
+        <NWBPlot instancePaths={ instancePaths } />
       )
     } 
     case "ListViewer": {

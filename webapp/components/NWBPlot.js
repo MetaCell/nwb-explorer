@@ -43,28 +43,19 @@ export default class NWBTimeseriesPlotComponent extends React.Component {
   }
 
   render () {
-    const { instancePath, guestList, color = 'white' } = this.props;
+    const { instancePaths } = this.props;
 
-    const plots = [{ 
+
+    const plots = instancePaths.map(instancePath => ({ 
       x: `${instancePath}.timestamps`,
       y: `${instancePath}.data`,
-      lineOptions: { color: color }
-    }]
-
-    if (guestList && guestList.length > 0) {
-      plots.push(
-        ...guestList.map(guest => ({ 
-          x: `${guest.instancePath}.timestamps`,
-          y: `${guest.instancePath}.data`,
-          lineOptions: { color: guest.color }
-        }))
-      )
-    }
+      lineOptions: { color: Instances.getInstance(instancePath).color } // TODO move color information to redux
+    }));
+    
 
     return (
       <PlotComponent
         plots={plots}
-        id={instancePath ? instancePath : "empty"}
         extractLegendName={this.extractLegendName}
       />
     )

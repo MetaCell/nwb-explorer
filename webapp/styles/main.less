@@ -221,7 +221,7 @@ iframe{
     .flexlayout__tab_toolbar_button-max,
     .customIconFlexLayout,
     .flexlayout__tab_toolbar_button-min,
-    .flexlayout__tab_button_overflow,
+    .flexlayout__tab_button_overflow
     {
         color: white;
     
@@ -229,6 +229,7 @@ iframe{
             color: white;
         }
     }
+    
     .flexlayout__border_button_trailing, 
     .flexlayout__tab_button_trailing {
         &:before{
@@ -276,6 +277,7 @@ iframe{
 }
 .listviewer {
     height: 100%;
+    font-size: @font-size-panels;
     td, th {
         
         font-size: @font-size-panels;
@@ -287,7 +289,26 @@ iframe{
      th {
          font-weight: @font-weight-label;
      }
+
+     
 }
+
+.list-summary {
+    display: flex;
+    padding-top: 0.5em;
+    margin-top: 0.5em;
+    border-top: 1px solid white;
+    font-size: @font-size-panels;
+    justify-content: space-between;
+    i {
+        font-weight: 300;
+        font-style: italic;
+    }
+    .fa {
+        font-size: 20px;
+    }
+}
+
 .listviewer .list-icon {
     font-size: 20px;
 }
