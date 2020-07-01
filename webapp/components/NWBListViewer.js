@@ -30,13 +30,17 @@ export default class NWBListViewer extends Component {
     return this.modelSettings[path] ? this.modelSettings[path] : DEFAULT_MODEL_SETTINGS;
   }
 
+  getDescription (nwbObjectPath) {
+    let description_instance = Instances.getInstance(nwbObjectPath + '.description');
+    return description_instance ? description_instance.getValue().wrappedObj.value.text : '-';
+  }
+
   mapModelPathToList (path) {
     const instance = Instances.getInstance(path);
     let description;
     let type;
     try {
-      let description_instance = Instances.getInstance(path + '.description');
-      description = description_instance ? description_instance.getValue().wrappedObj.value.text : '-';
+      description = this.getDescription(path)
     } catch (Error) {
       description = "Not yet supported.";
       console.debug('Description error');
@@ -97,7 +101,8 @@ export default class NWBListViewer extends Component {
       if (path.match(pathPattern)) {
         let instance = Instances.getInstance(path);
         if (instance.getPath) {
-          return instance.getType().getName().match(typePattern) && instance.getId().includes(this.state.searchText);
+          return instance.getType().getName().match(typePattern) 
+          && (instance.getId().toLowerCase().includes(this.state.searchText.toLowerCase()) || this.getDescription(path).toLowerCase().includes(this.state.searchText.toLowerCase()));
         }
 
 
