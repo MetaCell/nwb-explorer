@@ -45,7 +45,7 @@ setuptools.setup(
         'holoviews>=1.10.6',
         'msgpack-python==0.5.6',
         'nose>=1.3.7',
-        'Pillow>=5.2.0',
+        'Pillow>=7.0.0',
         'redis>=2.10.6',
         'seaborn>=0.8.1',
         'uuid>=1.30',

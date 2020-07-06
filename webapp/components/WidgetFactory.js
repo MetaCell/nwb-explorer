@@ -89,7 +89,7 @@ export default class WidgetFactory{
     const num_samples_var = Instances.getInstance(instancePath).getType().getVariables().find(v => v.getName() == "num_samples")
     const num_samples = parseInt(num_samples_var.getInitialValue().value.text)
 
-    return new Array(num_samples).fill(0).map((el, index) => `api/image?name=${name.join()}&interface=${interfase}&projectId=${projectId}&index=${index}`)
+    return new Array(num_samples).fill(0).map((el, index) => `api/image?name=${name.join()}&interface=${interfase}&projectId=${projectId}&index=${index}&clientId=${GEPPETTO.MessageSocket.getClientID()}`)
   }
 
   extractImageSeriesTimestamps (instancePath){
