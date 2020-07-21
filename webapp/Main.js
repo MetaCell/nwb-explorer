@@ -6,7 +6,7 @@ const Provider = require("react-redux").Provider;
 const configureStore = require('./store').default;
 
 
-require('geppetto-client-initialization');
+require('@geppettoengine/geppetto-client-initialization');
 const ReactDOM = require('react-dom');
 const React = require('react');
 

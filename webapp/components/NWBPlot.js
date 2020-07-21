@@ -1,7 +1,7 @@
 import React from 'react';
-import PlotComponent from 'geppetto-client/js/components/interface/plot/PlotComponent.js';
+import PlotComponent from '@geppettoengine/geppetto-client/components/interface/plot/PlotComponent.js';
 
-import ExternalInstance from 'geppetto-client/js/geppettoModel/model/ExternalInstance';
+import ExternalInstance from '@geppettoengine/geppetto-client/geppettoModel/model/ExternalInstance';
 
 export default class NWBTimeseriesPlotComponent extends React.Component {
 

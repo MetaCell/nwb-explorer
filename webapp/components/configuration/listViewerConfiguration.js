@@ -1,5 +1,5 @@
 import React from 'react';
-import { GroupComponent, IconComponent, ColorComponent } from "geppetto-client/js/components/interface/listViewer/ListViewer";
+import { GroupComponent, IconComponent, ColorComponent } from "@geppettoengine/geppetto-client/components/interface/listViewer/ListViewer";
 import AddPlotMenuConnect from '../reduxconnect/AddPlotMenuConnect';
 
 const AddToPlotComponent = ({ icon, label, action, tooltip }) => ({ value }) => (

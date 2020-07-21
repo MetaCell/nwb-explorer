@@ -15,7 +15,7 @@ try {
   // Failed to load config file
   console.error('\nFailed to load Geppetto Configuration')
 }
-var geppetto_client_path = 'node_modules/@geppettoengine/geppetto-client'
+var geppetto_base_path = 'node_modules/@geppettoengine/geppetto-client'
 
 var publicPath = path.join(geppettoConfig.contextPath, "geppetto/build/");
 console.log("\nThe public path (used by the main bundle when including split bundles) is: " + publicPath);
@@ -24,7 +24,7 @@ var isProduction = process.argv.indexOf('-p') >= 0;
 console.log("\n Building for a " + ((isProduction) ? "production" : "development") + " environment")
 
 const availableExtensions = [
-  { from: path.resolve(__dirname, geppetto_client_path, "static/*"), to: 'static', flatten: true },
+  { from: path.resolve(__dirname, geppetto_base_path, "static/*"), to: 'static', flatten: true },
 ];
 
 module.exports = function (env){
@@ -53,7 +53,7 @@ module.exports = function (env){
   
   var entries = {
     main: path.resolve(__dirname, "Main.js"),
-    admin: path.resolve(__dirname, geppetto_client_path, "js/pages/admin/admin.js"),
+    admin: path.resolve(__dirname, geppetto_base_path, "js/pages/admin/admin.js"),
   };
 
   console.log("\nThe Webpack entries are:");
@@ -90,7 +90,7 @@ module.exports = function (env){
       new CopyWebpackPlugin(availableExtensions),
       new HtmlWebpackPlugin({
         filename: 'geppetto.vm',
-        template: path.resolve(__dirname, geppetto_client_path, 'js/pages/geppetto/geppetto.ejs'),
+        template: path.resolve(__dirname, geppetto_base_path, 'geppetto-client/js/pages/geppetto/geppetto.ejs'),
         GEPPETTO_CONFIGURATION: geppettoConfig,
         /*
          * chunks: ['main'] Not specifying the chunk since its not possible
@@ -129,9 +129,11 @@ module.exports = function (env){
     resolve: {
       alias: {
         root: path.resolve(__dirname),
-        'geppetto-client': path.resolve(__dirname, geppetto_client_path),
-        geppetto: path.resolve(__dirname, geppetto_client_path, 'js/pages/geppetto/GEPPETTO.js'),
-        'geppetto-client-initialization': path.resolve(__dirname, geppetto_client_path, 'js/pages/geppetto/main'),
+        '@geppettoengine/geppetto-client': path.resolve(__dirname, geppetto_base_path + '/geppetto-client'),
+        '@geppettoengine/geppetto-ui': path.resolve(__dirname, geppetto_base_path + '/geppetto-ui'),
+        '@geppettoengine/geppetto-core': path.resolve(__dirname, geppetto_base_path + '/geppetto-core'),
+        geppetto: path.resolve(__dirname, geppetto_base_path, 'js/pages/geppetto/GEPPETTO.js'),
+        '@geppettoengine/geppetto-client-initialization': path.resolve(__dirname, geppetto_base_path, 'js/pages/geppetto/main'),
         handlebars: 'handlebars/dist/handlebars.js'
       },
       extensions: ['*', '.js', '.json', '.ts', '.tsx', '.jsx'],
