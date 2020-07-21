@@ -1,5 +1,5 @@
 import React from 'react';
-import PlotComponent from '@geppettoengine/geppetto-client/components/interface/plot/PlotComponent.js';
+import PlotComponent from '@geppettoengine/geppetto-ui/plot/PlotComponent';
 
 import ExternalInstance from '@geppettoengine/geppetto-client/geppettoModel/model/ExternalInstance';
 

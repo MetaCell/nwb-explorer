@@ -1,5 +1,5 @@
 import NWBFileService from './NWBFileService';
-import PythonConsole from '@geppettoengine/geppetto-client/components/interface/pythonConsole/PythonConsole';
+import PythonConsole from '@geppettoengine/geppetto-ui/python-console/PythonConsole';
 import React from 'react';
 
 export function getNotebookPath () {

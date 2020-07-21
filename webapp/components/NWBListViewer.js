@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import ListViewer from '@geppettoengine/geppetto-client/components/interface/listViewer/ListViewer';
+import ListViewer from '@geppettoengine/geppetto-ui/list-viewer/ListViewer';
 import listViewerConf from './configuration/listViewerConfiguration.js';
 
 const DEFAULT_MODEL_SETTINGS = { color: 'white' };

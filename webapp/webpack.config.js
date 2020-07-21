@@ -53,7 +53,7 @@ module.exports = function (env){
   
   var entries = {
     main: path.resolve(__dirname, "Main.js"),
-    admin: path.resolve(__dirname, geppetto_base_path, "js/pages/admin/admin.js"),
+    admin: path.resolve(__dirname, geppetto_base_path, "geppetto-client/js/pages/admin/admin.js"),
   };
 
   console.log("\nThe Webpack entries are:");
@@ -129,11 +129,11 @@ module.exports = function (env){
     resolve: {
       alias: {
         root: path.resolve(__dirname),
-        '@geppettoengine/geppetto-client': path.resolve(__dirname, geppetto_base_path + '/geppetto-client'),
-        '@geppettoengine/geppetto-ui': path.resolve(__dirname, geppetto_base_path + '/geppetto-ui'),
-        '@geppettoengine/geppetto-core': path.resolve(__dirname, geppetto_base_path + '/geppetto-core'),
-        geppetto: path.resolve(__dirname, geppetto_base_path, 'js/pages/geppetto/GEPPETTO.js'),
-        '@geppettoengine/geppetto-client-initialization': path.resolve(__dirname, geppetto_base_path, 'js/pages/geppetto/main'),
+        '@geppettoengine/geppetto-ui': path.resolve(__dirname, geppetto_base_path, 'geppetto-ui/src'),
+        '@geppettoengine/geppetto-client': path.resolve(__dirname, geppetto_base_path, 'geppetto-client/js'),
+        '@geppettoengine/geppetto-core': path.resolve(__dirname, geppetto_base_path, 'geppetto-core/src'),
+        geppetto: path.resolve(__dirname, geppetto_base_path, 'geppetto-client/js/pages/geppetto/GEPPETTO.js'),
+        '@geppettoengine/geppetto-client-initialization': path.resolve(__dirname, geppetto_base_path, 'geppetto-client/js/pages/geppetto/main'),
         handlebars: 'handlebars/dist/handlebars.js'
       },
       extensions: ['*', '.js', '.json', '.ts', '.tsx', '.jsx'],
