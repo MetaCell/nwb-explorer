@@ -38,12 +38,9 @@ export default class AddPlotMenu extends Component {
   }
 
   dontGoToSameHostTwice (widget) {
-    const { guestList } = widget;
-    if (guestList) {
-      const list = guestList.map(guest => guest.instancePath);
-      return list.indexOf(this.props.instancePath) == -1;
-    }
-    return true;
+    const { instancePaths } = widget;
+
+    return instancePaths && instancePaths.indexOf(this.props.instancePath) == -1;
   }
 
   goOnlyToTimeseriesWidgets (widget) {
