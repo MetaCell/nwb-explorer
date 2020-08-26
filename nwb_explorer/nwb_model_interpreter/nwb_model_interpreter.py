@@ -80,6 +80,9 @@ class NWBModelInterpreter(ModelInterpreter):
             time_series = nwb_obj
             if var_to_extract in ['time', 'timestamps']:
                 timestamps = NWBReader.get_timeseries_timestamps(time_series)
+                if time_series.rate is not None:
+                    for index, item in enumerate(timestamps):
+                        timestamps[index] = ( timestamps[index] / time_series.rate / time_series.rate ) + time_series.starting_time
                 timestamps_unit = guess_units(time_series.timestamps_unit) if hasattr(time_series,
                                                                                       'timestamps_unit') and time_series.timestamps_unit else 's'
                 return GeppettoModelFactory.create_time_series(timestamps, timestamps_unit)
@@ -89,6 +92,10 @@ class NWBModelInterpreter(ModelInterpreter):
 
                 unit = guess_units(time_series.unit)
                 time_series_value = GeppettoModelFactory.create_time_series(plottable_timeseries[0], unit)
+                if time_series.conversion is not None:
+                    for index, item in enumerate(time_series_value.value):
+                        time_series_value.value[index] = time_series_value.value[index] * time_series.conversion
+                stringV = str(time_series_value)
                 return time_series_value
         else:
             # TODO handle other possible ImportValue(s)
