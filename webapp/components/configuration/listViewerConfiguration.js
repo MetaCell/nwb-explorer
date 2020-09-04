@@ -1,14 +1,8 @@
 import React from 'react';
 import { GroupComponent, IconComponent, ColorComponent } from "geppetto-client/js/components/interface/listViewer/ListViewer";
-import AddPlotMenuConnect from '../reduxconnect/AddPlotMenuConnect';
 
-const AddToPlotComponent = ({ icon, label, action, tooltip }) => ({ value }) => (
-  <AddPlotMenuConnect 
-    icon={icon}  
-    action={action} 
-    instancePath={value.path}
-  />
-)
+
+import AddToPlotComponent from './AddToPlotComponent';
 
 import { FILEVARIABLE_LENGTH } from '../constants';
 ``
@@ -55,7 +49,7 @@ const conf = [
           icon: "area-chart",
           label: "Plot",
           tooltip: "Plot time series",
-          defaultColor: entity => entity.color,
+          defaultColor: entity => Instances.getInstance(entity.path).color,
           
         },
       },

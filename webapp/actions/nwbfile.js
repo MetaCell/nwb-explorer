@@ -6,7 +6,7 @@ export const LOAD_NWB_FILE_IN_NOTEBOOK = 'LOAD_NWB_FILE_IN_NOTEBOOK';
 export const LOADED_NWB_FILE_IN_NOTEBOOK = 'LOADED_NWB_FILE_IN_NOTEBOOK';
 export const UNLOAD_NWB_FILE_IN_NOTEBOOK = 'UNLOAD_NWB_FILE_IN_NOTEBOOK';
 export const CLEAR_MODEL = 'CLEAR_MODEL';
-
+export const UPDATE_SETTINGS = 'UPDATE_SETTINGS';
 
 export function loadNWBFile (nwbFileUrl) {
   
@@ -35,6 +35,8 @@ export function nwbFileLoaded (model) {
     data: { model: model.wrappedObj }
   }
 }
+
+export const updateSettings = (settings) => ({ type: UPDATE_SETTINGS, data: settings });
 
 
 export const clearModel = () => ({ type: CLEAR_MODEL })

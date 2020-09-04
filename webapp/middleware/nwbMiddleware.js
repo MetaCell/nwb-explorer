@@ -1,9 +1,9 @@
 import nwbFileService from '../services/NWBFileService';
-import Utils from '../Utils';
+import Utils, { nextColor } from '../Utils';
 
 import {
   LOAD_NWB_FILE, LOAD_NWB_FILE_IN_NOTEBOOK, NWB_FILE_LOADED, UNLOAD_NWB_FILE_IN_NOTEBOOK,
-  loadedNWBFileInNotebook, loadNWBFileInNotebook 
+  loadedNWBFileInNotebook, loadNWBFileInNotebook, updateSettings
 } from '../actions/nwbfile';
 
 import { ADD_WIDGET, UPDATE_WIDGET, ADD_PLOT_TO_EXISTING_WIDGET, updateDetailsWidget, showSweeps, showGeneral, showAcquisition, showStimulus } from '../actions/flexlayout';
@@ -31,6 +31,11 @@ async function handlePlotTimeseries (store, next, action) {
   store.dispatch(updateDetailsWidget(instancePaths[0]));
   const promises = [];
   for (const instancePath of instancePaths) {
+    const instance = Instances.getInstance(instancePath);
+    if(!instance.color) {
+      instance.color = nextColor();
+      next(updateSettings({instancePath: {color: instance.color }}));
+    }
     const data_path = instancePath + '.data';
     let data = Instances.getInstance(data_path);
     const time_path = instancePath + '.timestamps';
