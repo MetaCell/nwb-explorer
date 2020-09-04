@@ -86,10 +86,10 @@ const TIMESERIES_PALETTE = [teal, deepOrange, lightGreen, purple, amber, cyan, b
 const COLOR_DEPTHS = ['A200', '200', 'A400', '500', 'A100'];
 let currentColor = -1;
 
-export function nextColor() {
-    currentColor++;
-    const colorVariant = COLOR_DEPTHS[Math.floor(currentColor / TIMESERIES_PALETTE.length) % COLOR_DEPTHS.length];
-    return TIMESERIES_PALETTE[currentColor % TIMESERIES_PALETTE.length][colorVariant];
+export function nextColor () {
+  currentColor++;
+  const colorVariant = COLOR_DEPTHS[Math.floor(currentColor / TIMESERIES_PALETTE.length) % COLOR_DEPTHS.length];
+  return TIMESERIES_PALETTE[currentColor % TIMESERIES_PALETTE.length][colorVariant];
 }
 
 export default Utils;

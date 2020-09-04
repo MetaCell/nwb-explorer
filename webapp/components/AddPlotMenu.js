@@ -17,9 +17,7 @@ const anchor = {
 };
 
 export default class AddPlotMenu extends Component {
-  state = {
-    anchorEl: null,
-  };
+  state = { anchorEl: null, };
 
   goOnlyToTimeseriesWidgets = this.goOnlyToTimeseriesWidgets.bind(this);
   dontGoToSameHostTwice = this.dontGoToSameHostTwice.bind(this);

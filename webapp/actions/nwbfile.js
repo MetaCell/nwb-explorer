@@ -36,7 +36,7 @@ export function nwbFileLoaded (model) {
   }
 }
 
-export const updateSettings = (settings) => ({ type: UPDATE_SETTINGS, data: settings });
+export const updateSettings = settings => ({ type: UPDATE_SETTINGS, data: settings });
 
 
 export const clearModel = () => ({ type: CLEAR_MODEL })

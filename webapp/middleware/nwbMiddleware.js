@@ -32,9 +32,9 @@ async function handlePlotTimeseries (store, next, action) {
   const promises = [];
   for (const instancePath of instancePaths) {
     const instance = Instances.getInstance(instancePath);
-    if(!instance.color) {
+    if (!instance.color) {
       instance.color = nextColor();
-      next(updateSettings({instancePath: {color: instance.color }}));
+      next(updateSettings({ instancePath: { color: instance.color } }));
     }
     const data_path = instancePath + '.data';
     let data = Instances.getInstance(data_path);
