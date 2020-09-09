@@ -10,44 +10,46 @@ export const NWBFILE_DEFAULT_STATUS = {
 };
 
 
-export default ( state = {}, action ) => ({ ...state, ...reduceNWBFile(state, action) });
+export default (state = {}, action) => ({ ...state, ...reduceNWBFile(state, action) });
 
 function reduceNWBFile (state = {}, action) {
   switch (action.type) {
-    
+ 
   case nwbfileActions.SET_NWB_FILE:
     return { ...action.data }
-  
+
   case nwbfileActions.LOAD_NWB_FILE:
     return { ...action.data, nwbFileLoading: true }
 
   case nwbfileActions.LOAD_NWB_FILE_IN_NOTEBOOK:
-    return { 
-      isLoadedInNotebook: false, 
-      isLoadingInNotebook: true, 
+    return {
+      isLoadedInNotebook: false,
+      isLoadingInNotebook: true,
     }
 
   case nwbfileActions.UNLOAD_NWB_FILE_IN_NOTEBOOK:
     return { isLoadedInNotebook: false }
-  
+
   case nwbfileActions.LOADED_NWB_FILE_IN_NOTEBOOK:
     return { isLoadedInNotebook: true, isLoadingInNotebook: false }
-  
+
   case nwbfileActions.UNLOAD_NWB_FILE:
     return {
-      nwbFileUrl: null, 
-      model: null 
+      nwbFileUrl: null,
+      model: null
     }
 
   case nwbfileActions.NWB_FILE_LOADED:
-    return { model: true, nwbFileLoading: false }  
+    return { model: true, nwbFileLoading: false }
 
   case nwbfileActions.CLEAR_MODEL:
     return { model: null }
-  
+
   case notebookActions.NOTEBOOK_READY:
     return { isLoadingInNotebook: false }
-  
+  case nwbfileActions.UPDATE_SETTINGS: {
+    return { modelSettings: { ...state.modelSettings, ...action.data } }
+  }
 
   default:
     return state;

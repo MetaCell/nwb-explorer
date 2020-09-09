@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import Menu from "@material-ui/core/Menu";
 import Popover from "@material-ui/core/Popover";
 import MenuItem from "@material-ui/core/MenuItem";
-import { CompactPicker } from "react-color";
+
 
 const anchor = {
   origin: {
@@ -17,24 +17,20 @@ const anchor = {
 };
 
 export default class AddPlotMenu extends Component {
-  state = {
-    anchorEl: null,
-    selectedPlot: null,
-  };
+  state = { anchorEl: null, };
 
   goOnlyToTimeseriesWidgets = this.goOnlyToTimeseriesWidgets.bind(this);
   dontGoToSameHostTwice = this.dontGoToSameHostTwice.bind(this);
 
-  clickAddToWidget (color) {
-    const { selectedPlot } = this.state;
+  clickAddToWidget (selectedPlot) {
+
     const { instancePath, action } = this.props;
     action({
       hostId: selectedPlot.id,
       instancePath,
-      color: color.hex,
       type: "timeseries",
     });
-    this.setState({ anchorEl: null, selectedPlot: null });
+    this.setState({ anchorEl: null });
   }
 
   dontGoToSameHostTwice (widget) {
@@ -82,21 +78,13 @@ export default class AddPlotMenu extends Component {
             <MenuItem
               id={instancePath}
               key={availablePlot}
-              onClick={() => this.setState({ selectedPlot: availablePlot })}
+              onClick={() => this.clickAddToWidget(availablePlot) }
             >
               {availablePlot.name}
             </MenuItem>
           ))
         }
       </Menu>
-      <Popover open={Boolean(anchorEl) && Boolean(selectedPlot)}
-        anchorEl={anchorEl}
-      >
-        <CompactPicker
-          color={color}
-          onChange={color => this.clickAddToWidget(color)}
-        />
-      </Popover>
       
   
     </React.Fragment>

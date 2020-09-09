@@ -80,5 +80,16 @@ export function isEqual (a, b) {
   }
   return keys.every(k => isEqual(a[k], b[k]));
 }
+import { teal, deepOrange, lightGreen, purple, amber, cyan, brown, lime, pink, yellow, indigo, red, lightBlue, orange, green, blueGrey } from '@material-ui/core/colors';
+const TIMESERIES_PALETTE = [teal, deepOrange, lightGreen, purple, amber, cyan, brown, lime, pink, yellow, indigo, red, lightBlue, orange, green, blueGrey];
 
-export default Utils
+const COLOR_DEPTHS = ['A200', '200', 'A400', '500', 'A100'];
+let currentColor = -1;
+
+export function nextColor () {
+  currentColor++;
+  const colorVariant = COLOR_DEPTHS[Math.floor(currentColor / TIMESERIES_PALETTE.length) % COLOR_DEPTHS.length];
+  return TIMESERIES_PALETTE[currentColor % TIMESERIES_PALETTE.length][colorVariant];
+}
+
+export default Utils;
