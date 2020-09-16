@@ -22,9 +22,9 @@ export default class WidgetFactory{
   factory (widgetConfig) {
 
     // With this lazy construction we avoidto trigger an update on every layout event.
-    if (!this.widgets[widgetConfig.id]) {
-      this.widgets[widgetConfig.id] = this.newWidget(widgetConfig);
-    }
+
+    this.widgets[widgetConfig.id] = this.newWidget(widgetConfig);
+    
     
     return this.widgets[widgetConfig.id];
   }
@@ -38,12 +38,12 @@ export default class WidgetFactory{
     const component = widgetConfig.component;
     switch (component) {
     case "Explorer":
-      return <FileExplorerPage />;
+      return <FileExplorerPage key={widgetConfig.id} />;
             
     case "Metadata":{
       const { instancePath, showObjectInfo } = widgetConfig;
       return instancePath 
-        ? <Metadata instancePath = { instancePath } showObjectInfo = { showObjectInfo } /> 
+        ? <Metadata key={widgetConfig.id} instancePath = { instancePath } showObjectInfo = { showObjectInfo } /> 
         : '';
     }    
     case "ImageSeries": {
@@ -52,6 +52,7 @@ export default class WidgetFactory{
         throw new Error('Image widget instancePath must be configured')
       }
       return <ImageViewer
+        key={widgetConfig.id} 
         numberOfImagesToPreload={2}
         imagePaths={this.extractImageSeriesPaths(instancePath)} 
         timestamps={this.extractImageSeriesTimestamps(instancePath)}
@@ -63,16 +64,16 @@ export default class WidgetFactory{
         throw new Error('Plot widget instancePath must be configured')
       }
       return (
-        <NWBPlot instancePaths={ instancePaths } />
+        <NWBPlot key={widgetConfig.id} instancePaths={ instancePaths } />
       )
     } 
     case "ListViewer": {
       const { pathPattern, typePattern } = widgetConfig;
     
-      return <NWBListViewer pathPattern={pathPattern} typePattern={typePattern}></NWBListViewer>;
+      return <NWBListViewer key={widgetConfig.id} pathPattern={pathPattern} typePattern={typePattern}></NWBListViewer>;
     }
     case "SweepTable": {    
-      return <SweepTableViewer />;
+      return <SweepTableViewer key={widgetConfig.id} />;
     }
     case "PythonConsole": {
     

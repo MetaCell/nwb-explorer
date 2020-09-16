@@ -1,14 +1,8 @@
 import React from 'react';
-import { GroupComponent, IconComponent, ColorComponent } from "@geppettoengine/geppetto-ui/list-viewer/ListViewer";
-import AddPlotMenuConnect from '../reduxconnect/AddPlotMenuConnect';
+import { GroupComponent, IconComponent, ColorComponent } from "geppetto-client/js/components/interface/listViewer/ListViewer";
 
-const AddToPlotComponent = ({ icon, label, action, tooltip }) => ({ value }) => (
-  <AddPlotMenuConnect 
-    icon={icon}  
-    action={action} 
-    instancePath={value.path}
-  />
-)
+import AddToPlotComponent from './AddToPlotComponent';
+
 
 import { FILEVARIABLE_LENGTH } from '../constants';
 ``

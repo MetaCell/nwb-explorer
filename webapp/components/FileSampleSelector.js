@@ -9,9 +9,10 @@ const SAMPLE_LINK_FERGUSON_5 = 'https://github.com/OpenSourceBrain/NWBShowcase/r
 
 const SAMPLE_LINK_TIMESERIES = 'https://github.com/OpenSourceBrain/NWBShowcase/raw/master/NWB/time_series_data.nwb';
 const SAMPLE_LINK_TRIPLETT = 'https://github.com/OpenSourceBrain/NWBShowcase/raw/master/TriplettEtAl2018/TriplettEtAl2018.nwb';
-const SAMPLE_LINK_LANTYER = 'https://github.com/OpenSourceBrain/NWBShowcase/raw/master/Lantyer/LantyerEtAl2018.170502_AL_257_CC.nwb';
+const SAMPLE_LINK_LANTYER = 'https://github.com/OpenSourceBrain/NWBShowcase/raw/master/Lantyer/LantyerEtAl2018_170502_AL_257_CC.nwb';
 const SAMPLE_LINK_LANORE = 'https://github.com/OpenSourceBrain/NWBShowcase/raw/master/IgorPro/141210c3.nwb';
 const SAMPLE_LINK_PACKER = 'https://github.com/OpenSourceBrain/CalciumImagingDriftingGrating/raw/master/neurofinder.01.01.jpg.nwb';
+const SAMPLE_LINK_KATO = 'https://github.com/OpenSourceBrain/NWBShowcase/raw/master/KatoEtAl2015/KatoEtAl2018.WT_Stim.6.nwb';
 
 export default class FileSampleSelector extends React.Component {
 
@@ -37,18 +38,17 @@ export default class FileSampleSelector extends React.Component {
 
     return (
       <div >
-        <h2>Don't have a file to load?</h2>
-        <p>Pick a sample and get started!</p>
+        <h2>Don't have a file to load? Try some of these...</h2>
         <Button
           id="loadFile"
           variant="outlined"
           onClick={ e => this.handleClickLoadFile(SAMPLE_LINK_TIMESERIES)}
           disabled={false}
-          
         >
           Simple time series
         </Button>
-        <br />
+
+        <p>Intracellular Electrophysiology:</p>
         <Button
           id="loadFile"
           variant="outlined"
@@ -56,7 +56,7 @@ export default class FileSampleSelector extends React.Component {
           disabled={false}
           style={{ marginRight: '0.5em' }}
         >
-          Ferguson et al. 2015
+          Ferguson et al. 2015, 1
         </Button> 
         <Button
           id="loadFile"
@@ -97,38 +97,53 @@ export default class FileSampleSelector extends React.Component {
         <Button
           id="loadFile"
           variant="outlined"
-          onClick={ e => this.handleClickLoadFile(SAMPLE_LINK_TRIPLETT)}
-          disabled={false}
-        >
-          Triplett et al. 2018 
-        </Button>
-        <br />
-        <Button
-          id="loadFile"
-          variant="outlined"
           onClick={ e => this.handleClickLoadFile(SAMPLE_LINK_LANTYER)}
           disabled={false}
+          style={{ marginRight: '0.5em' }}
         >
           Lantyer et al. 2018 
         </Button>
-        <br />
         <Button
           id="loadFile"
           variant="outlined"
           onClick={ e => this.handleClickLoadFile(SAMPLE_LINK_LANORE)}
           disabled={false}
+          style={{ marginRight: '0.5em' }}
         >
           Lanore et al. 2019 
         </Button>
-        <br />
+
+        <p>Calcium fluorescence imaging (time series):</p>
+        <Button
+          id="loadFile"
+          variant="outlined"
+          onClick={ e => this.handleClickLoadFile(SAMPLE_LINK_TRIPLETT)}
+          disabled={false}
+          style={{ marginRight: '0.5em' }}
+        >
+          Triplett et al. 2018 
+        </Button>
+        <Button
+          id="loadFile"
+          variant="outlined"
+          onClick={ e => this.handleClickLoadFile(SAMPLE_LINK_KATO)}
+          disabled={false}
+          style={{ marginRight: '0.5em' }}
+        >
+          Kato et al. 2015 
+        </Button>
+
+        <p>Calcium fluorescence imaging (image series):</p>
         <Button
           id="loadFile"
           variant="outlined"
           onClick={ e => this.handleClickLoadFile(SAMPLE_LINK_PACKER)}
           disabled={false}
+          style={{ marginRight: '0.5em' }}
         >
           Packer et al. 2015 
         </Button>
+
       </div>
 
 
