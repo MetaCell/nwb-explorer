@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import ListViewer from 'geppetto-client/js/components/interface/listViewer/ListViewer';
+import ListViewer from '@geppettoengine/geppetto-ui/list-viewer/ListViewer';
 import NWBListViewer from './NWBListViewer';
 import sweepTableConf from './configuration/sweepTableConfiguration';
 

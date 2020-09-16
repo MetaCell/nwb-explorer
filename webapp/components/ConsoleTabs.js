@@ -1,7 +1,7 @@
 import React from 'react';
-import Console from 'geppetto-client/js/components/interface/console/Console';
-import TabbedDrawer from 'geppetto-client/js/components/interface/drawer/TabbedDrawer';
-import PythonConsole from 'geppetto-client/js/components/interface/pythonConsole/PythonConsole';
+import Console from '@geppettoengine/geppetto-client/components/interface/console/Console';
+import TabbedDrawer from '@geppettoengine/geppetto-client/components/interface/drawer/TabbedDrawer';
+import PythonConsole from '@geppettoengine/geppetto-ui/python-console/PythonConsole';
 
 export default class ConsoleTabs extends React.Component {
 

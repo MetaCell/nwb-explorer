@@ -155,8 +155,7 @@ def main(branch=branch, skipNpm=False, skipTest=False, development=False):
     else:
         cprint("Testing NWB-Explorer")
         execute(cmd=['python', '-m', 'pytest',
-            '--ignore=dependencies',
-            '--ignore=test/test_reader.py',
+            '--ignore=src',
             ], cwd=ROOT_DIR)
 
 

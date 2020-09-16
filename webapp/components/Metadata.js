@@ -1,7 +1,7 @@
 import React from 'react';
 import Collapsible from 'react-collapsible';
 import Linkify from 'react-linkify';
-const Type = require('geppetto-client/js/geppettoModel/model/Type');
+const Type = require('@geppettoengine/geppetto-core/model/Type');
 
 export default class Metadata extends React.Component {
 

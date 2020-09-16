@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import * as FlexLayout from 'geppetto-client/js/components/interface/flexLayout2/src/index';
-import Actions from 'geppetto-client/js/components/interface/flexLayout2/src/model/Actions';
+import * as FlexLayout from '@geppettoengine/geppetto-ui/flex-layout/src/index';
+import Actions from '@geppettoengine/geppetto-ui/flex-layout/src/model/Actions';
 
 
 import { WidgetStatus } from './constants';
