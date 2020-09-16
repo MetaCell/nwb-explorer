@@ -1,5 +1,5 @@
 import React from 'react';
-import { GroupComponent, IconComponent, ColorComponent } from "geppetto-client/js/components/interface/listViewer/ListViewer";
+import { GroupComponent, IconComponent, ColorComponent } from "@geppettoengine/geppetto-ui/list-viewer/ListViewer";
 
 
 import AddToPlotComponent from './AddToPlotComponent';
