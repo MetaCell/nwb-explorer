@@ -49,7 +49,7 @@ function reduceGeneral (state, action) {
     return { loading: { ...state.loading, [nwbfileActions.NWB_FILE_LOADED] : 'Loading NWB file' } }
   
   case nwbfileActions.LOAD_NWB_FILE_IN_NOTEBOOK: 
-    return { loading: { ...state.loading, [nwbfileActions.LOADED_NWB_FILE_IN_NOTEBOOK] : 'Loading NWB file into Python notebook' } }
+    return state; // { loading: { ...state.loading, [nwbfileActions.LOADED_NWB_FILE_IN_NOTEBOOK] : 'Loading NWB file into Python notebook' } }
   
   case notebookActions.LOAD_NOTEBOOK:
     return {

@@ -1,19 +1,18 @@
+from pygeppetto.services.model_interpreter import get_model_interpreter_from_variable
+from pygeppetto.services.data_manager import DataManagerHelper
 import logging
+import logging
+import os
+
+import tornado
+from notebook.base.handlers import IPythonHandler
 
 from jupyter_geppetto.webapi import get
-from notebook.base.handlers import IPythonHandler
+from pygeppetto.managers import GeppettoManager
 
 from nwb_explorer.nwb_model_interpreter import NWBModelInterpreter
 
-from pygeppetto.managers import GeppettoManager
 cache_model = False
-
-from pygeppetto.services.data_manager import DataManagerHelper
-import logging
-import os
-from notebook.notebook.handlers import get_custom_frontend_exporters
-
-from pygeppetto.services.model_interpreter import get_model_interpreter_from_variable
 
 
 def createNotebook(filename):
@@ -34,19 +33,15 @@ If you would like to inspect the content of the file using the [NWB Juypyter wid
 To execute a command type it and press `Shift+Enter`. To execute a command and create a new cell press `Alt+Enter`."""),
                               nbf.v4.new_code_cell('nwbfile')
                               ], metadata={"kernelspec": {
-        "display_name": "Python 3",
-        "language": "python",
-        "name": "python3"
-    }})
+                                  "display_name": "Python 3",
+                                  "language": "python",
+                                  "name": "python3"
+                              }})
 
     f = codecs.open(filename, encoding='utf-8', mode='w')
 
     nbf.write(nb0, f, 4)
     f.close()
-
-
-
-
 
 
 def get_model_interpreter(runtime_project) -> NWBModelInterpreter:
@@ -56,17 +51,21 @@ def get_model_interpreter(runtime_project) -> NWBModelInterpreter:
 class NWBController:  # pytest: no cover
 
     @get('/api/image', {'Content-type': 'image/png', 'Cache-Control': 'max-age=600'})
-    def image(handler: IPythonHandler, name: str, interface: str, projectId: str = '0', index: str = '0') -> str:
-        if not any([name, interface, projectId]):
-            return "Bad request"
-
-        manager = GeppettoManager()
+    def image(handler: IPythonHandler, clientId: str, name: str, interface: str, projectId: str, index: str = '0', ) -> str:
+        if not any([name, interface, projectId, clientId]):
+            raise tornado.web.HTTPError(400)
 
         dataManager = DataManagerHelper.getDataManager()
-        project = dataManager.getGeppettoProjectById(project_id=int(projectId))
+        geppetto_project = dataManager.getGeppettoProjectById(
+            project_id=int(projectId))
 
-        project = manager.get_runtime_project(project)
-        model_interpreter = get_model_interpreter(project)
+        if geppetto_project is None:
+            raise tornado.web.HTTPError(400)
+        geppetto_manager = GeppettoManager.get_instance(int(clientId))
+        runtime_project = geppetto_manager.get_runtime_project(
+            geppetto_project)
+
+        model_interpreter = get_model_interpreter(runtime_project)
         nwb_reader = model_interpreter.nwb_reader
 
         return nwb_reader.get_image(name=name, interface=interface, index=index)

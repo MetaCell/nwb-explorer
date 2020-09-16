@@ -16,7 +16,7 @@ for root, dirnames, filenames in os.walk('src/jupyter_geppetto/geppetto/src/main
 
 setuptools.setup(
     name="nwb_explorer",
-    version="0.4",
+    version="0.5.0",
     url="https://github.com/tarelli/nwb-explorer",
     author="MetaCell",
     author_email="info@metacell.us",
@@ -40,19 +40,18 @@ setuptools.setup(
         'Programming Language :: Python :: 3.7'
     ],
     install_requires=[
-        'jupyter_geppetto>=1.0.0',
+        'jupyter_geppetto>=1.1.0',
         'bokeh>=0.13.0',
         'holoviews>=1.10.6',
         'msgpack-python==0.5.6',
-        'nose==1.3.7',
-        'Pillow==5.2.0',
-        'redis==2.10.6',
-        'seaborn==0.8.1',
-        'uuid==1.30',
+        'nose>=1.3.7',
+        'Pillow>=7.0.0',
+        'redis>=2.10.6',
+        'seaborn>=0.8.1',
+        'uuid>=1.30',
         'pynwb>=1.2.1',
         'imageio>=2.5.0',
         'quantities>=0.12.3',
-        'hdmf==1.5.4',
         'nwbwidgets>=0.2.0'
     ],
 )

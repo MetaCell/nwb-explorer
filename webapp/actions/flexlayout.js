@@ -7,29 +7,41 @@ export const RESET_LAYOUT = 'RESET_LAYOUT';
 export const DESTROY_WIDGET = 'DESTROY_WIDGET';
 export const ADD_PLOT_TO_EXISTING_WIDGET = 'ADD_PLOT_TO_EXISTING_WIDGET'
 
-export const showPlot = ({ path, color = 'red' }) => ({
+export const showPlot = ({ path, title }) => ({
   type: ADD_WIDGET,
   data: {
     id: 'plot@' + path,
-    instancePath: path,
+    instancePaths: [path],
     component: 'Plot',
     type: 'TimeSeries',
-    name: path.slice(FILEVARIABLE_LENGTH),
+    name: title ? title : path.slice(FILEVARIABLE_LENGTH),
     status: WidgetStatus.ACTIVE,
     panelName: 'bottomPanel',
-    color: color,
-    config: {},
-    guestList: []
+    config: {}
   }
 });
 
-export const addToPlot = ({ hostId, instancePath, color }) => ({
+export const addToPlot = ({ hostId, instancePath }) => ({
   type: ADD_PLOT_TO_EXISTING_WIDGET,
   data: {
     hostId,
     instancePath,
-    color,
     type: 'TimeSeries'
+  }
+});
+
+
+export const plotAll = ({ plots, title }) => ({
+  type: ADD_WIDGET,
+  data: {
+    id: 'plot@' + plots.join('-'),
+    instancePaths: plots,
+    component: 'Plot',
+    type: 'TimeSeries',
+    name: title,
+    status: WidgetStatus.ACTIVE,
+    panelName: 'bottomPanel',
+    config: {},
   }
 });
 
@@ -101,6 +113,8 @@ export const newWidget = ({ path, component, panelName }) => ({
     panelName: panelName
   }
 });
+
+export const showNWBWidget = path => (newWidget({ path, component: 'NWBWidget', panelName: 'bottomPanel' }));
 
 export const updateWidget = (newConf => ({
   type: UPDATE_WIDGET,
