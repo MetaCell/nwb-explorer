@@ -1,30 +1,8 @@
 import React from 'react';
-import { grey } from '@material-ui/core/colors';
-import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import SplashPage from './pages/SplashPage';
 import nwbFileService from '../services/NWBFileService';
 import FileExplorerPage from './pages/FileExplorerPage';
 // import { Route, Switch, Redirect, BrowserRouter as Router } from 'react-router-dom';
-
-
-const theme = createMuiTheme({
-  typography: { 
-    useNextVariants: true,
-    suppressDeprecationWarnings: true,
-    button: {
-      textTransform: "none",
-      fontSize: "1.0rem"
-    }
-  },
-  palette: {
-    primary: { main: grey[500] },
-    secondary: { main: '#111111' },
-    error: { main: '#ffffff' },
-    text: { secondary: "white" }
-  },
-  overrides: { MuiIcon: { root: { fontSize: "2.5rem" } } }
-});
-
 
 export default class App extends React.Component{
 
@@ -118,11 +96,7 @@ export default class App extends React.Component{
     return (
       <div style={{ height: '100%', width: '100%' }}>
         <div id="main-container-inner">
-          <MuiThemeProvider theme={theme}>
-            { page }
-          </MuiThemeProvider>
-          
-
+          { page }
         </div>
         <div style={{ display: "none" }}>
           {
