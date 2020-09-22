@@ -1,5 +1,6 @@
 import React from 'react';
 import Button from '@material-ui/core/Button';
+import Typography from '@material-ui/core/Typography';
 
 const SAMPLE_LINK_FERGUSON = 'https://github.com/OpenSourceBrain/NWBShowcase/raw/master/FergusonEtAl2015/FergusonEtAl2015.nwb';
 const SAMPLE_LINK_FERGUSON_2 = 'https://github.com/OpenSourceBrain/NWBShowcase/raw/master/FergusonEtAl2015/FergusonEtAl2015_PYR2.nwb';
@@ -21,7 +22,7 @@ export default class FileSampleSelector extends React.Component {
     this.handleClickLoadFile = this.handleClickLoadFile.bind(this);
 
     this.state = {};
-  } 
+  }
 
   componentDidMount (prevProps, prevState) {
     console.log("Props in FileSampleSelector", this.props);
@@ -38,56 +39,63 @@ export default class FileSampleSelector extends React.Component {
 
     return (
       <div >
-        <h2>Don't have a file to load? Try some of these...</h2>
+        <Typography variant="h6">Don’t have a file to load?</Typography>
+        <Typography variant="h3">Pick a sample and get started!</Typography>
         <Button
           id="loadFile"
           variant="outlined"
+          className="button chip-button"
           onClick={ e => this.handleClickLoadFile(SAMPLE_LINK_TIMESERIES)}
           disabled={false}
         >
           Simple time series
         </Button>
 
-        <p>Intracellular Electrophysiology:</p>
+        <Typography variant="h4">Intracellular Electrophysiology:</Typography>
         <Button
           id="loadFile"
           variant="outlined"
+          className="button chip-button"
           onClick={ e => this.handleClickLoadFile(SAMPLE_LINK_FERGUSON)}
           disabled={false}
           style={{ marginRight: '0.5em' }}
         >
           Ferguson et al. 2015, 1
-        </Button> 
+        </Button>
         <Button
           id="loadFile"
           variant="outlined"
+          className="button chip-button"
           onClick={ e => this.handleClickLoadFile(SAMPLE_LINK_FERGUSON_2)}
           disabled={false}
           style={{ marginRight: '0.5em' }}
         >
           2
-        </Button> 
+        </Button>
         <Button
           id="loadFile"
           variant="outlined"
+          className="button chip-button"
           onClick={ e => this.handleClickLoadFile(SAMPLE_LINK_FERGUSON_3)}
           disabled={false}
           style={{ marginRight: '0.5em' }}
         >
           3
-        </Button> 
+        </Button>
         <Button
           id="loadFile"
           variant="outlined"
+          className="button chip-button"
           onClick={ e => this.handleClickLoadFile(SAMPLE_LINK_FERGUSON_4)}
           disabled={false}
           style={{ marginRight: '0.5em' }}
         >
           4
-        </Button> 
+        </Button>
         <Button
           id="loadFile"
           variant="outlined"
+          className="button chip-button"
           onClick={ e => this.handleClickLoadFile(SAMPLE_LINK_FERGUSON_5)}
           disabled={false}
         >
@@ -97,51 +105,56 @@ export default class FileSampleSelector extends React.Component {
         <Button
           id="loadFile"
           variant="outlined"
+          className="button chip-button"
           onClick={ e => this.handleClickLoadFile(SAMPLE_LINK_LANTYER)}
           disabled={false}
           style={{ marginRight: '0.5em' }}
         >
-          Lantyer et al. 2018 
+          Lantyer et al. 2018
         </Button>
         <Button
           id="loadFile"
           variant="outlined"
+          className="button chip-button"
           onClick={ e => this.handleClickLoadFile(SAMPLE_LINK_LANORE)}
           disabled={false}
           style={{ marginRight: '0.5em' }}
         >
-          Lanore et al. 2019 
+          Lanore et al. 2019
         </Button>
 
-        <p>Calcium fluorescence imaging (time series):</p>
+        <Typography variant="h4">Calcium fluorescence imaging (time series):</Typography>
         <Button
           id="loadFile"
           variant="outlined"
+          className="button chip-button"
           onClick={ e => this.handleClickLoadFile(SAMPLE_LINK_TRIPLETT)}
           disabled={false}
           style={{ marginRight: '0.5em' }}
         >
-          Triplett et al. 2018 
+          Triplett et al. 2018
         </Button>
         <Button
           id="loadFile"
           variant="outlined"
+          className="button chip-button"
           onClick={ e => this.handleClickLoadFile(SAMPLE_LINK_KATO)}
           disabled={false}
           style={{ marginRight: '0.5em' }}
         >
-          Kato et al. 2015 
+          Kato et al. 2015
         </Button>
 
-        <p>Calcium fluorescence imaging (image series):</p>
+        <Typography variant="h4">Calcium fluorescence imaging (image series):</Typography>
         <Button
           id="loadFile"
           variant="outlined"
+          className="button chip-button"
           onClick={ e => this.handleClickLoadFile(SAMPLE_LINK_PACKER)}
           disabled={false}
           style={{ marginRight: '0.5em' }}
         >
-          Packer et al. 2015 
+          Packer et al. 2015
         </Button>
 
       </div>
