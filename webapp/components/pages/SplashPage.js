@@ -48,9 +48,6 @@ export default class SplashPage extends React.Component{
               <Box>
                   Supported by
               </Box>
-              <Link href="https://summerofcode.withgoogle.com/" title="Google Summer of Code">
-                <img src={logo_gsoc} alt="Google Summer of Code" height="35"></img>
-              </Link>
               <Link href="https://wellcome.ac.uk/" title="Wellcome">
                 <img src={logo_wellcome} alt="Wellcome" height="35"></img>
               </Link>

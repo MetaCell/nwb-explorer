@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Typography, FormControl, InputLabel, Select, MenuItem } from '@material-ui/core';
+import { Button, Typography, FormControl, Select, MenuItem } from '@material-ui/core';
 
 
 const SAMPLE_LINK_FERGUSON = 'https://github.com/OpenSourceBrain/NWBShowcase/raw/master/FergusonEtAl2015/FergusonEtAl2015.nwb';
@@ -57,8 +57,7 @@ export default class FileSampleSelector extends React.Component {
 
         <FormControl variant="outlined" class="custom-select">
           <Select
-            labelId="ferguson-select-label"
-            id="ferguson-select"
+            id="samplefile-select"
             value={''}
             onChange={this.handleChange}
             className="button badge-button"
@@ -69,11 +68,11 @@ export default class FileSampleSelector extends React.Component {
             <MenuItem value="" disabled>
               Ferguson et al. 2015
             </MenuItem>
-            <MenuItem value={SAMPLE_LINK_FERGUSON}>Ferguson v1</MenuItem>
-            <MenuItem value={SAMPLE_LINK_FERGUSON_2}>Ferguson v2</MenuItem>
-            <MenuItem value={SAMPLE_LINK_FERGUSON_3}>Ferguson v3</MenuItem>
-            <MenuItem value={SAMPLE_LINK_FERGUSON_4}>Ferguson v4</MenuItem>
-            <MenuItem value={SAMPLE_LINK_FERGUSON_5}>Ferguson v5</MenuItem>
+            <MenuItem value={SAMPLE_LINK_FERGUSON}>Ferguson 1</MenuItem>
+            <MenuItem value={SAMPLE_LINK_FERGUSON_2}>Ferguson 2</MenuItem>
+            <MenuItem value={SAMPLE_LINK_FERGUSON_3}>Ferguson 3</MenuItem>
+            <MenuItem value={SAMPLE_LINK_FERGUSON_4}>Ferguson 4</MenuItem>
+            <MenuItem value={SAMPLE_LINK_FERGUSON_5}>Ferguson 5</MenuItem>
           </Select>
         </FormControl>
 
