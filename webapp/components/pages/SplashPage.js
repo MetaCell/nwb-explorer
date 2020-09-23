@@ -14,14 +14,13 @@ import logo_nwb_explorer from '../../resources/logos/nwb-explorer.png';
 export default class SplashPage extends React.Component{
   render () {
 
-    return <div id="splash" className="splash-main-container">
-      <Grid container className="{classes.root} container bg-grey">
-
+    return <div id="splash" className="h-100">
+      <Grid container className="h-100 p-0">
         <Grid item sm={12} md={7} className="splash-container">
           <Box>
             <img src={logo_nwb_explorer} alt="NWB Explorer" title="NWB Explorer" className="brand-logo"></img>
             <Typography variant="h1">
-              Welcome to NWB Explorer<sup>beta</sup>
+              Welcome to NWB Explorer <sup>beta</sup>
             </Typography>
             <Typography variant="h2">
               Visualise and understand your neurophysiology data
@@ -30,13 +29,13 @@ export default class SplashPage extends React.Component{
           <Paper className="grey-box">
             <FileUrlSelector/>
           </Paper>
-          <Paper className="grey-box">
+          <Paper className="grey-box scrollbar">
             <FileSampleSelector/>
           </Paper>
-          <Grid container className="splash-footer">
+          <Box container className="splash-footer" mb={2}>
             <Grid item>
               <Box>
-                In collaboration with
+                  In collaboration with
               </Box>
               <Link href="http://www.opensourcebrain.org/" title="Open Source Brain">
                 <img src={logo_osb} alt="Open Source Brain" width="166"></img>
@@ -47,7 +46,7 @@ export default class SplashPage extends React.Component{
             </Grid>
             <Grid item>
               <Box>
-                Supported by
+                  Supported by
               </Box>
               <Link href="https://summerofcode.withgoogle.com/" title="Google Summer of Code">
                 <img src={logo_gsoc} alt="Google Summer of Code" height="35"></img>
@@ -56,7 +55,7 @@ export default class SplashPage extends React.Component{
                 <img src={logo_wellcome} alt="Wellcome" height="35"></img>
               </Link>
             </Grid>
-          </Grid>
+          </Box>
         </Grid>
         <Hidden smDown>
           <Grid item sm={4} md={5} className="splash-background">

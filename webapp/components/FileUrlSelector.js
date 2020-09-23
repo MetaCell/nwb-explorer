@@ -1,6 +1,4 @@
 import React from 'react';
-
-
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
@@ -33,7 +31,7 @@ export default class FileUrlSelector extends React.Component {
     return (
       <div>
         <Typography variant="h6">What file do you wish to load?</Typography>
-        <div className="box-with-button">
+        <div className="input-with-button">
           <TextField
             id="nwb-url-input"
             placeholder="Paste a URL pointing to an NWB v2 file"
@@ -51,7 +49,6 @@ export default class FileUrlSelector extends React.Component {
             id="load-file-button"
             variant="contained"
             onClick={this.handleClickLoadFile}
-            className = 'button'
             disabled={this.state.inputValue.length <= 5}
           >LOAD NWB FILE</Button>
         </div>
