@@ -52,7 +52,25 @@ const baseTheme = {
       },
       root: { color: fontColor },
     },
-    MuiPaper: { root: { color: "inherit", backgroundColor: bgRegular } },
+    MuiMenuItem: {
+      root:{
+        color: fontColor,
+        paddingTop: `calc(${gutter} / 2)`,
+        fontSize: '13px',
+      },
+      gutters: {
+        paddingLeft: `calc(${gutter} * 2)`,
+        paddingRight: `calc(${gutter} * 2)`
+      }
+    },
+    MuiPaper: {
+      root: {
+        color: "inherit",
+        backgroundColor: bgRegular,
+        boxShadow: "none !important",
+        borderRadius: "2px !important",
+      }
+    },
     MuiFormControl: { root: { overflow: "visible" } },
     MuiButton: {
       contained: {
@@ -68,6 +86,7 @@ const baseTheme = {
         lineHeight: "13px",
         fontWeight: "400",
         marginBottom: "9px",
+        padding: "8px 15px",
       },
       containedSecondary: { color: fontColor },
       containedPrimary: { color: fontColor },

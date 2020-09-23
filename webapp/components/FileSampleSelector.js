@@ -54,17 +54,21 @@ export default class FileSampleSelector extends React.Component {
         </Button>
 
         <Typography variant="h4">Intracellular Electrophysiology:</Typography>
-        <FormControl variant="outlined">
-          <InputLabel id="ferguson-select-label">
-            Ferguson et al. 2015
-          </InputLabel>
+
+        <FormControl variant="outlined" class="custom-select">
           <Select
             labelId="ferguson-select-label"
             id="ferguson-select"
             value={''}
             onChange={this.handleChange}
             className="button badge-button"
+            name="ferguson"
+            displayEmpty
+            inputProps={{ 'aria-label': 'ferguson' }}
           >
+            <MenuItem value="" disabled>
+              Ferguson et al. 2015
+            </MenuItem>
             <MenuItem value={SAMPLE_LINK_FERGUSON}>Ferguson v1</MenuItem>
             <MenuItem value={SAMPLE_LINK_FERGUSON_2}>Ferguson v2</MenuItem>
             <MenuItem value={SAMPLE_LINK_FERGUSON_3}>Ferguson v3</MenuItem>
@@ -72,6 +76,7 @@ export default class FileSampleSelector extends React.Component {
             <MenuItem value={SAMPLE_LINK_FERGUSON_5}>Ferguson v5</MenuItem>
           </Select>
         </FormControl>
+
         <Button
           id="loadFile"
           variant="outlined"

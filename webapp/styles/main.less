@@ -80,6 +80,7 @@ body {
 .splash-footer {
   display: flex;
   justify-content: space-between;
+  margin-top: 68px;
   .MuiBox-root {
     font-size: 20px;
     line-height: 32px;
@@ -89,8 +90,18 @@ body {
   }
   .MuiLink-root {
     margin-right: 22px;
+    position: relative;
     + .MuiLink-root {
       margin-left: 22px;
+      &::after{
+          content: '';
+          height: 35px;
+          width: 1px;
+          border: 1px solid rgba(102, 102, 102, 0.5);
+          position: absolute;
+          left: -22px;
+          top: -7px;
+      }
     }
   }
   img {
@@ -109,6 +120,41 @@ body {
   &::-webkit-scrollbar {
     width: 4px;
   }
+}
+.custom-select{
+    position: relative;
+    display: inline-flex;
+    margin-right: 0.5em;
+    .MuiSelect-icon{
+        color: @white;
+        font-size: 2.5rem;
+    }
+    .MuiOutlinedInput-root{
+        border-radius: 16px;
+        &:hover{
+            .MuiOutlinedInput-notchedOutline{
+                border-color: rgba(0, 0, 0, 0.23);
+            }
+        }
+        &.Mui-focused{
+            .MuiOutlinedInput-notchedOutline{
+                border-color: rgba(0, 0, 0, 0.23);
+                border-width: 1px;
+            }
+        }
+    }
+    .MuiSelect-selectMenu{
+        min-height: 29px;
+        min-width: 130px;
+        padding-top: 0;
+        padding-bottom: 0;
+        font-size: 13px;
+        color: @white;
+        line-height: 29px;
+    }
+}
+.MuiInput-underline:before{
+    border-color: @inputBorderColor !important;
 }
 
 @panelradius: 5px;
