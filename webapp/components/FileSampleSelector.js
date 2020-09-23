@@ -1,6 +1,6 @@
 import React from 'react';
-import Button from '@material-ui/core/Button';
-import Typography from '@material-ui/core/Typography';
+import { Button, Typography, FormControl, InputLabel, Select, MenuItem } from '@material-ui/core';
+
 
 const SAMPLE_LINK_FERGUSON = 'https://github.com/OpenSourceBrain/NWBShowcase/raw/master/FergusonEtAl2015/FergusonEtAl2015.nwb';
 const SAMPLE_LINK_FERGUSON_2 = 'https://github.com/OpenSourceBrain/NWBShowcase/raw/master/FergusonEtAl2015/FergusonEtAl2015_PYR2.nwb';
@@ -34,9 +34,11 @@ export default class FileSampleSelector extends React.Component {
     const { loadNWBFile } = this.props;
     loadNWBFile(url);
   }
-  render () {
-    
+  handleChange = e => {
+    this.handleClickLoadFile(e.target.value);
+  }
 
+  render () {
     return (
       <div >
         <Typography variant="h6">Don’t have a file to load?</Typography>
@@ -44,7 +46,7 @@ export default class FileSampleSelector extends React.Component {
         <Button
           id="loadFile"
           variant="outlined"
-          className="button chip-button"
+          className="button badge-button"
           onClick={ e => this.handleClickLoadFile(SAMPLE_LINK_TIMESERIES)}
           disabled={false}
         >
@@ -52,60 +54,28 @@ export default class FileSampleSelector extends React.Component {
         </Button>
 
         <Typography variant="h4">Intracellular Electrophysiology:</Typography>
+        <FormControl variant="outlined">
+          <InputLabel id="ferguson-select-label">
+            Ferguson et al. 2015
+          </InputLabel>
+          <Select
+            labelId="ferguson-select-label"
+            id="ferguson-select"
+            value={''}
+            onChange={this.handleChange}
+            className="button badge-button"
+          >
+            <MenuItem value={SAMPLE_LINK_FERGUSON}>Ferguson v1</MenuItem>
+            <MenuItem value={SAMPLE_LINK_FERGUSON_2}>Ferguson v2</MenuItem>
+            <MenuItem value={SAMPLE_LINK_FERGUSON_3}>Ferguson v3</MenuItem>
+            <MenuItem value={SAMPLE_LINK_FERGUSON_4}>Ferguson v4</MenuItem>
+            <MenuItem value={SAMPLE_LINK_FERGUSON_5}>Ferguson v5</MenuItem>
+          </Select>
+        </FormControl>
         <Button
           id="loadFile"
           variant="outlined"
-          className="button chip-button"
-          onClick={ e => this.handleClickLoadFile(SAMPLE_LINK_FERGUSON)}
-          disabled={false}
-          style={{ marginRight: '0.5em' }}
-        >
-          Ferguson et al. 2015, 1
-        </Button>
-        <Button
-          id="loadFile"
-          variant="outlined"
-          className="button chip-button"
-          onClick={ e => this.handleClickLoadFile(SAMPLE_LINK_FERGUSON_2)}
-          disabled={false}
-          style={{ marginRight: '0.5em' }}
-        >
-          2
-        </Button>
-        <Button
-          id="loadFile"
-          variant="outlined"
-          className="button chip-button"
-          onClick={ e => this.handleClickLoadFile(SAMPLE_LINK_FERGUSON_3)}
-          disabled={false}
-          style={{ marginRight: '0.5em' }}
-        >
-          3
-        </Button>
-        <Button
-          id="loadFile"
-          variant="outlined"
-          className="button chip-button"
-          onClick={ e => this.handleClickLoadFile(SAMPLE_LINK_FERGUSON_4)}
-          disabled={false}
-          style={{ marginRight: '0.5em' }}
-        >
-          4
-        </Button>
-        <Button
-          id="loadFile"
-          variant="outlined"
-          className="button chip-button"
-          onClick={ e => this.handleClickLoadFile(SAMPLE_LINK_FERGUSON_5)}
-          disabled={false}
-        >
-          5
-        </Button>
-        <br />
-        <Button
-          id="loadFile"
-          variant="outlined"
-          className="button chip-button"
+          className="button badge-button"
           onClick={ e => this.handleClickLoadFile(SAMPLE_LINK_LANTYER)}
           disabled={false}
           style={{ marginRight: '0.5em' }}
@@ -115,7 +85,7 @@ export default class FileSampleSelector extends React.Component {
         <Button
           id="loadFile"
           variant="outlined"
-          className="button chip-button"
+          className="button badge-button"
           onClick={ e => this.handleClickLoadFile(SAMPLE_LINK_LANORE)}
           disabled={false}
           style={{ marginRight: '0.5em' }}
@@ -127,7 +97,7 @@ export default class FileSampleSelector extends React.Component {
         <Button
           id="loadFile"
           variant="outlined"
-          className="button chip-button"
+          className="button badge-button"
           onClick={ e => this.handleClickLoadFile(SAMPLE_LINK_TRIPLETT)}
           disabled={false}
           style={{ marginRight: '0.5em' }}
@@ -137,7 +107,7 @@ export default class FileSampleSelector extends React.Component {
         <Button
           id="loadFile"
           variant="outlined"
-          className="button chip-button"
+          className="button badge-button"
           onClick={ e => this.handleClickLoadFile(SAMPLE_LINK_KATO)}
           disabled={false}
           style={{ marginRight: '0.5em' }}
@@ -149,7 +119,7 @@ export default class FileSampleSelector extends React.Component {
         <Button
           id="loadFile"
           variant="outlined"
-          className="button chip-button"
+          className="button badge-button"
           onClick={ e => this.handleClickLoadFile(SAMPLE_LINK_PACKER)}
           disabled={false}
           style={{ marginRight: '0.5em' }}
