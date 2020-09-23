@@ -10,6 +10,9 @@
 .p-0 {
   padding: 0;
 }
+.m-0 {
+  margin: 0 !important;
+}
 .splash-background {
   background: url(../resources/splash_new.jpg) no-repeat center;
   background-size: cover;
@@ -93,14 +96,14 @@ body {
     position: relative;
     + .MuiLink-root {
       margin-left: 22px;
-      &::after{
-          content: '';
-          height: 35px;
-          width: 1px;
-          border: 1px solid rgba(102, 102, 102, 0.5);
-          position: absolute;
-          left: -22px;
-          top: -7px;
+      &::after {
+        content: "";
+        height: 35px;
+        width: 1px;
+        border: 1px solid rgba(102, 102, 102, 0.5);
+        position: absolute;
+        left: -22px;
+        top: -7px;
       }
     }
   }
@@ -121,40 +124,41 @@ body {
     width: 3px;
   }
 }
-.custom-select{
-    position: relative;
-    display: inline-flex;
-    margin-right: 0.5em;
-    .MuiSelect-icon{
-        color: @white;
-        font-size: 2.5rem;
+.custom-select {
+  position: relative;
+  display: inline-flex;
+  margin-right: 0.5em;
+  top: -3px;
+  .MuiSelect-icon {
+    color: @white;
+    font-size: 2.5rem;
+  }
+  .MuiOutlinedInput-root {
+    border-radius: 16px;
+    &:hover {
+      .MuiOutlinedInput-notchedOutline {
+        border-color: rgba(0, 0, 0, 0.23);
+      }
     }
-    .MuiOutlinedInput-root{
-        border-radius: 16px;
-        &:hover{
-            .MuiOutlinedInput-notchedOutline{
-                border-color: rgba(0, 0, 0, 0.23);
-            }
-        }
-        &.Mui-focused{
-            .MuiOutlinedInput-notchedOutline{
-                border-color: rgba(0, 0, 0, 0.23);
-                border-width: 1px;
-            }
-        }
+    &.Mui-focused {
+      .MuiOutlinedInput-notchedOutline {
+        border-color: rgba(0, 0, 0, 0.23);
+        border-width: 1px;
+      }
     }
-    .MuiSelect-selectMenu{
-        min-height: 29px;
-        min-width: 130px;
-        padding-top: 0;
-        padding-bottom: 0;
-        font-size: 13px;
-        color: @white;
-        line-height: 29px;
-    }
+  }
+  .MuiSelect-selectMenu {
+    min-height: 29px;
+    min-width: 130px;
+    padding-top: 0;
+    padding-bottom: 0;
+    font-size: 13px;
+    color: @white;
+    line-height: 29px;
+  }
 }
-.MuiInput-underline:before{
-    border-color: @inputBorderColor !important;
+.MuiInput-underline:before {
+  border-color: @inputBorderColor !important;
 }
 
 @panelradius: 5px;

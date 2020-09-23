@@ -32,7 +32,7 @@ export default class SplashPage extends React.Component{
           <Paper className="grey-box scrollbar">
             <FileSampleSelector/>
           </Paper>
-          <Box container className="splash-footer" mb={2}>
+          <Box container className="splash-footer" mb={5}>
             <Grid item>
               <Box>
                   In collaboration with
@@ -44,11 +44,11 @@ export default class SplashPage extends React.Component{
                 <img src={logo_openworm} alt="OpenWorm Foundation" height="35"></img>
               </Link>
             </Grid>
-            <Grid item>
+            <Grid item align="right">
               <Box>
                   Supported by
               </Box>
-              <Link href="https://wellcome.ac.uk/" title="Wellcome">
+              <Link href="https://wellcome.ac.uk/" title="Wellcome" className="m-0">
                 <img src={logo_wellcome} alt="Wellcome" height="35"></img>
               </Link>
             </Grid>
