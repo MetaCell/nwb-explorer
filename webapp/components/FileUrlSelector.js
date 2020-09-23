@@ -41,9 +41,9 @@ export default class FileUrlSelector extends React.Component {
             className = 'input-form-control'
             placeholder="Past an URL pointing to an NWB v2 file"
             margin="0"
-            InputLabelProps={{
-              shrink: true,
-            }}
+            InputLabelProps={
+              { shrink: true }
+            }
             onChange={ evt => this.updateInputValue(evt) }
           />
           <Button
