@@ -1,9 +1,5 @@
 import React from 'react';
-import Box from '@material-ui/core/Box';
-import Paper from '@material-ui/core/Paper';
-import Grid from '@material-ui/core/Grid';
-import Link from '@material-ui/core/Link';
-import Typography from '@material-ui/core/Typography';
+import { Box, Paper, Grid, Link, Typography, Hidden } from '@material-ui/core';
 
 import FileUrlSelector from '../reduxconnect/FileUrlSelectorContainer';
 import FileSampleSelector from '../reduxconnect/FileSampleSelectorContainer';
@@ -62,14 +58,15 @@ export default class SplashPage extends React.Component{
             </Grid>
           </Grid>
         </Grid>
-        <Box component={Grid} item display={{ sm: 'none', md: 'flex' }} sm={4} md={5} className="splash-background">
-          <Box className="logo-container">
-            <Link href="https://metacell.us/" className="logo" title="MetaCell">
-              <img src={logo_metacell} alt="MetaCell" ></img>
-            </Link>
-          </Box>
-        </Box>
-
+        <Hidden smDown>
+          <Grid item sm={4} md={5} className="splash-background">
+            <Box className="logo-container">
+              <Link href="https://metacell.us/" className="logo" title="MetaCell">
+                <img src={logo_metacell} alt="MetaCell" ></img>
+              </Link>
+            </Box>
+          </Grid>
+        </Hidden>
       </Grid>
     </div>;
   }

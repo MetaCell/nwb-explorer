@@ -39,7 +39,7 @@ export default class FileUrlSelector extends React.Component {
             placeholder="Paste a URL pointing to an NWB v2 file"
             // helperText="Insert a public url or local absolute path of an NWB file"
             className = 'input-form-control'
-            placeholder="Past an URL pointing to an NWB v2 file"
+            placeholder="Paste an URL pointing to an NWB v2 file"
             margin="0"
             InputLabelProps={
               { shrink: true }
