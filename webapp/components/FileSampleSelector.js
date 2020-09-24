@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Typography, FormControl, Select, MenuItem } from '@material-ui/core';
+import { Box, Button, Typography, FormControl, Select, MenuItem } from '@material-ui/core';
 
 
 const SAMPLE_LINK_FERGUSON = 'https://github.com/OpenSourceBrain/NWBShowcase/raw/master/FergusonEtAl2015/FergusonEtAl2015.nwb';
@@ -54,39 +54,39 @@ export default class FileSampleSelector extends React.Component {
         </Button>
 
         <Typography variant="h4">Intracellular Electrophysiology:</Typography>
+        <Box display="flex" alignItems="flex-start">
+          <FormControl variant="outlined" class="custom-select">
+            <Select
+              id="samplefile-select"
+              value={''}
+              onChange={this.handleChange}
+              className="button badge-button"
+              name="ferguson"
+              displayEmpty
+              inputProps={{ 'aria-label': 'ferguson' }}
+            >
+              <MenuItem value="" disabled>
+                Ferguson et al. 2015
+              </MenuItem>
+              <MenuItem value={SAMPLE_LINK_FERGUSON}>Ferguson 1</MenuItem>
+              <MenuItem value={SAMPLE_LINK_FERGUSON_2}>Ferguson 2</MenuItem>
+              <MenuItem value={SAMPLE_LINK_FERGUSON_3}>Ferguson 3</MenuItem>
+              <MenuItem value={SAMPLE_LINK_FERGUSON_4}>Ferguson 4</MenuItem>
+              <MenuItem value={SAMPLE_LINK_FERGUSON_5}>Ferguson 5</MenuItem>
+            </Select>
+          </FormControl>
 
-        <FormControl variant="outlined" class="custom-select">
-          <Select
-            id="samplefile-select"
-            value={''}
-            onChange={this.handleChange}
+          <Button
+            id="loadFile"
+            variant="outlined"
             className="button badge-button"
-            name="ferguson"
-            displayEmpty
-            inputProps={{ 'aria-label': 'ferguson' }}
+            onClick={ e => this.handleClickLoadFile(SAMPLE_LINK_LANTYER)}
+            disabled={false}
+            style={{ marginRight: '0.5em' }}
           >
-            <MenuItem value="" disabled>
-              Ferguson et al. 2015
-            </MenuItem>
-            <MenuItem value={SAMPLE_LINK_FERGUSON}>Ferguson 1</MenuItem>
-            <MenuItem value={SAMPLE_LINK_FERGUSON_2}>Ferguson 2</MenuItem>
-            <MenuItem value={SAMPLE_LINK_FERGUSON_3}>Ferguson 3</MenuItem>
-            <MenuItem value={SAMPLE_LINK_FERGUSON_4}>Ferguson 4</MenuItem>
-            <MenuItem value={SAMPLE_LINK_FERGUSON_5}>Ferguson 5</MenuItem>
-          </Select>
-        </FormControl>
-
-        <Button
-          id="loadFile"
-          variant="outlined"
-          className="button badge-button"
-          onClick={ e => this.handleClickLoadFile(SAMPLE_LINK_LANTYER)}
-          disabled={false}
-          style={{ marginRight: '0.5em' }}
-        >
-          Lantyer et al. 2018
-        </Button>
-        <Button
+            Lantyer et al. 2018
+          </Button>
+          <Button
           id="loadFile"
           variant="outlined"
           className="button badge-button"
@@ -96,7 +96,7 @@ export default class FileSampleSelector extends React.Component {
         >
           Lanore et al. 2019
         </Button>
-
+        </Box>
         <Typography variant="h4">Calcium fluorescence imaging (time series):</Typography>
         <Button
           id="loadFile"
