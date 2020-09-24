@@ -1,14 +1,7 @@
 import React, { Component, Fragment } from 'react';
-import Icon from '@material-ui/core/Icon';
-import Grid from '@material-ui/core/Grid';
-import Tooltip from '@material-ui/core/Tooltip';
+import { Icon, Box, Tooltip, Grid, AppBar, Typography, Toolbar, IconButton, withStyles } from '@material-ui/core';
 
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
-import IconButton from '@material-ui/core/IconButton';
 import { WidgetStatus } from './constants';
-import { withStyles } from '@material-ui/core/styles';
 
 const styles = theme => ({
   lightTooltip: {
@@ -21,8 +14,8 @@ const styles = theme => ({
 });
 
 const CustomTooltip = withStyles(styles)(({ tooltip, children, classes }) => (
-  <Tooltip 
-    title={tooltip} 
+  <Tooltip
+    title={tooltip}
     placement="bottom-end"
     disableFocusListener
     disableTouchListener
@@ -41,15 +34,6 @@ export default class Appbar extends Component {
     this.showStimulus = this.props.showStimulus ? this.props.showStimulus : () => console.debug('showStimulus not defined in ' + typeof this);
   }
 
-  componentDidMount () {
-
-  }
-  
-  componentDidUpdate (prevProps, prevState) {
-
-  }
-
-  
   handleClickBack () {
     this.exit();
   }
@@ -62,23 +46,24 @@ export default class Appbar extends Component {
   handleShowAll () {
     this.showList('Content index', "nwbfile.", "^(?!LabelledDict).*")
   }
-  
+
   render () {
- 
+
     return (
       <Fragment>
         <AppBar position="static" color="secondary">
           <Toolbar classes={{ gutters: 'toolbar-gutters' }}>
             <Grid
-              container 
+              container
               spacing={8}
               justify="space-between"
             >
               <Grid item >
-                <header id="main-header">
-                  <h1>NWB Explorer<sub>beta</sub></h1>
-           
-                </header>
+                <Box id="main-header">
+                  <Typography variant="h1">
+                    NWB Explorer <sup>beta</sup>
+                  </Typography>
+                </Box>
               </Grid>
 
               <Grid item className="icon-container">
@@ -90,28 +75,28 @@ export default class Appbar extends Component {
                     <Icon color="error" className='fa fa-home'/>
                   </IconButton>
                 </CustomTooltip>
-                
-                
+
+
                 <CustomTooltip tooltip="Restore tabs">
-                  <IconButton 
+                  <IconButton
                     onClick={() => this.handleShowLists()}
                   >
                     <Icon color="error" className='fa fa-sitemap' />
                   </IconButton>
                 </CustomTooltip>
-                
+
                 <CustomTooltip tooltip="Show all content">
-                  <IconButton 
+                  <IconButton
                     onClick={() => this.handleShowAll()}
                   >
                     <Icon color="error" className='fa fa-list' />
                   </IconButton>
                 </CustomTooltip>
-                
+
               </Grid>
             </Grid>
           </Toolbar>
-          
+
         </AppBar>
       </Fragment>
     );
