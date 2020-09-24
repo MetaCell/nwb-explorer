@@ -1,8 +1,15 @@
 @import "colors.less";
 @import (css)
-  url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap");
+  url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;0,500;1,300&display=swap");
 
 @import "../css/variables.less";
+
+html,
+body {
+  font-family: @font;
+  overflow: auto;
+  background: @bgDarker;
+}
 
 .h-100 {
   height: 100%;
@@ -42,12 +49,7 @@
   max-height: 272px;
   overflow-y: auto;
 }
-html,
-body {
-  font-family: @font;
-  overflow: auto;
-  background: @bgDarker;
-}
+
 .input-with-button {
   .input-form-control {
     width: calc(100% - 170px);
@@ -64,6 +66,7 @@ body {
   font-size: 13px;
   line-height: 13px;
   font-weight: 400;
+  white-space: no-wrap;
 }
 .splash-footer {
   display: flex;
@@ -148,8 +151,7 @@ body {
 @panelradius: 5px;
 @gutter: 16px;
 @icon-padding: 12px;
-@font-size-panels: 16px;
-@font: "Source Sans Pro", sans-serif;
+@font-size-panels: 11px;
 @inputradius: 30px;
 @font-weight-content: 300;
 @font-weight-label: 400;
@@ -258,12 +260,12 @@ iframe {
     color: white;
     margin-right: 2px;
     .flexlayout__tab_button_content {
-      color: @secondary_color;
+      color: @primary_color;
     }
   }
 
   .flexlayout__tab_button--unselected {
-    background-color: #222222;
+    background-color: @bgDarkest;
     border-top-right-radius: @panelradius;
     border-top-left-radius: @panelradius;
   }
@@ -295,7 +297,7 @@ iframe {
     color: @secondary_color;
     font-family: @font;
     font-size: @font-size-panels;
-    margin-top: -3px;
+    margin-top: 0;
     padding: 0;
     font-weight: normal;
     color: #b9b9b9;
@@ -502,18 +504,20 @@ iframe {
     padding: 0;
     border-top: 0;
     font-size: @font-size-panels;
-    color: white;
+    color: @white;
     text-align: justify;
     margin-bottom: 1em;
     margin-top: 0.1em;
-    font-weight: @font-weight-content;
+    font-weight: @font-weight-label;
+    letter-spacing: 0.16px;
+    padding-right: 25px;
 
     p {
       margin-bottom: 0.1em;
       font-size: @font-size-panels;
       line-height: 1.3em;
       text-align: left;
-      font-weight: @font-weight-content;
+      font-weight: @font-weight-label;
     }
 
     .meta-label {
@@ -527,11 +531,11 @@ iframe {
   .Collapsible__trigger {
     margin-left: -2px;
     display: block;
-    color: @secondary_color !important;
+    color: @collapsibleHeading !important;
     text-transform: capitalize;
-    font-weight: @font-weight-label;
+    font-weight: @font-weight-content;
     font-size: @font-size-panels;
-    color: @primary_color;
+    font-style: italic;
     position: relative;
     padding: 2px;
     background: transparent;
@@ -541,11 +545,15 @@ iframe {
     }
 
     &:after {
-      font-family: "FontAwesome";
-      content: "\f139";
+      content: "";
+      width: 0;
+      height: 0;
+      border-style: solid;
+      border-width: 4.18px 4.18px 0 4.18px;
+      border-color: rgba(173, 173, 173, 0.5) transparent transparent transparent;
       position: absolute;
       right: 10px;
-      top: 2px;
+      top: 6px;
       display: block;
       transition: transform 300ms;
     }
@@ -636,7 +644,7 @@ iframe {
 }
 
 .griddle-table-heading {
-  color: @secondary_color;
+  color: @primary_color;
   border-bottom-color: @secondary_color;
 }
 
