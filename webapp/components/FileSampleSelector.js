@@ -54,7 +54,7 @@ export default class FileSampleSelector extends React.Component {
         </Button>
 
         <Typography variant="h4">Intracellular Electrophysiology:</Typography>
-        <Box display="flex" alignItems="flex-start">
+        <Box display="flex" alignItems="flex-start" flexWrap="wrap">
           <FormControl variant="outlined" class="custom-select">
             <Select
               id="samplefile-select"
@@ -87,15 +87,15 @@ export default class FileSampleSelector extends React.Component {
             Lantyer et al. 2018
           </Button>
           <Button
-          id="loadFile"
-          variant="outlined"
-          className="button badge-button"
-          onClick={ e => this.handleClickLoadFile(SAMPLE_LINK_LANORE)}
-          disabled={false}
-          style={{ marginRight: '0.5em' }}
-        >
+            id="loadFile"
+            variant="outlined"
+            className="button badge-button"
+            onClick={ e => this.handleClickLoadFile(SAMPLE_LINK_LANORE)}
+            disabled={false}
+            style={{ marginRight: '0.5em' }}
+          >
           Lanore et al. 2019
-        </Button>
+          </Button>
         </Box>
         <Typography variant="h4">Calcium fluorescence imaging (time series):</Typography>
         <Button
