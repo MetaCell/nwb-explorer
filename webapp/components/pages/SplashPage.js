@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Paper, Grid, Link, Typography, Hidden } from '@material-ui/core';
+import { Box, Paper, Grid, Link, Typography, Hidden, withStyles } from '@material-ui/core';
 
 import FileUrlSelector from '../reduxconnect/FileUrlSelectorContainer';
 import FileSampleSelector from '../reduxconnect/FileSampleSelectorContainer';
@@ -7,16 +7,24 @@ import FileSampleSelector from '../reduxconnect/FileSampleSelectorContainer';
 import logo_osb from '../../resources/logos/osb.png';
 import logo_openworm from '../../resources/logos/openworm.png';
 import logo_metacell from '../../resources/logos/metacell_new.png';
-import logo_gsoc from '../../resources/logos/gsoc.png';
 import logo_wellcome from '../../resources/logos/wellcome.png';
 import logo_nwb_explorer from '../../resources/logos/nwb-explorer.png';
 
-export default class SplashPage extends React.Component{
-  render () {
+const styles = theme => ({
+  leftColumn: {
+    padding: "0 30px",
+    [theme.breakpoints.up('sm')]: { padding: "0 89px 0 57px" },
+    [theme.breakpoints.up('md')]: { padding: "0 30px" },
+    [theme.breakpoints.up('lg')]: { padding: "0 89px 0 57px" }
+  }
+});
 
+class SplashPage extends React.Component{
+  render () {
+    const { classes } = this.props;
     return <div id="splash" className="h-100">
       <Grid container className="h-100 p-0">
-        <Grid item sm={12} md={7} className="splash-container">
+        <Grid item sm={12} md={7} className={ classes.leftColumn }>
           <Box>
             <img src={logo_nwb_explorer} alt="NWB Explorer" title="NWB Explorer" className="brand-logo"></img>
             <Typography variant="h1">
@@ -67,5 +75,5 @@ export default class SplashPage extends React.Component{
     </div>;
   }
 }
-{/*  */}
 
+export default withStyles(styles, { withTheme: true })(SplashPage)
