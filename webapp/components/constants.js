@@ -15,3 +15,17 @@ export const WidgetStatus = {
   MAXIMIZED: 'MAXIMIZED',
   MINIMIZED: 'MINIMIZED'
 };
+/*
+ * ------------------------------------------------------------------------------ //
+ * ------------------------------------------------------------------------------ //
+ */
+export const APPBAR_CONSTANTS = {
+  ABOUT: 'About',
+  SHOW_ALL_CONTENT: 'Show all content',
+  RESTORE_VIEW: 'Restore view',
+  HOME: 'Home',
+  DOCUMENTATION: 'Documentation',
+  NEW_PAGE: 'NEW_PAGE'
+}
+
+export const NWB_WEBSITE = "http://nwb.org"
