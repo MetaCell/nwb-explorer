@@ -1,7 +1,8 @@
 import React, { Component, Fragment } from 'react';
 import { Icon, Box, Tooltip, Grid, AppBar, Typography, Toolbar, IconButton, withStyles } from '@material-ui/core';
-
-import { WidgetStatus } from './constants';
+import Menu from "@geppettoengine/geppetto-ui//menu/Menu";
+import { WidgetStatus, APPBAR_CONSTANTS } from '../constants';
+import toolbarConfig from "./menuConfiguration";
 
 const styles = theme => ({
   lightTooltip: {
@@ -10,7 +11,7 @@ const styles = theme => ({
     color: theme.palette.common.black,
     backgroundColor: theme.palette.common.white
   },
-  popper: { paddingRight: "10px" }
+  popper: { paddingRight: "10px" },
 });
 
 const CustomTooltip = withStyles(styles)(({ tooltip, children, classes }) => (
@@ -47,18 +48,58 @@ export default class Appbar extends Component {
     this.showList('Content index', "nwbfile.", "^(?!LabelledDict).*")
   }
 
+  menuHandler (click) {
+    if (!click) {
+      return;
+    }
+    switch (click.handlerAction) {
+    case "redux": {
+      const [action, payload] = click.parameters;
+      if (payload !== undefined) {
+        this.props.dispatchAction(action(payload));
+      } else {
+        this.props.dispatchAction(action);
+      }
+      break;
+    }
+    case APPBAR_CONSTANTS.HOME: {
+      this.handleClickBack()
+      break;
+    }
+    case APPBAR_CONSTANTS.SHOW_ALL_CONTENT: {
+      this.handleShowAll()
+      break;
+    }
+    case APPBAR_CONSTANTS.RESTORE_VIEW: {
+      this.handleShowLists()
+      break;
+    }
+    case APPBAR_CONSTANTS.NEW_PAGE: {
+      const [url] = click.parameters;
+      window.open(url, "_blank");
+      break;
+    }
+    default:
+      console.log("Menu action not mapped, it is " + click);
+    }
+  }
+
   render () {
 
+    const { classes } = this.props;
     return (
       <Fragment>
-        <AppBar position="static" color="secondary">
+        <AppBar position="static" color="secondary" >
           <Toolbar classes={{ gutters: 'toolbar-gutters' }}>
             <Grid
               container
-              spacing={8}
               justify="space-between"
             >
-              <Grid item >
+              <Menu
+                configuration={toolbarConfig}
+                menuHandler={this.menuHandler.bind(this)}
+              />
+              {/* <Grid item >
                 <Box id="main-header">
                   <Typography variant="h1">
                     NWB Explorer <sup>beta</sup>
@@ -94,6 +135,7 @@ export default class Appbar extends Component {
                 </CustomTooltip>
 
               </Grid>
+             */}
             </Grid>
           </Toolbar>
 
