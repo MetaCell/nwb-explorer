@@ -43,18 +43,20 @@ export default class FileSampleSelector extends React.Component {
       <div >
         <Typography variant="h6">Don’t have a file to load?</Typography>
         <Typography variant="h3">Pick a sample and get started!</Typography>
-        <Button
-          id="loadFile"
-          variant="outlined"
-          className="button badge-button"
-          onClick={ e => this.handleClickLoadFile(SAMPLE_LINK_TIMESERIES)}
-          disabled={false}
-        >
-          Simple time series
-        </Button>
+
 
         <Typography variant="h4">Intracellular Electrophysiology:</Typography>
         <Box display="flex" alignItems="flex-start" flexWrap="wrap">
+          <Button
+            id="loadFile"
+            variant="outlined"
+            className="button badge-button"
+            onClick={ e => this.handleClickLoadFile(SAMPLE_LINK_TIMESERIES)}
+            disabled={false}
+            style={{ marginRight: '0.5em' }}
+          >
+            Simple time series
+          </Button>
           <FormControl variant="outlined" class="custom-select">
             <Select
               id="samplefile-select"

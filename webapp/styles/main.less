@@ -1,6 +1,6 @@
 @import "colors.less";
 @import (css)
-  url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;0,500;1,300&display=swap");
+  url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;0,500;1,300;1,400&display=swap");
 
 @import "../css/variables.less";
 
@@ -19,6 +19,26 @@ body {
 }
 .m-0 {
   margin: 0 !important;
+}
+.font-16{
+  font-size: 16px !important;
+}
+#simple-popper {
+  z-index: 1500;
+}
+.input-label{
+  display: inline-block;
+  margin-bottom: -8px !important;
+}
+.list-container{
+  display: flex;
+  overflow: hidden;
+  flex-Direction: column;
+  align-items: stretch;
+  height: 100%;
+  background: bgDark;
+  padding: 0.8rem 0.4rem;
+  border-radius: 4px;
 }
 .splash-background {
   background: url(../resources/splash_new.jpg) no-repeat center;
@@ -48,6 +68,9 @@ body {
   margin-bottom: 30px;
   max-height: 272px;
   overflow-y: auto;
+  &.first{
+    padding: 27px 24px 28px 18px;
+  }
 }
 
 .input-with-button {
@@ -148,14 +171,6 @@ body {
   border-color: @inputBorderColor !important;
 }
 
-@panelradius: 5px;
-@gutter: 16px;
-@icon-padding: 12px;
-@font-size-panels: 11px;
-@inputradius: 30px;
-@font-weight-content: 300;
-@font-weight-label: 400;
-
 #mainContainer {
   color: white;
 }
@@ -172,7 +187,7 @@ sup {
 }
 
 .toolbar-gutters {
-  padding: @gutter / 2 !important;
+  padding: 0 !important;
 }
 
 div.icon-container {
@@ -319,6 +334,7 @@ iframe {
 
   .flexlayout__border_button_trailing,
   .flexlayout__tab_button_trailing {
+    font-size: 14px;
     &:before {
       content: "\00d7";
     }
@@ -386,6 +402,14 @@ iframe {
 }
 .listviewer-container {
   flex: 2;
+  .griddle-filter{
+    background: @bgLight;
+    color: @white;
+    font-size: 11px;
+    font-weight: 400;
+    font-style: italic;
+    border-color: @bgLight;
+  }
 }
 #mainContainer,
 #mainContainer > div,
@@ -499,14 +523,13 @@ iframe {
 // Collapsible
 .Collapsible {
   background-color: transparent;
-
+  margin-bottom: 18px;
   .Collapsible__contentInner {
     padding: 0;
     border-top: 0;
     font-size: @font-size-panels;
+    line-height: 20px;
     color: @white;
-    text-align: justify;
-    margin-bottom: 1em;
     margin-top: 0.1em;
     font-weight: @font-weight-label;
     letter-spacing: 0.16px;
@@ -549,11 +572,11 @@ iframe {
       width: 0;
       height: 0;
       border-style: solid;
-      border-width: 4.18px 4.18px 0 4.18px;
+      border-width: 7px 7px 0 7px;
       border-color: rgba(173, 173, 173, 0.5) transparent transparent transparent;
       position: absolute;
       right: 10px;
-      top: 6px;
+      top: 8px;
       display: block;
       transition: transform 300ms;
     }
@@ -603,8 +626,20 @@ iframe {
     background-color: @background_color_widget;
   }
 }
-
+.MuiToolbar-dense{
+  min-height: 36px !important;
+}
 // modal
+.modal-title{
+  h2,
+  .MuiTypography-h6{
+    font-size: 19px;
+    font-weight: 500;
+    line-height: 1.6;
+    color: @white;
+    margin-bottom: 0;
+  }
+}
 .modal-content {
   background-color: rgba(66, 66, 66, 0.9) !important;
 }
