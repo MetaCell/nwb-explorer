@@ -5,7 +5,7 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import Typography from '@material-ui/core/Typography';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import { secondaryColor } from '../theme'
+import { fontColor } from '../theme'
 import Paper from '@material-ui/core/Paper'
 import Box from '@material-ui/core/Box'
 import Link from '@material-ui/core/Link'
@@ -13,26 +13,26 @@ import logo_nwb_explorer from '../resources/logos/nwb-explorer.png';
 import { NWB_WEBSITE } from './constants';
 
 const AboutContent = () => (
-  <Paper style={{ backgroundColor: "white", textAlign: 'center' }}>
+  <Paper style={{ backgroundColor: "#4a4a4a", textAlign: 'center', padding: '15px 5px 5px' }}>
     <img style={{ width: 150 }} src={logo_nwb_explorer} />
     <Box m={1}>
-      <Typography variant="h5" style={{ color: secondaryColor }}>NWB Explorer v0.5.0</Typography>
+      <Typography variant="h5" style={{ color: fontColor }}>NWB Explorer v0.5.0</Typography>
     </Box>
     
     <Box m={1} >
-      <Typography variant="body2" style={{ color: secondaryColor }}>
+      <Typography variant="body2" style={{ color: fontColor }}>
         NWB Explorer is a web application that can be used by scientists to read, visualize and explore the content of NWB:N 2 files.
       </Typography>
     </Box>
 
     <Box m={1} pb={2}>
-      <Typography variant="body2" style={{ color: secondaryColor }}>
+      <Typography variant="body2" style={{ color: fontColor }}>
         Want to know more? Go to our <Link href={NWB_WEBSITE} target="_blank">website</Link>.
       </Typography>
     </Box>
 
     <Box m={1}>
-      <Typography variant="body2" style={{ color: secondaryColor }}>
+      <Typography variant="body2" style={{ color: fontColor }}>
         NWB Explorer is being developed in collaboration with:
       </Typography>
       <Link href="http://www.metacell.us" target="_blank">
@@ -54,12 +54,12 @@ export default function Dialog ({ open, title, message, handleClose }) {
         open={open}
         onClose={handleClose}
       >
-        <DialogTitle>{title}</DialogTitle>
+        <DialogTitle className="modal-title">{title}</DialogTitle>
         <DialogContent>
           <AboutContent/>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose} color="primary" autoFocus>
+          <Button onClick={handleClose} color="primary" className="font-16" autoFocus>
             Close
           </Button>
         </DialogActions>
