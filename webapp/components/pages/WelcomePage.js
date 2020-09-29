@@ -19,7 +19,7 @@ const styles = theme => ({
   }
 });
 
-class SplashPage extends React.Component{
+class WelcomePage extends React.Component{
   render () {
     const { classes } = this.props;
     return <div id="splash" className="h-100">
@@ -45,10 +45,10 @@ class SplashPage extends React.Component{
               <Box>
                   In collaboration with
               </Box>
-              <Link href="http://www.opensourcebrain.org/" title="Open Source Brain">
+              <Link href="http://www.opensourcebrain.org/" target="_blank" title="Open Source Brain">
                 <img src={logo_osb} alt="Open Source Brain" width="166"></img>
               </Link>
-              <Link href="http://openworm.org/" title="OpenWorm Foundation">
+              <Link href="http://openworm.org/" target="_blank" title="OpenWorm Foundation">
                 <img src={logo_openworm} alt="OpenWorm Foundation" height="35"></img>
               </Link>
             </Grid>
@@ -56,7 +56,7 @@ class SplashPage extends React.Component{
               <Box>
                   Supported by
               </Box>
-              <Link href="https://wellcome.ac.uk/" title="Wellcome" className="m-0">
+              <Link href="https://wellcome.ac.uk/" target="_blank" title="Wellcome" className="m-0">
                 <img src={logo_wellcome} alt="Wellcome" height="35"></img>
               </Link>
             </Grid>
@@ -65,7 +65,7 @@ class SplashPage extends React.Component{
         <Hidden smDown>
           <Grid item sm={4} md={5} className="splash-background">
             <Box className="logo-container">
-              <Link href="https://metacell.us/" className="logo" title="MetaCell">
+              <Link href="https://metacell.us/" target="_blank" className="logo" title="MetaCell">
                 <img src={logo_metacell} alt="MetaCell" ></img>
               </Link>
             </Box>
@@ -76,4 +76,4 @@ class SplashPage extends React.Component{
   }
 }
 
-export default withStyles(styles, { withTheme: true })(SplashPage)
+export default withStyles(styles, { withTheme: true })(WelcomePage)

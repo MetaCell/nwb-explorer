@@ -1,5 +1,5 @@
 import React from 'react';
-import SplashPage from './pages/SplashPage';
+import WelcomePage from './pages/WelcomePage';
 import nwbFileService from '../services/NWBFileService';
 import FileExplorerPage from './pages/FileExplorerPage';
 // import { Route, Switch, Redirect, BrowserRouter as Router } from 'react-router-dom';
@@ -89,7 +89,7 @@ export default class App extends React.Component{
     if (nwbFileUrl) {
       page = <FileExplorerPage/>
     } else if (!embedded) {
-      page = <SplashPage />
+      page = <WelcomePage />
     } else {
       page = '<h1>Waiting for data...</h1>';
     }
