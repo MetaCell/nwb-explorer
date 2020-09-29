@@ -1,16 +1,7 @@
 import React from 'react';
-// import Menu from '@material-ui/core/Menu';
-import Button from '@material-ui/core/Button';
-import MenuItem from '@material-ui/core/MenuItem';
-import IconButton from '@material-ui/core/IconButton';
-
-import ArrowRight from '@material-ui/icons/ArrowRight';
-import ExpandMore from '@material-ui/icons/ExpandMore';
-import toolbarConfig, { getPlotsList } from './configuration/listMenuConfiguration';
+import listMenuConfig from './configuration/listMenuConfiguration';
 import Menu from "@geppettoengine/geppetto-ui//menu/Menu";
-import { connect } from 'react-redux';
-import { showPlot, showImageSeries, updateDetailsWidget, addToPlot, showNWBWidget, plotAll } from '../actions/flexlayout';
-import ListMenuComponentConnect from './reduxconnect/ListMenuContainer';
+import { addToPlot } from '../actions/flexlayout';
 const DEFAULT_MODEL_SETTINGS = { color: 'white' };
 
 export default class ListMenuComponent extends React.Component {
@@ -132,9 +123,9 @@ export default class ListMenuComponent extends React.Component {
     const availablePlots = this.props.widgets
       .filter(this.goOnlyToTimeseriesWidgets)
       .filter(this.dontGoToSameHostTwice);
-    let ap = ""
+    let menuItems = ""
     if (availablePlots.length > 0) {
-      ap = availablePlots.map(availablePlot =>
+      menuItems = availablePlots.map(availablePlot =>
         ({
           label: `${availablePlot.name}`,
           action: {
@@ -148,7 +139,7 @@ export default class ListMenuComponent extends React.Component {
         }))
 
     }
-    return ap;
+    return menuItems;
   }
 
   menuHandler (click) {
@@ -181,11 +172,7 @@ export default class ListMenuComponent extends React.Component {
 
     case "menuInjector": {
       const [menuName] = click.parameters;
-      if (menuName === "Color") {
-        return getPlotsList();
-      }
       if (menuName === "View") {
-        console.log(this.getAvailablePlots())
         return this.getAvailablePlots()
       }
       break;
@@ -198,7 +185,7 @@ export default class ListMenuComponent extends React.Component {
 
   render () {
     return <Menu
-      configuration={toolbarConfig}
+      configuration={listMenuConfig}
       menuHandler={this.menuHandler.bind(this)}
     />
   }
