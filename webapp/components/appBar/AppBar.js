@@ -90,7 +90,7 @@ export default class Appbar extends Component {
     return (
       <Fragment>
         <AppBar position="static" color="secondary" >
-          <Toolbar classes={{ gutters: 'toolbar-gutters' }}>
+          <Toolbar variant="dense" classes={{ gutters: 'toolbar-gutters' }}>
             <Grid
               container
               justify="space-between"

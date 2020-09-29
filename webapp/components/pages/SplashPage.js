@@ -34,7 +34,7 @@ class SplashPage extends React.Component{
               Visualise and understand your neurophysiology data
             </Typography>
           </Box>
-          <Paper className="grey-box">
+          <Paper className="grey-box first">
             <FileUrlSelector/>
           </Paper>
           <Paper className="grey-box scrollbar">

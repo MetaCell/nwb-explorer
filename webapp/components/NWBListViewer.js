@@ -131,7 +131,7 @@ export default class NWBListViewer extends Component {
   render () {
     let instances = this.getInstances();
     
-    return <div style={{ display: 'flex', overflow: 'hidden', flexDirection: 'column', alignItems: 'stretch', height: '100%' }}>
+    return <div className="list-container">
       <div style={{ flex: 1, overflow: 'auto' }}>
         <ListViewer
           columnConfiguration={this.getColumnConfiguration()}

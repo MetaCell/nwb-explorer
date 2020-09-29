@@ -87,6 +87,10 @@ const baseTheme = {
         fontWeight: "400",
         marginBottom: "9px",
         padding: "8px 15px",
+        '&:hover': {
+          background: "rgba(255, 255, 255, 0.1)",
+          borderColor: buttonOutlineColor,
+        }
       },
       containedSecondary: { color: fontColor },
       containedPrimary: { color: fontColor },
@@ -109,7 +113,7 @@ const baseTheme = {
       h3: {
         fontSize: "16px",
         lineHeight: "18px",
-        marginBottom: "11px",
+        marginBottom: "28px",
       },
       h4: {
         fontSize: "12px",
@@ -117,15 +121,20 @@ const baseTheme = {
         letterSpacing: "0.32px",
         color: bgInputs,
         textTransform: "Uppercase",
-        margin: "22px 0 11px",
+        margin: "13px 0 11px",
       },
       h6: {
         fontSize: "12px",
+        fontWeight: '400',
         lineHeight: "20px",
         marginBottom: "5px",
         color: primaryColor,
       },
-
+      body2: {
+        fontSize: "14px",
+        fontWeight: '400',
+        marginBottom: "5px",
+      },
       root: { color: fontColor },
     },
   },
