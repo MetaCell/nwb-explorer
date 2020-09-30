@@ -1,7 +1,8 @@
 import React from 'react';
-import listMenuConfig from './configuration/listMenuConfiguration';
+import { listMenuConfigurations } from './configuration/listMenuConfiguration';
 import Menu from "@geppettoengine/geppetto-ui//menu/Menu";
 import { addToPlot } from '../actions/flexlayout';
+import { CompactPicker } from 'react-color';
 const DEFAULT_MODEL_SETTINGS = { color: 'white' };
 
 export default class ListMenuComponent extends React.Component {
@@ -18,6 +19,7 @@ export default class ListMenuComponent extends React.Component {
     this.plotAll = this.props.plotAll ? this.props.plotAll : () => console.debug('plotAll not defined in ' + typeof this);
     this.goOnlyToTimeseriesWidgets = this.goOnlyToTimeseriesWidgets.bind(this);
     this.dontGoToSameHostTwice = this.dontGoToSameHostTwice.bind(this);
+    this.Picker = CompactPicker;
   }
   getModelSettings (path) {
     return this.modelSettings[path] ? this.modelSettings[path] : DEFAULT_MODEL_SETTINGS;
@@ -55,21 +57,8 @@ export default class ListMenuComponent extends React.Component {
   }
 
   clickShowPlot ({ path, color, title }) {
-    /*
-     * this.modelSettings[path] = { color: color };
-     * this.setState({ update: this.state.update + 1 });
-     */
     Instances.getInstance(path).color = color; // TODO move to redux
     this.showPlot({ path, color, title });
-  }
-
-  addColor ({ path }) {
-    /*
-     * this.modelSettings[path] = { color: color };
-     * this.setState({ update: this.state.update + 1 });
-     */
-    Instances.getInstance(path).color = "red"; // TODO move to redux
-    // this.showPlot({ path, color, title });
   }
 
   clickShowNWBWidget ({ path }) {
@@ -142,6 +131,25 @@ export default class ListMenuComponent extends React.Component {
     return menuItems;
   }
 
+  handleChange (color) {
+    this.setState({ anchorEl: null });
+    const entity = {
+      path: this.props.entity.path,
+      color: color.hex
+    }
+    this.clickShowPlot(entity)
+  }
+
+  getColorPicker () {
+    const { color } = this.state
+    const colorPicker = React.createElement(this.Picker, {
+      color,
+      onChange: color => this.handleChange(color)
+    })
+    const menuItems = [{ label: colorPicker, }]
+    return menuItems;
+  }
+
   menuHandler (click) {
     if (!click) {
       return;
@@ -165,15 +173,14 @@ export default class ListMenuComponent extends React.Component {
       this.clickShowPlot(this.props.entity)
       break;
     }
-    case "color": {
-      this.addColor(this.props.entity)
-      break;
-    }
 
     case "menuInjector": {
       const [menuName] = click.parameters;
-      if (menuName === "View") {
+      if (menuName === "AddPlot") {
         return this.getAvailablePlots()
+      }
+      if (menuName === "Color") {
+        return this.getColorPicker()
       }
       break;
     }
@@ -184,8 +191,9 @@ export default class ListMenuComponent extends React.Component {
   }
 
   render () {
+    const config = listMenuConfigurations(Instances, this.props.entity)
     return <Menu
-      configuration={listMenuConfig}
+      configuration={config}
       menuHandler={this.menuHandler.bind(this)}
     />
   }
