@@ -33,10 +33,7 @@ const topLevelMenuItemStyle = {
   hover: {},
 };
 
-const firstItemCustom = {
-  fontWeight: "bold",
-  paddingLeft: `calc(${gutter} / 2)`,
-};
+const firstItemCustom = { fontWeight: "bold" };
 
 const firstItemStyle = {
   standard: { ...topLevelMenuItemStyle.standard, ...firstItemCustom },
