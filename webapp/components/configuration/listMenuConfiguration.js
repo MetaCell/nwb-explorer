@@ -10,30 +10,19 @@ import {
 
 const style = {
   standard: {
-    background: bgRegular,
-    borderRadius: 0,
     border: 0,
-    boxShadow: "0px 0px",
-    color: "#ffffff",
-    paddingLeft: `calc(${gutter} * 2)`,
-    paddingRight: `calc(${gutter} * 2)`,
-    fontSize: 16,
-    fontWeight: 400,
-    fontFamily: font,
-    margin: "0px 0px 0px 0px",
-    height: "100%",
-    borderLeft: 0,
-    borderRight: 0,
-    borderBottom: 0,
-    textTransform: "capitalize",
-    textAlign: "left",
-    justifyContent: "start",
-
+    background: "transparent",
+    padding: "0",
+    width: "20px",
+    height: "20px",
+    boxShadow: "none",
+    minWidth: "10px",
+    fontSize: "10px",
     hr: {},
   },
   lighter: { background: primaryColor },
   padding: {
-    fontSize: 16,
+    fontSize: 15,
     paddingTop: `calc(${gutter} / 2)`,
     paddingBottom: `calc(${gutter} / 2)`,
   },
@@ -66,6 +55,7 @@ export default {
     background: bgRegular,
     buttonsStyle: {
       standard: style.standard,
+      position: "relative",
       hover: {
         ...style.standard,
         ...style.lighter,
@@ -100,7 +90,7 @@ export default {
     {
       label: "",
       position: "bottom-start",
-      icon: "fa fa-caret-down",
+      icon: "fa fa-chevron-down",
       list: [
         {
           label: "Open in new plot",

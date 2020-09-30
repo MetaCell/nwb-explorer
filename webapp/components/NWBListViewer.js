@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import ListViewer from '@geppettoengine/geppetto-ui/list-viewer/ListViewer';
 import listViewerConf from './configuration/listViewerConfiguration.js';
+import RemoveRedEyeIcon from "@material-ui/icons/RemoveRedEye";
 
 const DEFAULT_MODEL_SETTINGS = { color: 'white' };
 const TYPE_INCLUDE_REGEX = /^(?!.*details)Model.nwbfile.*$/;
@@ -144,13 +145,13 @@ export default class NWBListViewer extends Component {
       </div>
       
       <div className='list-summary'>
+        <a title="Plot all timeseries" onClick={this.plotAllInstances}>
+          <RemoveRedEyeIcon />
+        </a>
         { instances .length > 0
           ? <i>{instances.length} Matching Results</i>
           : null
         }
-        <a style={{ color: 'white', cursor: 'pointer' }} title="Plot all timeseries" onClick={this.plotAllInstances}>
-          <span className="fa fa-area-chart list-icon" />
-        </a>
       </div>
     </div>
 

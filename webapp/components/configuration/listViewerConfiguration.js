@@ -22,7 +22,7 @@ const conf = [
           action: "clickShowPlot",
           label: "Plot",
           tooltip: "Plot time series",
-          color: "#ffffff",
+          color: "rgba(255, 255, 255, 0.3)",
           defaultColor: entity => Instances.getInstance(entity.path).color,
         },
       },
@@ -36,7 +36,7 @@ const conf = [
           icon: "picture-o",
           label: "Plot",
           tooltip: "Plot image series",
-          color: "#ffffff",
+          color: "rgba(255, 255, 255, 0.3)",
         },
       },
       {
