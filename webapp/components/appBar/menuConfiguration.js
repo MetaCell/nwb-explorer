@@ -1,6 +1,4 @@
 import React from "react";
-
-import Divider from "@material-ui/core/Divider";
 import {
   bgRegular,
   bgDark,
@@ -13,9 +11,6 @@ import {
 import { openDialog } from "../../actions/general";
 
 import { APPBAR_CONSTANTS, NWB_WEBSITE } from "../constants";
-
-const checkedIcon = "fa fa-check secondary";
-const unCheckedIcon = "fa fa-check color-dark";
 
 const style = {
   standard: {
