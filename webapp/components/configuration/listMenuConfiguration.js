@@ -90,9 +90,7 @@ export const listMenuConfigurations = (Instances, entity) => {
         },
       },
     },
-    itemOptions: {
-      customArrow: <i className="fa fa-caret-right menu-caret" />,
-    },
+    itemOptions: { customArrow: <i className="fa fa-caret-right menu-caret" /> },
     buttons: [
       {
         label: "",
@@ -116,7 +114,7 @@ export const listMenuConfigurations = (Instances, entity) => {
             },
           },
           {
-            label: `Colors ${color}`,
+            label: <span>Colors <span>{color}</span></span>,
             icon: "",
             position: "right",
             style: isImage ? hiddenMenuItemStyle : topLevelMenuItemStyle,

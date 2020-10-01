@@ -13,24 +13,24 @@ const conf = [
       {
         id: "showPlot",
         customComponent: CustomIconComponent,
-        visible: (entity) =>
-          Instances.getInstance(entity.path + ".data") &&
-          Instances.getInstance(entity.path + ".timestamps"),
+        visible: entity =>
+          Instances.getInstance(entity.path + ".data")
+          && Instances.getInstance(entity.path + ".timestamps"),
 
-        source: (entity) => entity,
+        source: entity => entity,
         configuration: {
           action: "clickShowPlot",
           label: "Plot",
           tooltip: "Plot time series",
           color: "rgba(255, 255, 255, 0.3)",
-          defaultColor: (entity) => Instances.getInstance(entity.path).color,
+          defaultColor: entity => Instances.getInstance(entity.path).color
         },
       },
       {
         id: "image",
         customComponent: CustomIconComponent,
-        visible: (entity) => entity.type === "ImageSeries",
-        source: (entity) => entity,
+        visible: entity => entity.type === "ImageSeries",
+        source: entity => entity,
         configuration: {
           action: "clickShowImg",
           icon: "picture-o",
@@ -42,7 +42,7 @@ const conf = [
       {
         id: "menuOptions",
         customComponent: ListControlsComponent,
-        source: (entity) => entity,
+        source: entity => entity,
         configuration: {
           actions: "clickShowDetails",
           label: "Show details",
