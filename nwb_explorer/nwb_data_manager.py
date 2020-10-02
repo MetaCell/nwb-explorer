@@ -12,7 +12,7 @@ from nwb_explorer.nwb_model_interpreter import NWBModelInterpreter
 
 CACHE_DIRNAME = 'nwb_files_cache'
 # TODO this path must be a shared storage inside the cluster
-CACHE_DEFAULT_DIR = f"webapp/{CACHE_DIRNAME}/"
+CACHE_DEFAULT_DIR = f"{CACHE_DIRNAME}/"
 
 
 class NWBFileNotFound(FileNotFoundError): pass

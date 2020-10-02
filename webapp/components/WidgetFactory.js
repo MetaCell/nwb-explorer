@@ -76,9 +76,7 @@ export default class WidgetFactory{
       return <SweepTableViewer key={widgetConfig.id} />;
     }
     case "PythonConsole": {
-    
-      return getConsole();
-    
+      return getConsole(GEPPETTO_CONFIGURATION.forceNewNotebook, GEPPETTO_CONFIGURATION.oneFileOneNotebook);
     }
     }
   }

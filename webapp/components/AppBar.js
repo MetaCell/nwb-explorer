@@ -82,14 +82,16 @@ export default class Appbar extends Component {
               </Grid>
 
               <Grid item className="icon-container">
-
-                <CustomTooltip tooltip="Back">
-                  <IconButton
-                    onClick={() => this.handleClickBack()}
-                  >
-                    <Icon color="error" className='fa fa-home'/>
-                  </IconButton>
-                </CustomTooltip>
+                { 
+                  this.props.embedded ? null
+                    : <CustomTooltip tooltip="Back">
+                      <IconButton
+                        onClick={() => this.handleClickBack()}
+                      >
+                        <Icon color="error" className='fa fa-home'/>
+                      </IconButton>
+                    </CustomTooltip>
+                }
                 
                 
                 <CustomTooltip tooltip="Restore tabs">

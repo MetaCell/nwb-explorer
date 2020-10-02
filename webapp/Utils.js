@@ -92,4 +92,8 @@ export function nextColor () {
   return TIMESERIES_PALETTE[currentColor % TIMESERIES_PALETTE.length][colorVariant];
 }
 
+export function isEmbeddedInIframe () {
+  return window.location !== window.parent.location;
+}
+
 export default Utils;

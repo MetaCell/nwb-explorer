@@ -105,7 +105,7 @@ export default class App extends React.Component{
   }
 
   render () {
-    const { model, embedded, showNotebook, isLoadedInNotebook, nwbFileUrl } = this.props;
+    const { embedded, nwbFileUrl } = this.props;
     
     var page;
     if (nwbFileUrl) {
@@ -113,7 +113,7 @@ export default class App extends React.Component{
     } else if (!embedded) {
       page = <SplashPage />
     } else {
-      page = '<h1>Waiting for data...</h1>';
+      return null;
     }
     return (
       <div style={{ height: '100%', width: '100%' }}>

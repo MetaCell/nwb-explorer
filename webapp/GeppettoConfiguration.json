@@ -14,5 +14,7 @@
         "url": "http://live.geppetto.org",
         "icon" :"geppetto/style/favicon.png",
         "image": "http://www.geppetto.org/images/logo.png"
-    }
+    },
+    "forceNewNotebook": true, 
+    "oneFileOneNotebook": true
 }
