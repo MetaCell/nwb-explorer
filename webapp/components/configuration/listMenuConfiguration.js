@@ -126,6 +126,12 @@ export const listMenuConfigurations = (Instances, entity, availablePlots) => {
             },
           },
           {
+            label: "Show Image Series",
+            icon: "",
+            action: { handlerAction: "image" },
+            style: !isImage ? hiddenMenuItemStyle : {},
+          },
+          {
             label: "Show Details",
             icon: "",
             action: { handlerAction: "details" },

@@ -29,8 +29,8 @@ export default class ListMenuComponent extends React.Component {
     this.updateSettings({ path, color });
   }
 
-  clickShowImg ({ path }) {
-    this.showImageSeries({ path });
+  clickShowImg () {
+    this.showImageSeries({ path: this.props.entity.path, showDetail: false });
   }
 
   clickShowDetails ({ path }) {
@@ -113,6 +113,10 @@ export default class ListMenuComponent extends React.Component {
     }
     case "plot": {
       this.clickShowPlot(this.props.entity)
+      break;
+    }
+    case "image": {
+      this.clickShowImg();
       break;
     }
 

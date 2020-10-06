@@ -16,7 +16,7 @@ function handleShowWidget (store, next, action) {
   if (action.data.type === 'TimeSeries') { // Instances.getInstance(path).getType().wrappedObj.name
     return handlePlotTimeseries(store, next, action);
   } else if (action.data.type === 'ImageSeries') { // Instances.getInstance(path).getType().wrappedObj.name
-    store.dispatch(updateDetailsWidget(action.data.instancePath));
+    action.data.config.showDetail && store.dispatch(updateDetailsWidget(action.data.instancePath));
     return handleImportTimestamps(store, next, action);
   } else {
     return next(action);

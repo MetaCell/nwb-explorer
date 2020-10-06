@@ -79,7 +79,7 @@ export default class NWBListViewer extends Component {
   }
 
   clickShowImg ({ path }) {
-    this.showImageSeries({ path });
+    this.showImageSeries({ path, showDetail: true });
   }
 
   clickShowDetails ({ path }) {
