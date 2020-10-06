@@ -45,10 +45,10 @@ export default class ListMenuComponent extends React.Component {
     return widget.instancePath != path;
   }
 
+  availablePlots = () => this.props.widgets.filter(this.goOnlyToTimeseriesWidgets).filter(this.dontGoToSameHostTwice);
+
   getAvailablePlots () {
-    const availablePlots = this.props.widgets
-      .filter(this.goOnlyToTimeseriesWidgets)
-      .filter(this.dontGoToSameHostTwice);
+    const availablePlots = this.availablePlots()
     let menuItems = ""
     if (availablePlots.length > 0) {
       menuItems = availablePlots.map(availablePlot =>
@@ -127,7 +127,8 @@ export default class ListMenuComponent extends React.Component {
   }
 
   render () {
-    const config = listMenuConfigurations(Instances, this.props.entity)
+    const availablePlots = this.availablePlots()
+    const config = listMenuConfigurations(Instances, this.props.entity, availablePlots)
     return <Menu
       configuration={config}
       menuHandler={this.menuHandler.bind(this)}

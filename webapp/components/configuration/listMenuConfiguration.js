@@ -45,9 +45,11 @@ const hiddenMenuItemStyle = {
   hover: {},
 };
 
-export const listMenuConfigurations = (Instances, entity) => {
+export const listMenuConfigurations = (Instances, entity, availablePlots) => {
   const color = Instances.getInstance(entity.path).color || "#ffffff";
   const isImage = entity.type === "ImageSeries";
+  const arePlotsAvailable = availablePlots.length > 0
+
   const config = {
     global: {
       color: "white",
@@ -107,7 +109,7 @@ export const listMenuConfigurations = (Instances, entity) => {
             label: "Add to an existing plot",
             icon: "",
             position: "right",
-            style: isImage ? hiddenMenuItemStyle : topLevelMenuItemStyle,
+            style: isImage || (!isImage && !arePlotsAvailable) ? hiddenMenuItemStyle : topLevelMenuItemStyle,
             dynamicListInjector: {
               handlerAction: "menuInjector",
               parameters: ["AddPlot"],
