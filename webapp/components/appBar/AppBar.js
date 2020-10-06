@@ -11,7 +11,7 @@ const styles = theme => ({
     color: theme.palette.common.black,
     backgroundColor: theme.palette.common.white
   },
-  popper: { paddingRight: "10px" },
+  popper: { paddingRight: theme.spacing(2) },
 });
 
 const CustomTooltip = withStyles(styles)(({ tooltip, children, classes }) => (
