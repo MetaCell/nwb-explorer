@@ -97,7 +97,7 @@ export const listMenuConfigurations = (Instances, entity, availablePlots) => {
       {
         label: "",
         position: "bottom-start",
-        icon: <i className="fa fa-chevron-down" />,
+        icon: "fa fa-chevron-down",
         list: [
           {
             label: "Open in new plot",
