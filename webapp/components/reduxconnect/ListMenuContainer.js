@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 import ListMenuComponent from '../ListMenu';
-import { showPlot, showImageSeries, updateDetailsWidget, addToPlot, showNWBWidget, plotAll } from '../../actions/flexlayout';
+import { showPlot, showImageSeries, updateDetailsWidget, addToPlot } from '../../actions/flexlayout';
 
 const mapStateToProps = state => ({
   modelSettings: state.nwbfile.modelSettings,
@@ -12,8 +12,6 @@ const mapDispatchToProps = dispatch => ({
   showImg: instanceDescriptor => dispatch(showImageSeries(instanceDescriptor)),
   addToPlot: instanceDescriptor => dispatch(addToPlot(instanceDescriptor)),
   updateDetailsWidget: path => dispatch(updateDetailsWidget(path)),
-  plotAll: instanceDescriptor => dispatch(plotAll(instanceDescriptor)),
-  showNWBWidget: path => dispatch(showNWBWidget(path)),
   dispatchAction: action => dispatch(action)
 });
 
