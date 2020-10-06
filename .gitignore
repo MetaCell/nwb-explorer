@@ -21,3 +21,7 @@ tox.ini
 .coverage
 /src
 geppetto-client
+/lib
+/bin
+/nwb-explorer
+pyvenv.cfg

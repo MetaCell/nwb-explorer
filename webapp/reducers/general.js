@@ -1,7 +1,9 @@
 import { 
   RAISE_ERROR, 
   RECOVER_FROM_ERROR,
-  WAIT_DATA
+  WAIT_DATA,
+  OPEN_DIALOG,
+  CLOSE_DIALOG
 } from '../actions/general';
 
 import { NWB_FILE_NOT_FOUND_ERROR,MODULE_NOT_FOUND_ERROR, NAME_ERROR } from '../components/constants';
@@ -58,6 +60,12 @@ function reduceGeneral (state, action) {
       showNotebook: true, 
       isNotebookReady: false
     }
+
+  case OPEN_DIALOG:
+    return { ...state, dialogOpen: true, dialogTitle: action.payload.title, dialogMessage: action.payload.message }
+
+  case CLOSE_DIALOG:
+    return { ...state, dialogOpen: false }
   
   default:{
     const loading = { ...state.loading };

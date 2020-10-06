@@ -1,26 +1,28 @@
 global.jQuery = require("jquery");
-global.GEPPETTO_CONFIGURATION = require('./GeppettoConfiguration.json');
+global.GEPPETTO_CONFIGURATION = require("./GeppettoConfiguration.json");
 
 require("babel-polyfill");
 const Provider = require("react-redux").Provider;
-const configureStore = require('./store').default;
+const configureStore = require("./store").default;
 
+require("@geppettoengine/geppetto-client-initialization");
+const ReactDOM = require("react-dom");
+const React = require("react");
+const MuiThemeProvider = require('@material-ui/core/styles').MuiThemeProvider;
 
-require('@geppettoengine/geppetto-client-initialization');
-const ReactDOM = require('react-dom');
-const React = require('react');
+const Utils = require("./Utils").default;
 
-const Utils = require('./Utils').default;
-
-const App = require('./components/reduxconnect/AppContainer').default;
+const App = require("./components/reduxconnect/AppContainer").default;
 
 // The service is also called from the parent frame to change file
-const nwbFileService = require('./services/NWBFileService').default;
-const nwbManager = require('./services/NWBGeppettoManager').default;
+const nwbFileService = require("./services/NWBFileService").default;
+const nwbManager = require("./services/NWBGeppettoManager").default;
+
+// MUI theming
+const theme = require('./theme').default
 
 window.updateFile = nwbFileService.setNWBFileUrl;
-require('./styles/main.less');
-
+require("./styles/main.less");
 
 G.enableLocalStorage(false);
 G.setIdleTimeOut(-1);
@@ -34,12 +36,12 @@ const store = configureStore();
   GEPPETTO.Manager = nwbManager; // Override standard Geppetto manager
   console.log(Utils);
 
-  
   ReactDOM.render(
-    <Provider store={store}>
-      <App />
-    </Provider>
-    , document.getElementById('mainContainer'));
-
+    <MuiThemeProvider theme={theme}>
+      <Provider store={store}>
+        <App />
+      </Provider>
+    </MuiThemeProvider>,
+    document.getElementById("mainContainer")
+  );
 })();
-
