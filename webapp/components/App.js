@@ -27,7 +27,7 @@ export default class App extends React.Component{
 
     // A message from the parent frame can specify the file to load
     window.addEventListener('message', event => {
-
+      console.debug('Parent frame message', event)
       // Here we would expect some cross-origin check, but we don't do anything more than load a nwb file here
       if (typeof (event.data) == 'string') {
         loadNWBFile(event.data);
