@@ -13,6 +13,7 @@ export default class ListMenuComponent extends React.Component {
     this.addToPlot = props.addToPlot ? props.addToPlot : () => console.debug('addToPlot not defined in ' + typeof this);
     this.showImageSeries = props.showImg ? props.showImg : () => console.debug('showImg not defined in ' + typeof this);
     this.updateDetailsWidget = this.props.updateDetailsWidget ? this.props.updateDetailsWidget : () => console.debug('updateDetailsWidget not defined in ' + typeof this);
+    this.updateSettings = this.props.updateSettings ? this.props.updateSettings : () => console.debug('updateSettings not defined in ' + typeof this);
     this.goOnlyToTimeseriesWidgets = this.goOnlyToTimeseriesWidgets.bind(this);
     this.dontGoToSameHostTwice = this.dontGoToSameHostTwice.bind(this);
     this.Picker = CompactPicker;
@@ -20,7 +21,12 @@ export default class ListMenuComponent extends React.Component {
 
   clickShowPlot ({ path, color, title }) {
     Instances.getInstance(path).color = color; // TODO move to redux
+    this.updateSettings({ path, color })
     this.showPlot({ path, color, title });
+  }
+
+  updateSettings ({ path, color }) {
+    this.updateSettings({ path, color });
   }
 
   clickShowImg ({ path }) {
