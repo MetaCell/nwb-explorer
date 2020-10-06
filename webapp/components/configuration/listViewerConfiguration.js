@@ -2,6 +2,7 @@ import { GroupComponent } from "@geppettoengine/geppetto-ui/list-viewer/ListView
 import { FILEVARIABLE_LENGTH } from "../constants";
 import { CustomIconComponent } from "../CustomIconComponent";
 import ListControlsComponent from "../ListMenuComponent";
+import RemoveRedEyeIcon from "@material-ui/icons/RemoveRedEye";
 
 const iconUnselectedColor = "rgba(255, 255, 255, 0.3)"
 const conf = [
@@ -24,6 +25,7 @@ const conf = [
           label: "Plot",
           tooltip: "Plot time series",
           color: iconUnselectedColor,
+          icon: RemoveRedEyeIcon,
           defaultColor: entity => Instances.getInstance(entity.path).color
         },
       },
@@ -34,7 +36,7 @@ const conf = [
         source: entity => entity,
         configuration: {
           action: "clickShowImg",
-          icon: "picture-o",
+          icon: RemoveRedEyeIcon,
           label: "Plot",
           tooltip: "Plot image series",
           color: iconUnselectedColor,
@@ -53,6 +55,7 @@ const conf = [
           label: "Show details",
           tooltip: "Show details",
           color: iconUnselectedColor,
+          icon: RemoveRedEyeIcon,
           defaultColor: entity => Instances.getInstance(entity.path).color
         },
       },
