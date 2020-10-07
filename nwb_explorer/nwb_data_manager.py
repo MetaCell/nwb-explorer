@@ -10,7 +10,7 @@ from pygeppetto.services.model_interpreter import add_model_interpreter
 
 from nwb_explorer.nwb_model_interpreter import NWBModelInterpreter
 
-CACHE_DIRNAME = ''
+CACHE_DIRNAME = './workspace'
 # TODO this path must be a shared storage inside the cluster
 CACHE_DEFAULT_DIR = f"{CACHE_DIRNAME}/"
 
