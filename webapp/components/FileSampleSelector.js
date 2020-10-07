@@ -1,5 +1,6 @@
 import React from 'react';
-import Button from '@material-ui/core/Button';
+import { Box, Button, Typography, FormControl, Select, MenuItem } from '@material-ui/core';
+
 
 const SAMPLE_LINK_FERGUSON = 'https://github.com/OpenSourceBrain/NWBShowcase/raw/master/FergusonEtAl2015/FergusonEtAl2015.nwb';
 const SAMPLE_LINK_FERGUSON_2 = 'https://github.com/OpenSourceBrain/NWBShowcase/raw/master/FergusonEtAl2015/FergusonEtAl2015_PYR2.nwb';
@@ -21,7 +22,7 @@ export default class FileSampleSelector extends React.Component {
     this.handleClickLoadFile = this.handleClickLoadFile.bind(this);
 
     this.state = {};
-  } 
+  }
 
   componentDidMount (prevProps, prevState) {
     console.log("Props in FileSampleSelector", this.props);
@@ -33,115 +34,103 @@ export default class FileSampleSelector extends React.Component {
     const { loadNWBFile } = this.props;
     loadNWBFile(url);
   }
-  render () {
-    
+  handleChange = e => {
+    this.handleClickLoadFile(e.target.value);
+  }
 
+  render () {
     return (
       <div >
-        <h2>Don't have a file to load? Try some of these...</h2>
-        <Button
-          id="loadFile"
-          variant="outlined"
-          onClick={ e => this.handleClickLoadFile(SAMPLE_LINK_TIMESERIES)}
-          disabled={false}
-        >
-          Simple time series
-        </Button>
+        <Typography variant="h6">Don’t have a file to load?</Typography>
+        <Typography variant="h3">Pick a sample and get started!</Typography>
 
-        <p>Intracellular Electrophysiology:</p>
-        <Button
-          id="loadFile"
-          variant="outlined"
-          onClick={ e => this.handleClickLoadFile(SAMPLE_LINK_FERGUSON)}
-          disabled={false}
-          style={{ marginRight: '0.5em' }}
-        >
-          Ferguson et al. 2015, 1
-        </Button> 
-        <Button
-          id="loadFile"
-          variant="outlined"
-          onClick={ e => this.handleClickLoadFile(SAMPLE_LINK_FERGUSON_2)}
-          disabled={false}
-          style={{ marginRight: '0.5em' }}
-        >
-          2
-        </Button> 
-        <Button
-          id="loadFile"
-          variant="outlined"
-          onClick={ e => this.handleClickLoadFile(SAMPLE_LINK_FERGUSON_3)}
-          disabled={false}
-          style={{ marginRight: '0.5em' }}
-        >
-          3
-        </Button> 
-        <Button
-          id="loadFile"
-          variant="outlined"
-          onClick={ e => this.handleClickLoadFile(SAMPLE_LINK_FERGUSON_4)}
-          disabled={false}
-          style={{ marginRight: '0.5em' }}
-        >
-          4
-        </Button> 
-        <Button
-          id="loadFile"
-          variant="outlined"
-          onClick={ e => this.handleClickLoadFile(SAMPLE_LINK_FERGUSON_5)}
-          disabled={false}
-        >
-          5
-        </Button>
-        <br />
-        <Button
-          id="loadFile"
-          variant="outlined"
-          onClick={ e => this.handleClickLoadFile(SAMPLE_LINK_LANTYER)}
-          disabled={false}
-          style={{ marginRight: '0.5em' }}
-        >
-          Lantyer et al. 2018 
-        </Button>
-        <Button
-          id="loadFile"
-          variant="outlined"
-          onClick={ e => this.handleClickLoadFile(SAMPLE_LINK_LANORE)}
-          disabled={false}
-          style={{ marginRight: '0.5em' }}
-        >
-          Lanore et al. 2019 
-        </Button>
 
-        <p>Calcium fluorescence imaging (time series):</p>
+        <Typography variant="h4">Intracellular Electrophysiology:</Typography>
+        <Box display="flex" alignItems="flex-start" flexWrap="wrap">
+          <Button
+            id="loadFile"
+            variant="outlined"
+            className="button badge-button"
+            onClick={ e => this.handleClickLoadFile(SAMPLE_LINK_TIMESERIES)}
+            disabled={false}
+            style={{ marginRight: '0.5em' }}
+          >
+            Simple time series
+          </Button>
+          <FormControl variant="outlined" class="custom-select">
+            <Select
+              id="samplefile-select"
+              value={''}
+              onChange={this.handleChange}
+              className="button badge-button"
+              name="ferguson"
+              displayEmpty
+              inputProps={{ 'aria-label': 'ferguson' }}
+            >
+              <MenuItem value="" disabled>
+                Ferguson et al. 2015
+              </MenuItem>
+              <MenuItem value={SAMPLE_LINK_FERGUSON}>Ferguson 1</MenuItem>
+              <MenuItem value={SAMPLE_LINK_FERGUSON_2}>Ferguson 2</MenuItem>
+              <MenuItem value={SAMPLE_LINK_FERGUSON_3}>Ferguson 3</MenuItem>
+              <MenuItem value={SAMPLE_LINK_FERGUSON_4}>Ferguson 4</MenuItem>
+              <MenuItem value={SAMPLE_LINK_FERGUSON_5}>Ferguson 5</MenuItem>
+            </Select>
+          </FormControl>
+
+          <Button
+            id="loadFile"
+            variant="outlined"
+            className="button badge-button"
+            onClick={ e => this.handleClickLoadFile(SAMPLE_LINK_LANTYER)}
+            disabled={false}
+            style={{ marginRight: '0.5em' }}
+          >
+            Lantyer et al. 2018
+          </Button>
+          <Button
+            id="loadFile"
+            variant="outlined"
+            className="button badge-button"
+            onClick={ e => this.handleClickLoadFile(SAMPLE_LINK_LANORE)}
+            disabled={false}
+            style={{ marginRight: '0.5em' }}
+          >
+          Lanore et al. 2019
+          </Button>
+        </Box>
+        <Typography variant="h4">Calcium fluorescence imaging (time series):</Typography>
         <Button
           id="loadFile"
           variant="outlined"
+          className="button badge-button"
           onClick={ e => this.handleClickLoadFile(SAMPLE_LINK_TRIPLETT)}
           disabled={false}
           style={{ marginRight: '0.5em' }}
         >
-          Triplett et al. 2018 
+          Triplett et al. 2018
         </Button>
         <Button
           id="loadFile"
           variant="outlined"
+          className="button badge-button"
           onClick={ e => this.handleClickLoadFile(SAMPLE_LINK_KATO)}
           disabled={false}
           style={{ marginRight: '0.5em' }}
         >
-          Kato et al. 2015 
+          Kato et al. 2015
         </Button>
 
-        <p>Calcium fluorescence imaging (image series):</p>
+        <Typography variant="h4">Calcium fluorescence imaging (image series):</Typography>
         <Button
           id="loadFile"
           variant="outlined"
+          className="button badge-button"
           onClick={ e => this.handleClickLoadFile(SAMPLE_LINK_PACKER)}
           disabled={false}
           style={{ marginRight: '0.5em' }}
         >
-          Packer et al. 2015 
+          Packer et al. 2015
         </Button>
 
       </div>

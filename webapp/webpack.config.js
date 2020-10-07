@@ -25,6 +25,7 @@ console.log("\n Building for a " + ((isProduction) ? "production" : "development
 
 const availableExtensions = [
   { from: path.resolve(__dirname, geppetto_base_path, "static/*"), to: 'static', flatten: true },
+  { from: path.resolve(__dirname, "static"), to: 'static' },
 ];
 
 module.exports = function (env){

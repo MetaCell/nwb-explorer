@@ -92,4 +92,8 @@ export function nextColor () {
   return TIMESERIES_PALETTE[currentColor % TIMESERIES_PALETTE.length][colorVariant];
 }
 
+export function isString (obj) {
+  return typeof obj === 'string' || obj instanceof String;
+}
+
 export default Utils;
