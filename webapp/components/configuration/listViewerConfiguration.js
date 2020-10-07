@@ -2,7 +2,9 @@ import { GroupComponent } from "@geppettoengine/geppetto-ui/list-viewer/ListView
 import { FILEVARIABLE_LENGTH } from "../constants";
 import { CustomIconComponent } from "../CustomIconComponent";
 import ListControlsComponent from "../ListMenuComponent";
+import RemoveRedEyeIcon from "@material-ui/icons/RemoveRedEye";
 
+const iconUnselectedColor = "rgba(255, 255, 255, 0.3)"
 const conf = [
   {
     id: "controls",
@@ -22,7 +24,8 @@ const conf = [
           action: "clickShowPlot",
           label: "Plot",
           tooltip: "Plot time series",
-          color: "rgba(255, 255, 255, 0.3)",
+          color: iconUnselectedColor,
+          icon: RemoveRedEyeIcon,
           defaultColor: entity => Instances.getInstance(entity.path).color
         },
       },
@@ -33,16 +36,36 @@ const conf = [
         source: entity => entity,
         configuration: {
           action: "clickShowImg",
-          icon: "picture-o",
+          icon: RemoveRedEyeIcon,
           label: "Plot",
           tooltip: "Plot image series",
-          color: "rgba(255, 255, 255, 0.3)",
+          color: iconUnselectedColor,
+          defaultColor: entity => Instances.getInstance(entity.path).color
+        },
+      },
+      {
+        id: "showDetails",
+        customComponent: CustomIconComponent,
+        visible: entity =>
+          !((Instances.getInstance(entity.path + ".data")
+        && Instances.getInstance(entity.path + ".timestamps")) || entity.type === "ImageSeries"),
+        source: entity => entity,
+        configuration: {
+          action: "clickShowDetails",
+          label: "Show details",
+          tooltip: "Show details",
+          color: iconUnselectedColor,
+          icon: RemoveRedEyeIcon,
+          defaultColor: entity => Instances.getInstance(entity.path).color
         },
       },
       {
         id: "menuOptions",
         customComponent: ListControlsComponent,
         source: entity => entity,
+        visible: entity =>
+          (Instances.getInstance(entity.path + ".data")
+          && Instances.getInstance(entity.path + ".timestamps")) || entity.type === "ImageSeries",
         configuration: {
           actions: "clickShowDetails",
           label: "Show details",

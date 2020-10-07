@@ -7,12 +7,13 @@ import { CompactPicker } from 'react-color';
 export default class ListMenuComponent extends React.Component {
 
   constructor (props) {
-    super(props);
+    super(props, null);
     this.state = { anchorEl: null, subMenu: null };
     this.showPlot = this.props.showPlot ? this.props.showPlot : () => console.debug('showPlot not defined in ' + typeof this);
     this.addToPlot = props.addToPlot ? props.addToPlot : () => console.debug('addToPlot not defined in ' + typeof this);
     this.showImageSeries = props.showImg ? props.showImg : () => console.debug('showImg not defined in ' + typeof this);
     this.updateDetailsWidget = this.props.updateDetailsWidget ? this.props.updateDetailsWidget : () => console.debug('updateDetailsWidget not defined in ' + typeof this);
+    this.updateSettings = this.props.updateSettings ? this.props.updateSettings : () => console.debug('updateSettings not defined in ' + typeof this);
     this.goOnlyToTimeseriesWidgets = this.goOnlyToTimeseriesWidgets.bind(this);
     this.dontGoToSameHostTwice = this.dontGoToSameHostTwice.bind(this);
     this.Picker = CompactPicker;
@@ -20,11 +21,16 @@ export default class ListMenuComponent extends React.Component {
 
   clickShowPlot ({ path, color, title }) {
     Instances.getInstance(path).color = color; // TODO move to redux
+    this.updateSettings({ path, color })
     this.showPlot({ path, color, title });
   }
 
-  clickShowImg ({ path }) {
-    this.showImageSeries({ path });
+  updateSettings ({ path, color }) {
+    this.updateSettings({ path, color });
+  }
+
+  clickShowImg () {
+    this.showImageSeries({ path: this.props.entity.path, showDetail: false });
   }
 
   clickShowDetails ({ path }) {
@@ -45,10 +51,10 @@ export default class ListMenuComponent extends React.Component {
     return widget.instancePath != path;
   }
 
+  availablePlots = () => this.props.widgets.filter(this.goOnlyToTimeseriesWidgets).filter(this.dontGoToSameHostTwice);
+
   getAvailablePlots () {
-    const availablePlots = this.props.widgets
-      .filter(this.goOnlyToTimeseriesWidgets)
-      .filter(this.dontGoToSameHostTwice);
+    const availablePlots = this.availablePlots()
     let menuItems = ""
     if (availablePlots.length > 0) {
       menuItems = availablePlots.map(availablePlot =>
@@ -109,6 +115,10 @@ export default class ListMenuComponent extends React.Component {
       this.clickShowPlot(this.props.entity)
       break;
     }
+    case "image": {
+      this.clickShowImg();
+      break;
+    }
 
     case "menuInjector": {
       const [menuName] = click.parameters;
@@ -127,7 +137,8 @@ export default class ListMenuComponent extends React.Component {
   }
 
   render () {
-    const config = listMenuConfigurations(Instances, this.props.entity)
+    const availablePlots = this.availablePlots()
+    const config = listMenuConfigurations(Instances, this.props.entity, availablePlots)
     return <Menu
       configuration={config}
       menuHandler={this.menuHandler.bind(this)}

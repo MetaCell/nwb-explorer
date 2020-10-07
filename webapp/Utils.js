@@ -96,4 +96,8 @@ export function isEmbeddedInIframe () {
   return window.location !== window.parent.location;
 }
 
+export function isString (obj) {
+  return typeof obj === 'string' || obj instanceof String;
+}
+
 export default Utils;

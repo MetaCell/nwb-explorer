@@ -1,24 +1,30 @@
 import React from 'react';
-import Button from "@material-ui/core/IconButton";
-import RemoveRedEyeIcon from "@material-ui/icons/RemoveRedEye";
+import IconButton from "@material-ui/core/IconButton";
+import { isString } from "../Utils";
 
-const IconComponent = ({ action, color, tooltip }) => (
-  <Button
+const IconComponent = ({ action, color, tooltip, Icon }) => (
+  <IconButton
     style={{ color }}
     className="list-icon"
     title={tooltip}
     onClick={action}
   >
-    <RemoveRedEyeIcon />
-  </Button>
+    <Icon />
+  </IconButton>
 )
 
-export const CustomIconComponent = ({ icon, action, color, tooltip, defaultColor }) => ({ value, }) => (
-  <IconComponent
+export const CustomIconComponent = ({ icon, action, color, tooltip, defaultColor }) => ({ value, }) => {
+  if (defaultColor) {
+    color = isString(defaultColor) ? defaultColor : defaultColor(value)
+  }
+  if (!color) {
+    color = "rgba(255, 255, 255, 0.3)"
+  }
+  return <IconComponent
     color={color}
     defaultColor={defaultColor}
     title={tooltip}
     action={() => action(value)}
-    icon={icon}
+    Icon={icon}
   />
-);
+};

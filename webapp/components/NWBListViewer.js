@@ -2,8 +2,9 @@ import React, { Component } from 'react';
 import ListViewer from '@geppettoengine/geppetto-ui/list-viewer/ListViewer';
 import listViewerConf from './configuration/listViewerConfiguration.js';
 import RemoveRedEyeIcon from "@material-ui/icons/RemoveRedEye";
+import { nextColor } from '../Utils';
 
-const DEFAULT_MODEL_SETTINGS = { color: 'white' };
+const DEFAULT_MODEL_SETTINGS = { color: '#ffffff' };
 const TYPE_INCLUDE_REGEX = /^(?!.*details)Model.nwbfile.*$/;
 
 
@@ -62,11 +63,15 @@ export default class NWBListViewer extends Component {
     }
   }
 
-  clickShowPlot ({ path, color, title }) {
-    this.modelSettings[path] = { color: color };
+  clickShowPlot ({ path, title }) {
+    let newColor = Instances.getInstance(path).color
+    if (!Instances.getInstance(path).color) {
+      newColor = nextColor()
+    }
+    this.modelSettings[path] = { color: newColor };
     this.setState({ update: this.state.update + 1 });
-    Instances.getInstance(path).color = color; // TODO move to redux
-    this.showPlot({ path, color, title });
+    Instances.getInstance(path).color = newColor; // TODO move to redux
+    this.showPlot({ path, newColor, title });
   }
 
   clickShowNWBWidget ({ path }) {
@@ -74,7 +79,7 @@ export default class NWBListViewer extends Component {
   }
 
   clickShowImg ({ path }) {
-    this.showImageSeries({ path });
+    this.showImageSeries({ path, showDetail: true });
   }
 
   clickShowDetails ({ path }) {

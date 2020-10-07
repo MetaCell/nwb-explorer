@@ -16,23 +16,23 @@ const AboutContent = () => (
   <Paper style={{ backgroundColor: "#4a4a4a", textAlign: 'center', padding: '15px 5px 5px' }}>
     <img style={{ width: 150 }} src={logo_nwb_explorer} />
     <Box m={1}>
-      <Typography variant="h5" style={{ color: fontColor }}>NWB Explorer v0.5.0</Typography>
+      <Typography variant="h5" color={fontColor}>NWB Explorer v0.5.0</Typography>
     </Box>
     
     <Box m={1} >
-      <Typography variant="body2" style={{ color: fontColor }}>
+      <Typography variant="body2" color={fontColor}>
         NWB Explorer is a web application that can be used by scientists to read, visualize and explore the content of NWB:N 2 files.
       </Typography>
     </Box>
 
     <Box m={1} pb={2}>
-      <Typography variant="body2" style={{ color: fontColor }}>
+      <Typography variant="body2" color={fontColor}>
         Want to know more? Go to our <Link href={NWB_WEBSITE} target="_blank">website</Link>.
       </Typography>
     </Box>
 
     <Box m={1}>
-      <Typography variant="body2" style={{ color: fontColor }}>
+      <Typography variant="body2" color={fontColor}>
         NWB Explorer is being developed in collaboration with:
       </Typography>
       <Link href="http://www.metacell.us" target="_blank">
