@@ -374,7 +374,6 @@ iframe {
   height: 100%;
   font-size: @font-size-panels;
   border-radius: @panelradius;
-  background: @bgLight;
   .griddle-table-heading {
     border-bottom-color: transparent;
     background: @bgDark;
@@ -392,10 +391,7 @@ iframe {
     font-style: italic;
     color: @collapsibleHeading;
     height: 40px;
-  }
-  .griddle-table-heading {
-    border-bottom-color: transparent;
-    background: @bgDark;
+    border-bottom: 0 !important;
   }
   .list-icon{
     font-size: 20px;
@@ -435,13 +431,13 @@ iframe {
 }
 
 .listviewer-container {
+  flex: 2;
+  position: relative;
   .griddle-noResults{
     width: 100%;
     text-align: center;
   }
-  flex: 2;
   .griddle-filter{
-    background: @bgLight;
     color: @white;
     font-size: 15px;
     font-weight: 400;
@@ -449,12 +445,18 @@ iframe {
     border-color: @bgLight;
     box-shadow: none;
     z-index: 1;
-    margin: 0;
+    margin: 8px 9px 0 auto;
     border-radius: 4px;
-    border-bottom: 5px solid @bgDark;
+    width: 200px !important;
+    padding-right: 35px;
+    background: @bgLight url(../resources/search.png) no-repeat 95% center;
+    background-size: 8%;
   }
   > div{
-    width: 100%
+    width: 100%;
+    overflow-y: auto !important;
+    border-radius: @panelradius;
+    background: @bgLight;
   }
 }
 #mainContainer,
