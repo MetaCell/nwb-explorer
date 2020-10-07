@@ -18,9 +18,9 @@ function reduceNWBFile (state = {}, action) {
   case nwbfileActions.SET_NWB_FILE:
     return { ...action.data }
 
-  case nwbfileActions.LOAD_NWB_FILE:
-    return { ...action.data, nwbFileLoading: true }
-
+  case nwbfileActions.LOAD_NWB_FILE: {
+    return { nwbFileUrl: action.data.nwbFileUrl , nwbFileLoading: true }
+  }
   case nwbfileActions.LOAD_NWB_FILE_IN_NOTEBOOK:
     return {
       isLoadedInNotebook: false,

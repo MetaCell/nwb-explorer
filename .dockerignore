@@ -12,7 +12,7 @@
 .ipynb_checkpoints
 *.log
 holoviews_plots
-nwb_files_cache
+workspace
 test_data
 *.ipynb
 .pytest_cache
