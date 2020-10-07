@@ -77,6 +77,7 @@ const baseTheme = {
         color: fontColor,
         backgroundColor: bgInputs,
         borderRadius: "2px",
+        textTransform: "uppercase",
       },
       outlined: {
         borderColor: buttonOutlineColor,

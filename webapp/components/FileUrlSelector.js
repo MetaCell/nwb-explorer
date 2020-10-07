@@ -51,7 +51,7 @@ export default class FileUrlSelector extends React.Component {
             variant="contained"
             onClick={this.handleClickLoadFile}
             disabled={this.state.inputValue.length <= 5}
-          >LOAD NWB FILE</Button>
+          >Load NWB file</Button>
         </Box>
       </div>
     );
