@@ -27,12 +27,11 @@ export default class App extends React.Component{
 
     // A message from the parent frame can specify the file to load
     window.addEventListener('message', event => {
-
+      console.debug('Parent frame message received:', event)
       // Here we would expect some cross-origin check, but we don't do anything more than load a nwb file here
       if (typeof (event.data) == 'string') {
         loadNWBFile(event.data);
         // The message may be triggered after the notebook was ready
-
       }
     });
    
@@ -83,7 +82,7 @@ export default class App extends React.Component{
   }
 
   render () {
-    const { model, embedded, showNotebook, isLoadedInNotebook, nwbFileUrl } = this.props;
+    const { embedded, nwbFileUrl } = this.props;
     
     var page;
     if (nwbFileUrl) {
@@ -91,7 +90,7 @@ export default class App extends React.Component{
     } else if (!embedded) {
       page = <WelcomePage />
     } else {
-      page = '<h1>Waiting for data...</h1>';
+      return null;
     }
     return (
       <div style={{ height: '100%', width: '100%' }}>
