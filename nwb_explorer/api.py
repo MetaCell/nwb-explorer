@@ -15,11 +15,15 @@ from nwb_explorer.nwb_model_interpreter import NWBModelInterpreter
 cache_model = False
 
 
-def createNotebook(filename):
+def create_notebook(filename):
     import nbformat as nbf
     from nbformat.v4.nbbase import new_notebook
     from nbformat import sign
     import codecs
+
+    directory = os.path.dirname(filename)
+    if not os.path.exists(directory):
+        os.makedirs(directory)
     nb0 = new_notebook(cells=[nbf.v4.new_markdown_cell("""Welcome to the NWB Explorer!
 --
 
@@ -33,10 +37,10 @@ If you would like to inspect the content of the file using the [NWB Juypyter wid
 To execute a command type it and press `Shift+Enter`. To execute a command and create a new cell press `Alt+Enter`."""),
                               nbf.v4.new_code_cell('nwbfile')
                               ], metadata={"kernelspec": {
-                                  "display_name": "Python 3",
-                                  "language": "python",
-                                  "name": "python3"
-                              }})
+        "display_name": "Python 3",
+        "language": "python",
+        "name": "python3"
+    }})
 
     f = codecs.open(filename, encoding='utf-8', mode='w')
 
@@ -51,7 +55,8 @@ def get_model_interpreter(runtime_project) -> NWBModelInterpreter:
 class NWBController:  # pytest: no cover
 
     @get('/api/image', {'Content-type': 'image/png', 'Cache-Control': 'max-age=600'})
-    def image(handler: IPythonHandler, clientId: str, name: str, interface: str, projectId: str, index: str = '0', ) -> str:
+    def image(handler: IPythonHandler, clientId: str, name: str, interface: str, projectId: str,
+              index: str = '0', ) -> str:
         if not any([name, interface, projectId, clientId]):
             raise tornado.web.HTTPError(400)
 
@@ -74,5 +79,5 @@ class NWBController:  # pytest: no cover
     def new_notebook(handler: IPythonHandler, path):
         if not os.path.exists(path):
             logging.info("Creating notebook {}".format(path))
-            createNotebook(path)
+            create_notebook(path)
         handler.redirect('notebooks/' + path)

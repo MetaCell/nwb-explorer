@@ -97,7 +97,9 @@ const nwbMiddleware = store => next => action => {
   // console.log(action);
   switch (action.type) {
 
-  case LOAD_NWB_FILE:
+  case LOAD_NWB_FILE: {
+    const fileName = action.data.nwbFileUrl.match(/^http|^\//g) ? action.data.nwbFileUrl : 'workspace/' + action.data.nwbFileUrl;
+    action.data.nwbFileUrl = fileName;
     next(action);
     Project.loadFromURL(action.data.nwbFileUrl);
     
@@ -113,7 +115,7 @@ const nwbMiddleware = store => next => action => {
        */
     });
     break;
-  
+  }
 
   case LOAD_NWB_FILE_IN_NOTEBOOK:
     next(action);

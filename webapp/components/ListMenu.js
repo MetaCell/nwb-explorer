@@ -7,7 +7,7 @@ import { CompactPicker } from 'react-color';
 export default class ListMenuComponent extends React.Component {
 
   constructor (props) {
-    super(props);
+    super(props, null);
     this.state = { anchorEl: null, subMenu: null };
     this.showPlot = this.props.showPlot ? this.props.showPlot : () => console.debug('showPlot not defined in ' + typeof this);
     this.addToPlot = props.addToPlot ? props.addToPlot : () => console.debug('addToPlot not defined in ' + typeof this);

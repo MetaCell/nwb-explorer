@@ -4,7 +4,7 @@ import { unloadNWBFile, unloadNWBFileInNotebook } from '../../actions/nwbfile';
 import { unloadNotebook } from '../../actions/notebook';
 import { showPlot, resetLayout, showList, showAcquisition, showStimulus } from '../../actions/flexlayout';
 
-const mapStateToProps = state => ({ dialogOpen: state.general.dialogOpen });
+const mapStateToProps = state => ({ dialogOpen: state.general.dialogOpen, embedded: state.general.embedded });
 
 const mapDispatchToProps = dispatch => ({ 
   exit: () => {
