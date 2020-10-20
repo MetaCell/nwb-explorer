@@ -1,6 +1,6 @@
 import App from '../App';
 import { connect } from "react-redux";
-import { loadNWBFile, nwbFileLoaded } from '../../actions/nwbfile';
+import { loadNWBFile, nwbFileLoaded, unloadNWBFileInNotebook, unloadNWBFile, resetLayout } from '../../actions/nwbfile';
 import { notebookReady, loadNotebook } from '../../actions/notebook';
 import { raiseError } from '../../actions/general'
 
@@ -13,6 +13,11 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   loadNotebook: () => dispatch(loadNotebook),
+  reset: () => {
+    dispatch(unloadNWBFileInNotebook());
+    dispatch(unloadNWBFile);
+    dispatch(resetLayout);
+  },
   notebookReady: () => dispatch(notebookReady),
   nwbFileLoaded: model => dispatch(nwbFileLoaded(model)),
   loadNWBFile: nwbFileUrl => dispatch(loadNWBFile(nwbFileUrl)),

@@ -11,7 +11,7 @@ export default class App extends React.Component{
   }
 
   componentDidMount () {
-    const { loadNWBFile, loadNotebook, notebookReady, nwbFileLoaded, raiseError } = this.props;
+    const { loadNWBFile, reset, model, nwbFileLoaded, raiseError } = this.props;
     self = this;
 
     
@@ -27,9 +27,13 @@ export default class App extends React.Component{
 
     // A message from the parent frame can specify the file to load
     window.addEventListener('message', event => {
-      console.debug('Parent frame message received:', event)
+      // console.debug('Parent frame message received:', event)
+
       // Here we would expect some cross-origin check, but we don't do anything more than load a nwb file here
       if (typeof (event.data) == 'string') {
+        if (model) {
+          reset();
+        }
         loadNWBFile(event.data);
         // The message may be triggered after the notebook was ready
       }
