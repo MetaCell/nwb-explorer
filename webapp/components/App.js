@@ -24,9 +24,7 @@ export default class App extends React.Component{
     if (nwbFileService.getNWBFileUrl()){
       loadNWBFile(nwbFileService.getNWBFileUrl());
     }
-
-    // A message from the parent frame can specify the file to load
-    window.addEventListener('message', event => {
+    const loadFromEvent = event => {
       // console.debug('Parent frame message received:', event)
 
       // Here we would expect some cross-origin check, but we don't do anything more than load a nwb file here
@@ -37,7 +35,11 @@ export default class App extends React.Component{
         loadNWBFile(event.data);
         // The message may be triggered after the notebook was ready
       }
-    });
+    }
+    // A message from the parent frame can specify the file to load
+    window.addEventListener('message', loadFromEvent);
+
+    window.load = loadFromEvent;
    
     
     GEPPETTO.on(GEPPETTO.Events.Model_loaded, () => {
