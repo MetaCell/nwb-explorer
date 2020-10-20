@@ -31,7 +31,7 @@ export default class App extends React.Component{
 
       // Here we would expect some cross-origin check, but we don't do anything more than load a nwb file here
       if (typeof (event.data) == 'string') {
-        if (self.model) {
+        if (self.props.model) {
           reset();
         }
         loadNWBFile(event.data);
