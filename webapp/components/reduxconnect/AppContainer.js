@@ -1,6 +1,7 @@
 import App from '../App';
 import { connect } from "react-redux";
-import { loadNWBFile, nwbFileLoaded, unloadNWBFileInNotebook, unloadNWBFile, resetLayout } from '../../actions/nwbfile';
+import { loadNWBFile, nwbFileLoaded, unloadNWBFileInNotebook, unloadNWBFile } from '../../actions/nwbfile';
+import { resetLayout } from '../../actions/flexlayout';
 import { notebookReady, loadNotebook } from '../../actions/notebook';
 import { raiseError } from '../../actions/general'
 
