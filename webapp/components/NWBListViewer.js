@@ -149,7 +149,7 @@ export default class NWBListViewer extends Component {
         <a title="Plot all timeseries" onClick={this.plotAllInstances}>
           <RemoveRedEyeIcon />
         </a>
-        { instances .length > 0
+        { instances.length > 0
           ? <i>{instances.length} Matching Results</i>
           : null
         }

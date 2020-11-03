@@ -77,7 +77,7 @@ export default class FileSampleSelector extends React.Component {
                 </FormControl>
               </Grid>
               <Grid item>
-              <FormControl variant="outlined" className="custom-select">
+                <FormControl variant="outlined" className="custom-select">
                   <Select
                     id="samplefile-select"
                     value={''}
