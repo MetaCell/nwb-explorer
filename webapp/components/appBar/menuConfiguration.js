@@ -8,9 +8,9 @@ import {
   radius,
 } from "../../theme";
 
-import { openDialog } from "../../actions/general";
+import { openDialog } from "../../redux/actions/general";
 
-import { APPBAR_CONSTANTS, NWB_WEBSITE } from "../constants";
+import { APPBAR_CONSTANTS, NWB_WEBSITE } from "../../constants";
 
 const style = {
   standard: {

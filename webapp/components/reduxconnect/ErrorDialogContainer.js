@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 import ErrorDialog from '../ErrorDialog';
-import { RECOVER_FROM_ERROR } from '../../actions/general';
+import { RECOVER_FROM_ERROR } from '../../redux/actions/general';
 
 
 const mapStateToProps = state => ({ error: state.general.error });

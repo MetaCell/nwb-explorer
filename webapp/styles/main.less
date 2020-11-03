@@ -2,7 +2,7 @@
 @import (css)
   url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;0,500;0,700;1,300;1,400&display=swap");
 
-@import "../css/variables.less";
+@import "./variables.less";
 
 html,
 body {
@@ -71,7 +71,6 @@ body {
   background: @bgDark;
   padding: 25px 23px;
   margin-bottom: 30px;
-  max-height: 272px;
   overflow-y: auto;
   &.first{
     padding: 27px 24px 28px 18px;
@@ -88,13 +87,16 @@ body {
     }
   }
 }
-.badge-button {
-  border: 1px solid @buttonOutlineColor;
-  border-radius: 16px;
-  font-size: 13px;
-  line-height: 13px;
-  font-weight: 400;
-  white-space: nowrap;
+#splash {
+  .badge-button {
+    border: 1px solid @buttonOutlineColor;
+    border-radius: 16px;
+    font-size: 13px;
+    line-height: 13px;
+    font-weight: 400;
+    margin-bottom: 0;
+    white-space: nowrap;
+  }
 }
 .splash-footer {
   display: flex;
@@ -168,7 +170,7 @@ body {
     padding-top: 0;
     padding-bottom: 0;
     font-size: 13px;
-    color: @white;
+    color: @buttonOutlineColor;
     line-height: 29px;
   }
 }
@@ -465,10 +467,10 @@ iframe {
   height: 100%;
   display: flex;
   flex-direction: column;
-  .MuiGrid-item {
-    padding-top: 0;
-    padding-bottom: 0;
-  }
+  // .MuiGrid-item {
+  //   padding-top: 0;
+  //   padding-bottom: 0;
+  // }
 }
 
 .center-filler {
@@ -734,4 +736,9 @@ iframe {
 .gpt-addplot:before {
   vertical-align: -5px;
   font-size: 23px;
+}
+
+.left-bordered-container {
+  border-left: 2px solid #727272;
+  padding-left: 0.5em;
 }

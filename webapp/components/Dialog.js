@@ -14,7 +14,7 @@ import logo_nwb_explorer from '../resources/logos/nwb-explorer.png';
 import logo_metacell from '../resources/logos/metacell_new.png';
 import logo_osb from '../resources/logos/osb.png';
 import { withStyles } from '@material-ui/core/styles';
-import { NWB_WEBSITE } from './constants';
+import { NWB_WEBSITE } from '../constants';
 
 const styles = theme => ({
   paper: {

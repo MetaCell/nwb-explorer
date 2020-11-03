@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 import ListMenuComponent from '../ListMenu';
-import { showPlot, showImageSeries, updateDetailsWidget, addToPlot } from '../../actions/flexlayout';
-import { updateSettings } from '../../actions/nwbfile';
+import { showPlot, showImageSeries, updateDetailsWidget, addToPlot } from '../../redux/actions/flexlayout';
+import { updateSettings } from '../../redux/actions/nwbfile';
 
 const mapStateToProps = state => ({
   modelSettings: state.nwbfile.modelSettings,

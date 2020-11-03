@@ -1,7 +1,7 @@
 import React from 'react';
 import { listMenuConfigurations } from './configuration/listMenuConfiguration';
 import Menu from "@geppettoengine/geppetto-ui//menu/Menu";
-import { addToPlot } from '../actions/flexlayout';
+import { addToPlot } from '../redux/actions/flexlayout';
 import { CompactPicker } from 'react-color';
 
 export default class ListMenuComponent extends React.Component {
@@ -19,14 +19,8 @@ export default class ListMenuComponent extends React.Component {
     this.Picker = CompactPicker;
   }
 
-  clickShowPlot ({ path, color, title }) {
-    Instances.getInstance(path).color = color; // TODO move to redux
-    this.updateSettings({ path, color })
-    this.showPlot({ path, color, title });
-  }
-
-  updateSettings ({ path, color }) {
-    this.updateSettings({ path, color });
+  clickShowPlot ({ path, title }) {
+    this.showPlot({ path, title });
   }
 
   clickShowImg () {
@@ -73,20 +67,20 @@ export default class ListMenuComponent extends React.Component {
     return menuItems;
   }
 
-  handleChange (color) {
+  handleColorChange (color) {
     this.setState({ anchorEl: null });
     const entity = {
       path: this.props.entity.path,
       color: color.hex
     }
-    this.clickShowPlot(entity)
+    this.updateSettings(entity)
   }
 
   getColorPicker () {
     const { color } = this.state
     const colorPicker = React.createElement(this.Picker, {
       color,
-      onChange: color => this.handleChange(color)
+      onChange: color => this.handleColorChange(color)
     })
     const menuItems = [{ label: colorPicker, }]
     return menuItems;

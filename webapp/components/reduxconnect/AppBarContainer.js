@@ -1,8 +1,8 @@
 import { connect } from 'react-redux';
 import Appbar from '../appBar/AppBar';
-import { unloadNWBFile, unloadNWBFileInNotebook } from '../../actions/nwbfile';
-import { unloadNotebook } from '../../actions/notebook';
-import { showPlot, resetLayout, showList, showAcquisition, showStimulus } from '../../actions/flexlayout';
+import { unloadNWBFile, unloadNWBFileInNotebook } from '../../redux/actions/nwbfile';
+import { unloadNotebook } from '../../redux/actions/notebook';
+import { showPlot, resetLayout, showList, showAcquisition, showStimulus } from '../../redux/actions/flexlayout';
 
 const mapStateToProps = state => ({ dialogOpen: state.general.dialogOpen, embedded: state.general.embedded });
 

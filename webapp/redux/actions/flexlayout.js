@@ -1,4 +1,4 @@
-import { WidgetStatus, FILEVARIABLE_LENGTH } from '../components/constants';
+import { WidgetStatus, FILEVARIABLE_LENGTH } from '../../constants';
 
 export const UPDATE_WIDGET = 'UPDATE_WIDGET';
 export const ACTIVATE_WIDGET = 'ACTIVATE_WIDGET';

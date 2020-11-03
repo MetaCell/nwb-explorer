@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import ListViewer from '@geppettoengine/geppetto-ui/list-viewer/ListViewer';
 import NWBListViewer from './NWBListViewer';
+import listViewerTableConf from './configuration/listViewerConfiguration';
 import sweepTableConf from './configuration/sweepTableConfiguration';
 
 const DEFAULT_MODEL_SETTINGS = { color:  'white' };
@@ -30,7 +31,7 @@ export default class SweepTableViewer extends NWBListViewer {
 
 
   getColumnConfiguration () {
-    return sweepTableConf;
+    return sweepTableConf.concat(listViewerTableConf);
   }
   
   

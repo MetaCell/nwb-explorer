@@ -1,5 +1,5 @@
 import React, { lazy, Suspense } from 'react';
-import NWBPlot from './NWBPlot';
+import NWBPlot from './reduxconnect/NWBPlotContainer';
 import FileExplorerPage from './pages/FileExplorerPage';
 import Metadata from './Metadata';
 import NWBListViewer from './reduxconnect/NWBListViewerContainer';

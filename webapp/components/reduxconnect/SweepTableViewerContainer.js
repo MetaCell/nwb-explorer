@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 import SweepTableViewer from '../SweepTableViewer';
-import { showPlot, showImageSeries, updateDetailsWidget, addToPlot } from '../../actions/flexlayout';
+import { showPlot, showImageSeries, updateDetailsWidget, addToPlot } from '../../redux/actions/flexlayout';
 
 const mapStateToProps = state => ({ modelSettings: state.nwbfile.modelSettings });
 
