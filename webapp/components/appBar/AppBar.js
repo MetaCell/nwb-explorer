@@ -4,28 +4,6 @@ import Menu from "@geppettoengine/geppetto-ui//menu/Menu";
 import { WidgetStatus, APPBAR_CONSTANTS } from '../constants';
 import toolbarConfig from "./menuConfiguration";
 
-const styles = theme => ({
-  lightTooltip: {
-    fontSize: 12,
-    boxShadow: theme.shadows[1],
-    color: theme.palette.common.black,
-    backgroundColor: theme.palette.common.white
-  },
-  popper: { paddingRight: theme.spacing(2) },
-});
-
-const CustomTooltip = withStyles(styles)(({ tooltip, children, classes }) => (
-  <Tooltip
-    title={tooltip}
-    placement="bottom-end"
-    disableFocusListener
-    disableTouchListener
-    classes={{ tooltip: classes.lightTooltip, popper: classes.popper }}
-  >
-    {children}
-  </Tooltip>
-))
-
 export default class Appbar extends Component {
   constructor (props) {
     super(props);

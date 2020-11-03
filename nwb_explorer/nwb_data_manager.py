@@ -29,7 +29,7 @@ def get_file_path(file_name_or_url):
         if not os.path.exists(file_name):
             if not os.path.exists(os.path.dirname(file_name)):
                 os.makedirs(os.path.dirname(file_name))
-            shutil.copyfile(file_name_or_url, file_name)
+                shutil.copyfile(file_name_or_url, file_name)
         return file_name
 
 
