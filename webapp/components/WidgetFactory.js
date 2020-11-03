@@ -44,7 +44,7 @@ export default class WidgetFactory{
       const { instancePath, showObjectInfo } = widgetConfig;
       return instancePath 
         ? <Metadata key={widgetConfig.id} instancePath = { instancePath } showObjectInfo = { showObjectInfo } /> 
-        : '';
+        : 'Please select an entry on the right to view the details of that data.';
     }    
     case "ImageSeries": {
       const { instancePath } = widgetConfig;
