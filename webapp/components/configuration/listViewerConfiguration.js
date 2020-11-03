@@ -1,3 +1,4 @@
+import React, { Component } from 'react';
 import { GroupComponent } from "@geppettoengine/geppetto-ui/list-viewer/ListViewer";
 import { FILEVARIABLE_LENGTH } from "../../constants";
 import { CustomIconComponent } from "../CustomIconComponent";
@@ -78,7 +79,10 @@ const conf = [
   {
     id: "path",
     title: "Path",
+    customComponent:  ({ action }) => ({ value }) => <span onClick={() => action(value)} style={{ cursor: 'pointer' }}>{value}</span>,
     source: ({ path }) => path.slice(FILEVARIABLE_LENGTH),
+    configuration: { action: "clickTitleDetails", }
+    
   },
   {
     id: "type",

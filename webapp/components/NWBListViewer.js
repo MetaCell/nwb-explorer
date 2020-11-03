@@ -79,6 +79,9 @@ export default class NWBListViewer extends Component {
     this.updateDetailsWidget(path)
   }
 
+  clickTitleDetails (path) {
+    this.updateDetailsWidget('nwbfile.' + path)
+  }
   clickAddToPlot (props) {
     this.addToPlot(props)
   }
