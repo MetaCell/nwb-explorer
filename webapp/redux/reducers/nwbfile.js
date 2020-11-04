@@ -66,6 +66,19 @@ export default (state = {}, action) => {
       return state;
     }
   }
+  case layoutActions.ADD_PLOT_TO_EXISTING_WIDGET: {
+    const path = action.data.instancePath;
+    if (!state.modelSettings[path] ) {
+      const modelSettings = { ...state.modelSettings }
+      const color = nextColor();
+      modelSettings[path] = { color };
+      return { ...state, modelSettings } 
+    } else {
+      return state;
+    }
+      
+
+  }
   default:
     return state;
   }
