@@ -283,7 +283,12 @@ class NWBReader:
                 if isinstance(pynwb_obj, ImageSeries):
                     if (pynwb_obj.format == 'external'):
                         if (len(pynwb_obj.external_file) > index):
-                            np_image = imageio.imread(pynwb_obj.external_file[index])
+                            file_url = pynwb_obj.external_file[index]
+                            try:
+                                file_url = file_url.decode() # may be bytes encoded
+                            except:
+                                pass
+                            np_image = imageio.imread(file_url)
                     else:
                         np_image = pynwb_obj.data[()]
                         if len(np_image.shape) > 3:
