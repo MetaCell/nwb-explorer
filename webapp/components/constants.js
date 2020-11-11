@@ -28,4 +28,4 @@ export const APPBAR_CONSTANTS = {
   NEW_PAGE: 'NEW_PAGE'
 }
 
-export const NWB_WEBSITE = "http://nwb.org"
+export const NWB_WEBSITE = "https://github.com/MetaCell/nwb-explorer/"
