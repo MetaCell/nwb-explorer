@@ -10,7 +10,7 @@ import {
 
 import { openDialog } from "../../redux/actions/general";
 
-import { APPBAR_CONSTANTS, NWB_WEBSITE } from "../../constants";
+import { APPBAR_CONSTANTS, NWBE_WEBSITE, NWB_WEBSITE } from "../../constants";
 
 const style = {
   standard: {
@@ -150,7 +150,15 @@ export default {
       style: topLevelMenuItemStyle,
       list: [
         {
-          label: APPBAR_CONSTANTS.DOCUMENTATION,
+          label: APPBAR_CONSTANTS.NWBE_DOCUMENTATION,
+          icon: "",
+          action: {
+            handlerAction: APPBAR_CONSTANTS.NEW_PAGE,
+            parameters: [NWBE_WEBSITE],
+          },
+        },
+        {
+          label: APPBAR_CONSTANTS.NWB_DOCUMENTATION,
           icon: "",
           action: {
             handlerAction: APPBAR_CONSTANTS.NEW_PAGE,

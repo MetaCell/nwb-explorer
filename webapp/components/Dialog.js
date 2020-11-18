@@ -13,8 +13,9 @@ import Link from '@material-ui/core/Link'
 import logo_nwb_explorer from '../resources/logos/nwb-explorer.png';
 import logo_metacell from '../resources/logos/metacell_new.png';
 import logo_osb from '../resources/logos/osb.png';
+import logo_osb_colour from '../resources/logos/osblogofull.png';
 import { withStyles } from '@material-ui/core/styles';
-import { NWB_WEBSITE } from '../constants';
+import { NWBE_WEBSITE } from '../constants';
 
 const styles = theme => ({
   paper: {
@@ -54,7 +55,7 @@ const AboutContent = withStyles(styles)(({ classes }) => (
 
     <Box m={1} pb={2}>
       <Typography variant="body2" color={fontColor}>
-        Want to know more? Go to our <Link href={NWB_WEBSITE} target="_blank">website</Link>.
+        Want to know more? Go to our <Link href={NWBE_WEBSITE} target="_blank">website</Link>.
       </Typography>
     </Box>
 
@@ -62,7 +63,9 @@ const AboutContent = withStyles(styles)(({ classes }) => (
       <Typography variant="body2" color={fontColor}>
         NWB Explorer is being developed in collaboration with:
       </Typography>
-      <img width="200" src={logo_osb}></img>
+      <Link href="http://www.opensourcebrain.org" target="_blank">
+        <img width="200" src={logo_osb_colour}></img>
+      </Link>
     </Box>
 
 
