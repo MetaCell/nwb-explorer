@@ -6,11 +6,11 @@ import {
   CLOSE_DIALOG
 } from '../actions/general';
 
-import { NWB_FILE_NOT_FOUND_ERROR,MODULE_NOT_FOUND_ERROR, NAME_ERROR } from '../components/constants';
+import { NWB_FILE_NOT_FOUND_ERROR,MODULE_NOT_FOUND_ERROR, NAME_ERROR } from '../../constants';
 import * as nwbfileActions from '../actions/nwbfile';
 import * as notebookActions from '../actions/notebook';
 
-import { isEmbeddedInIframe } from '../Utils';
+import { isEmbeddedInIframe } from '../../Utils';
 
 export const GENERAL_DEFAULT_STATUS = {
   embedded: isEmbeddedInIframe(),

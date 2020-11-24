@@ -3,7 +3,7 @@ import * as FlexLayout from '@geppettoengine/geppetto-ui/flex-layout/src/index';
 import Actions from '@geppettoengine/geppetto-ui/flex-layout/src/model/Actions';
 
 
-import { WidgetStatus } from './constants';
+import { WidgetStatus } from '../constants';
 import { isEqual } from '../Utils';
 import WidgetFactory from './WidgetFactory';
 

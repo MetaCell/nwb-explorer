@@ -1,5 +1,5 @@
-import nwbFileService from '../services/NWBFileService';
-import Utils, { nextColor } from '../Utils';
+import nwbFileService from '../../services/NWBFileService';
+import Utils, { nextColor } from '../../Utils';
 
 import {
   LOAD_NWB_FILE, LOAD_NWB_FILE_IN_NOTEBOOK, NWB_FILE_LOADED, UNLOAD_NWB_FILE_IN_NOTEBOOK,
@@ -31,11 +31,6 @@ async function handlePlotTimeseries (store, next, action) {
   store.dispatch(updateDetailsWidget(instancePaths[0]));
   const promises = [];
   for (const instancePath of instancePaths) {
-    const instance = Instances.getInstance(instancePath);
-    if (!instance.color) {
-      instance.color = nextColor();
-      next(updateSettings({ instancePath: { color: instance.color } }));
-    }
     const data_path = instancePath + '.data';
     let data = Instances.getInstance(data_path);
     const time_path = instancePath + '.timestamps';

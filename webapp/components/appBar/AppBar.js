@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import { Icon, Box, Tooltip, Grid, AppBar, Typography, Toolbar, IconButton, withStyles } from '@material-ui/core';
 import Menu from "@geppettoengine/geppetto-ui//menu/Menu";
-import { WidgetStatus, APPBAR_CONSTANTS } from '../constants';
+import { WidgetStatus, APPBAR_CONSTANTS } from '../../constants';
 import toolbarConfig from "./menuConfiguration";
 
 export default class Appbar extends Component {

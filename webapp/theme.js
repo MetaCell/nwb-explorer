@@ -1,8 +1,10 @@
 import createMuiTheme from "@material-ui/core/styles/createMuiTheme";
 import lessToJs from "less-vars-to-js";
 
+require("./styles/main.less");
+
 // Read the less file in as string: using the raw-loader to override the default loader
-export const vars = lessToJs(require("!!raw-loader!./css/variables.less"), {
+export const vars = lessToJs(require("!!raw-loader!./styles/variables.less"), {
   resolveVariables: true,
   stripPrefix: true,
 });
@@ -114,7 +116,7 @@ const baseTheme = {
       h3: {
         fontSize: "16px",
         lineHeight: "18px",
-        marginBottom: "28px",
+        marginBottom: 10,
       },
       h4: {
         fontSize: "12px",

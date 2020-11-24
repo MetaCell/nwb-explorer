@@ -24,8 +24,10 @@ export const APPBAR_CONSTANTS = {
   SHOW_ALL_CONTENT: 'Show all content',
   RESTORE_VIEW: 'Restore view',
   HOME: 'Home',
-  DOCUMENTATION: 'Documentation',
+  NWBE_DOCUMENTATION: 'NWB Explorer website',
+  NWB_DOCUMENTATION: 'NWB Documentation',
   NEW_PAGE: 'NEW_PAGE'
 }
 
 export const NWB_WEBSITE = "http://nwb.org"
+export const NWBE_WEBSITE = "https://github.com/MetaCell/nwb-explorer"

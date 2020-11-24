@@ -10,7 +10,7 @@
     "noTest": false,
     "themes": "styles/colors",
     "customCss": "geppetto/build/static/custom.css",
-    "customSplash": "geppetto/build/static/splash.png",
+    "customSplash": "geppetto/build/static/splash-animation.gif",
     "properties": {
         "title": "NWB Explorer",
         "description": "NWB Explorer is an application that can be used by scientists to read, visualize and explore the content of NWB 2 files.",

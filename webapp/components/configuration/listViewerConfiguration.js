@@ -1,5 +1,6 @@
+import React, { Component } from 'react';
 import { GroupComponent } from "@geppettoengine/geppetto-ui/list-viewer/ListViewer";
-import { FILEVARIABLE_LENGTH } from "../constants";
+import { FILEVARIABLE_LENGTH } from "../../constants";
 import { CustomIconComponent } from "../CustomIconComponent";
 import ListControlsComponent from "../ListMenuComponent";
 import RemoveRedEyeIcon from "@material-ui/icons/RemoveRedEye";
@@ -26,7 +27,7 @@ const conf = [
           tooltip: "Plot time series",
           color: iconUnselectedColor,
           icon: RemoveRedEyeIcon,
-          defaultColor: entity => Instances.getInstance(entity.path).color
+          defaultColor: entity => entity.color
         },
       },
       {
@@ -40,7 +41,7 @@ const conf = [
           label: "Plot",
           tooltip: "Plot image series",
           color: iconUnselectedColor,
-          defaultColor: entity => Instances.getInstance(entity.path).color
+          defaultColor: entity => entity.color
         },
       },
       {
@@ -56,7 +57,7 @@ const conf = [
           tooltip: "Show details",
           color: iconUnselectedColor,
           icon: RemoveRedEyeIcon,
-          defaultColor: entity => Instances.getInstance(entity.path).color
+          defaultColor: entity => entity.color
         },
       },
       {
@@ -78,7 +79,10 @@ const conf = [
   {
     id: "path",
     title: "Path",
+    customComponent:  ({ action }) => ({ value }) => <span onClick={() => action(value)} style={{ cursor: 'pointer' }}>{value}</span>,
     source: ({ path }) => path.slice(FILEVARIABLE_LENGTH),
+    configuration: { action: "clickTitleDetails", }
+    
   },
   {
     id: "type",

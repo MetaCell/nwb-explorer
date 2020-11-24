@@ -46,7 +46,7 @@ const hiddenMenuItemStyle = {
 };
 
 export const listMenuConfigurations = (Instances, entity, availablePlots) => {
-  const color = Instances.getInstance(entity.path).color || "#ffffff";
+  const color = entity.color || "";
   const isImage = entity.type === "ImageSeries";
   const arePlotsAvailable = availablePlots.length > 0
 

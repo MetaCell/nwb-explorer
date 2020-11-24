@@ -131,6 +131,7 @@ This work is currently funded by the [Wellcome Trust](https://wellcome.ac.uk/).
 * Filippo Ledda ([MetaCell](http://metacell.us))
 * Rodriguez Facundo ([MetaCell](http://metacell.us))
 * Afonso Pinto ([MetaCell](http://metacell.us))
+* Padraig Gleeson ([UCL/Open Source Brain](http://opensourcebrain.org))
 
 
 See also the list of [contributors](https://github.com/Metacell/nwb-explorer/contributors) who participated in this project.

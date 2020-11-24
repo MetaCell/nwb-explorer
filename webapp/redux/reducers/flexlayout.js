@@ -10,7 +10,7 @@ import {
 
 import { NWB_FILE_LOADED } from '../actions/nwbfile'
 
-import { WidgetStatus } from '../components/constants';
+import { WidgetStatus } from '../../constants';
 
 
 function removeUndefined (obj) {

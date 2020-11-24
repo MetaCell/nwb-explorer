@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import ListViewer from '@geppettoengine/geppetto-ui/list-viewer/ListViewer';
 import listViewerConf from './configuration/listViewerConfiguration.js';
 import RemoveRedEyeIcon from "@material-ui/icons/RemoveRedEye";
-import { nextColor } from '../Utils';
+
 
 const DEFAULT_MODEL_SETTINGS = { color: '#ffffff' };
 const TYPE_INCLUDE_REGEX = /^(?!.*details)Model.nwbfile.*$/;
@@ -18,9 +18,9 @@ export default class NWBListViewer extends Component {
     this.showImageSeries = props.showImg ? props.showImg : () => console.debug('showImg not defined in ' + typeof this);
     this.showNWBWidget = props.showNWBWidget ? props.showNWBWidget : () => console.debug('showNWBWidget not defined in ' + typeof this);
     this.updateDetailsWidget = this.props.updateDetailsWidget ? this.props.updateDetailsWidget : () => console.debug('updateDetailsWidget not defined in ' + typeof this);
+    this.updateSettings = this.props.updateSettings ? this.props.updateSettings : () => console.debug('updateSettings not defined in ' + typeof this);
     this.plotAllInstances = this.plotAllInstances.bind(this);
     this.plotAll = this.props.plotAll ? this.props.plotAll : () => console.debug('plotAll not defined in ' + typeof this);
-    this.modelSettings = {};
     this.state = { update: 0, searchText : '' }
     this.filter = this.props.filter ? this.props.filter.bind(this) : this.filter.bind(this);
   }
@@ -29,7 +29,7 @@ export default class NWBListViewer extends Component {
     this.updates++;
   }
   getModelSettings (path) {
-    return this.modelSettings[path] ? this.modelSettings[path] : DEFAULT_MODEL_SETTINGS;
+    return this.props.modelSettings[path] ? this.props.modelSettings[path] : DEFAULT_MODEL_SETTINGS;
   }
 
   getDescription (nwbObjectPath) {
@@ -63,15 +63,8 @@ export default class NWBListViewer extends Component {
     }
   }
 
-  clickShowPlot ({ path, title }) {
-    let newColor = Instances.getInstance(path).color
-    if (!Instances.getInstance(path).color) {
-      newColor = nextColor()
-    }
-    this.modelSettings[path] = { color: newColor };
-    this.setState({ update: this.state.update + 1 });
-    Instances.getInstance(path).color = newColor; // TODO move to redux
-    this.showPlot({ path, newColor, title });
+  clickShowPlot ({ path, title }) {  
+    this.showPlot({ path, title });
   }
 
   clickShowNWBWidget ({ path }) {
@@ -86,6 +79,9 @@ export default class NWBListViewer extends Component {
     this.updateDetailsWidget(path)
   }
 
+  clickTitleDetails (path) {
+    this.updateDetailsWidget('nwbfile.' + path)
+  }
   clickAddToPlot (props) {
     this.addToPlot(props)
   }
@@ -153,7 +149,7 @@ export default class NWBListViewer extends Component {
         <a title="Plot all timeseries" onClick={this.plotAllInstances}>
           <RemoveRedEyeIcon />
         </a>
-        { instances .length > 0
+        { instances.length > 0
           ? <i>{instances.length} Matching Results</i>
           : null
         }

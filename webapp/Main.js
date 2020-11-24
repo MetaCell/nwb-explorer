@@ -3,7 +3,7 @@ global.GEPPETTO_CONFIGURATION = require("./GeppettoConfiguration.json");
 
 require("babel-polyfill");
 const Provider = require("react-redux").Provider;
-const configureStore = require("./store").default;
+const configureStore = require("./redux/store").default;
 
 require("@geppettoengine/geppetto-client-initialization");
 const ReactDOM = require("react-dom");
@@ -22,7 +22,7 @@ const nwbManager = require("./services/NWBGeppettoManager").default;
 const theme = require('./theme').default
 
 window.updateFile = nwbFileService.setNWBFileUrl;
-require("./styles/main.less");
+
 
 G.enableLocalStorage(false);
 G.setIdleTimeOut(-1);
