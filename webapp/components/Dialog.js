@@ -44,7 +44,7 @@ const AboutContent = withStyles(styles)(({ classes }) => (
     </Grid>
 
     <Box m={1}>
-      <Typography variant="h5" color={fontColor}>NWB Explorer v0.5.0</Typography>
+      <Typography variant="h5" color={fontColor}>NWB Explorer v0.6.0</Typography>
     </Box>
 
     <Box m={1} >
