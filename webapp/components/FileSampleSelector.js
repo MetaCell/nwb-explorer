@@ -95,7 +95,7 @@ export default class FileSampleSelector extends React.Component {
                     <MenuItem value={SAMPLE_LINK_LANTYER_3}>Lantyer 3</MenuItem>
                     <MenuItem value={SAMPLE_LINK_LANTYER_4}>Lantyer 4</MenuItem>
                     <MenuItem value={SAMPLE_LINK_LANTYER_5}>Lantyer 5</MenuItem>
-                    <MenuItem value={SAMPLE_LINK_LANTYER_5}>Lantyer 5</MenuItem>
+                    <MenuItem value={SAMPLE_LINK_LANTYER_6}>Lantyer 6</MenuItem>
                   </Select>
                 </FormControl>
               </Grid>
