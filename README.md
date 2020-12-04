@@ -13,15 +13,16 @@ Learn more about the [Neurodata Without Borders](https://www.nwb.org/).
 
 ## Getting Started
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system. 
+These instructions will get you a copy of the project up and running on your local machine for development and testing 
+purposes. See deployment for notes on how to deploy the project on a live system. 
 
 ### Prerequisites
 
 Below you will find the software you need to install to use nwb explorer (and the versions we used):
 
-* Git (2.17.0).
-* Node (9.11.1) and npm (6.0.0).
-* Python 3 (3.6+), pip (10.0.1)
+* Git (2+).
+* Node (10+) and npm (6+).
+* Python 3 (3.7+), pip (20+)
 
 #### Python Dependencies
 
@@ -49,7 +50,7 @@ git clone -b development https://github.com/MetaCell/nwb-explorer
 
 ### Run via Docker
 
-If you have Docker installed, you can run NWB explorer with one single command
+If you have Docker installed, you can run NWB explorer with one single command:
 
 ```bash
 docker run -it -p8888:8888 gcr.io/metacellllc/nwb-explorer:0.6.0
