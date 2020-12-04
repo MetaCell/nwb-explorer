@@ -1,8 +1,9 @@
 import App from '../App';
 import { connect } from "react-redux";
-import { loadNWBFile, nwbFileLoaded } from '../../actions/nwbfile';
-import { notebookReady, loadNotebook } from '../../actions/notebook';
-import { raiseError } from '../../actions/general'
+import { loadNWBFile, nwbFileLoaded, unloadNWBFileInNotebook, unloadNWBFile } from '../../redux/actions/nwbfile';
+import { resetLayout } from '../../redux/actions/flexlayout';
+import { notebookReady, loadNotebook } from '../../redux/actions/notebook';
+import { raiseError } from '../../redux/actions/general'
 
 
 const mapStateToProps = state => ({
@@ -13,6 +14,11 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   loadNotebook: () => dispatch(loadNotebook),
+  reset: () => {
+    dispatch(unloadNWBFileInNotebook());
+    dispatch(unloadNWBFile);
+    dispatch(resetLayout);
+  },
   notebookReady: () => dispatch(notebookReady),
   nwbFileLoaded: model => dispatch(nwbFileLoaded(model)),
   loadNWBFile: nwbFileUrl => dispatch(loadNWBFile(nwbFileUrl)),

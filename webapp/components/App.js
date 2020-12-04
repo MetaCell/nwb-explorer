@@ -1,30 +1,8 @@
 import React from 'react';
-import { grey } from '@material-ui/core/colors';
-import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
-import SplashPage from './pages/SplashPage';
+import WelcomePage from './pages/WelcomePage';
 import nwbFileService from '../services/NWBFileService';
 import FileExplorerPage from './pages/FileExplorerPage';
 // import { Route, Switch, Redirect, BrowserRouter as Router } from 'react-router-dom';
-
-
-const theme = createMuiTheme({
-  typography: { 
-    useNextVariants: true,
-    suppressDeprecationWarnings: true,
-    button: {
-      textTransform: "none",
-      fontSize: "1.0rem"
-    }
-  },
-  palette: {
-    primary: { main: grey[500] },
-    secondary: { main: '#111111' },
-    error: { main: '#ffffff' },
-    text: { secondary: "white" }
-  },
-  overrides: { MuiIcon: { root: { fontSize: "2.5rem" } } }
-});
-
 
 export default class App extends React.Component{
 
@@ -33,7 +11,7 @@ export default class App extends React.Component{
   }
 
   componentDidMount () {
-    const { loadNWBFile, loadNotebook, notebookReady, nwbFileLoaded, raiseError } = this.props;
+    const { loadNWBFile, reset, model, nwbFileLoaded, raiseError } = this.props;
     self = this;
 
     
@@ -46,17 +24,22 @@ export default class App extends React.Component{
     if (nwbFileService.getNWBFileUrl()){
       loadNWBFile(nwbFileService.getNWBFileUrl());
     }
-
-    // A message from the parent frame can specify the file to load
-    window.addEventListener('message', event => {
+    const loadFromEvent = event => {
+      // console.debug('Parent frame message received:', event)
 
       // Here we would expect some cross-origin check, but we don't do anything more than load a nwb file here
       if (typeof (event.data) == 'string') {
+        if (self.props.model) {
+          reset();
+        }
         loadNWBFile(event.data);
         // The message may be triggered after the notebook was ready
-
       }
-    });
+    }
+    // A message from the parent frame can specify the file to load
+    window.addEventListener('message', loadFromEvent);
+
+    window.load = loadFromEvent;
    
     
     GEPPETTO.on(GEPPETTO.Events.Model_loaded, () => {
@@ -105,24 +88,20 @@ export default class App extends React.Component{
   }
 
   render () {
-    const { model, embedded, showNotebook, isLoadedInNotebook, nwbFileUrl } = this.props;
+    const { embedded, nwbFileUrl } = this.props;
     
     var page;
     if (nwbFileUrl) {
       page = <FileExplorerPage/>
     } else if (!embedded) {
-      page = <SplashPage />
+      page = <WelcomePage />
     } else {
-      page = '<h1>Waiting for data...</h1>';
+      return null;
     }
     return (
       <div style={{ height: '100%', width: '100%' }}>
         <div id="main-container-inner">
-          <MuiThemeProvider theme={theme}>
-            { page }
-          </MuiThemeProvider>
-          
-
+          { page }
         </div>
         <div style={{ display: "none" }}>
           {

@@ -1,4 +1,4 @@
-import Manager from 'geppetto-client/js/common/Manager';
+import Manager from '@geppettoengine/geppetto-client/common/Manager';
 import nwbService from './NWBFileService';
 /**
  * Override standard Manager

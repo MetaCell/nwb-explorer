@@ -1,5 +1,5 @@
 import React, { lazy, Suspense } from 'react';
-import NWBPlot from './NWBPlot';
+import NWBPlot from './reduxconnect/NWBPlotContainer';
 import FileExplorerPage from './pages/FileExplorerPage';
 import Metadata from './Metadata';
 import NWBListViewer from './reduxconnect/NWBListViewerContainer';
@@ -44,7 +44,7 @@ export default class WidgetFactory{
       const { instancePath, showObjectInfo } = widgetConfig;
       return instancePath 
         ? <Metadata key={widgetConfig.id} instancePath = { instancePath } showObjectInfo = { showObjectInfo } /> 
-        : '';
+        : 'Please select an entry on the right to view the details of that data.';
     }    
     case "ImageSeries": {
       const { instancePath } = widgetConfig;
@@ -76,9 +76,7 @@ export default class WidgetFactory{
       return <SweepTableViewer key={widgetConfig.id} />;
     }
     case "PythonConsole": {
-    
-      return getConsole();
-    
+      return getConsole(GEPPETTO_CONFIGURATION.forceNewNotebook, GEPPETTO_CONFIGURATION.oneFileOneNotebook);
     }
     }
   }

@@ -1,5 +1,5 @@
-import nwbFileService from '../services/NWBFileService';
-import Utils, { nextColor } from '../Utils';
+import nwbFileService from '../../services/NWBFileService';
+import Utils, { nextColor } from '../../Utils';
 
 import {
   LOAD_NWB_FILE, LOAD_NWB_FILE_IN_NOTEBOOK, NWB_FILE_LOADED, UNLOAD_NWB_FILE_IN_NOTEBOOK,
@@ -16,7 +16,7 @@ function handleShowWidget (store, next, action) {
   if (action.data.type === 'TimeSeries') { // Instances.getInstance(path).getType().wrappedObj.name
     return handlePlotTimeseries(store, next, action);
   } else if (action.data.type === 'ImageSeries') { // Instances.getInstance(path).getType().wrappedObj.name
-    store.dispatch(updateDetailsWidget(action.data.instancePath));
+    action.data.config.showDetail && store.dispatch(updateDetailsWidget(action.data.instancePath));
     return handleImportTimestamps(store, next, action);
   } else {
     return next(action);
@@ -31,11 +31,6 @@ async function handlePlotTimeseries (store, next, action) {
   store.dispatch(updateDetailsWidget(instancePaths[0]));
   const promises = [];
   for (const instancePath of instancePaths) {
-    const instance = Instances.getInstance(instancePath);
-    if (!instance.color) {
-      instance.color = nextColor();
-      next(updateSettings({ instancePath: { color: instance.color } }));
-    }
     const data_path = instancePath + '.data';
     let data = Instances.getInstance(data_path);
     const time_path = instancePath + '.timestamps';
@@ -97,7 +92,9 @@ const nwbMiddleware = store => next => action => {
   // console.log(action);
   switch (action.type) {
 
-  case LOAD_NWB_FILE:
+  case LOAD_NWB_FILE: {
+    const fileName = action.data.nwbFileUrl.match(/^http|^\//g) ? action.data.nwbFileUrl : 'workspace/' + action.data.nwbFileUrl;
+    action.data.nwbFileUrl = fileName;
     next(action);
     Project.loadFromURL(action.data.nwbFileUrl);
     
@@ -113,7 +110,7 @@ const nwbMiddleware = store => next => action => {
        */
     });
     break;
-  
+  }
 
   case LOAD_NWB_FILE_IN_NOTEBOOK:
     next(action);

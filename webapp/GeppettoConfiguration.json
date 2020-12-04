@@ -1,18 +1,24 @@
 {
-    "_README" : "http://docs.geppetto.org/en/latest/build.html",
+    "_README": "http://docs.geppetto.org/en/latest/build.html",
     "contextPath": "org.geppetto.frontend",
     "useSsl": false,
     "embedded": false,
-    "embedderURL": ["/"],
-    "rootRedirect":"",
+    "embedderURL": [
+        "/"
+    ],
+    "rootRedirect": "",
     "noTest": false,
     "themes": "styles/colors",
+    "customCss": "geppetto/build/static/custom.css",
+    "customSplash": "geppetto/build/static/splash-animation.gif",
     "properties": {
-        "title" : "NWB Explorer",
+        "title": "NWB Explorer",
         "description": "NWB Explorer is an application that can be used by scientists to read, visualize and explore the content of NWB 2 files.",
         "type": "website",
         "url": "http://live.geppetto.org",
-        "icon" :"geppetto/style/favicon.png",
+        "icon": "geppetto/style/favicon.png",
         "image": "http://www.geppetto.org/images/logo.png"
-    }
+    },
+    "forceNewNotebook": true, 
+    "oneFileOneNotebook": true
 }

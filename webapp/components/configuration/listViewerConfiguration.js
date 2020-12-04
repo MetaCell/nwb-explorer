@@ -1,84 +1,99 @@
-import React from 'react';
-import { GroupComponent, IconComponent, ColorComponent } from "geppetto-client/js/components/interface/listViewer/ListViewer";
+import React, { Component } from 'react';
+import { GroupComponent } from "@geppettoengine/geppetto-ui/list-viewer/ListViewer";
+import { FILEVARIABLE_LENGTH } from "../../constants";
+import { CustomIconComponent } from "../CustomIconComponent";
+import ListControlsComponent from "../ListMenuComponent";
+import RemoveRedEyeIcon from "@material-ui/icons/RemoveRedEye";
 
-
-import AddToPlotComponent from './AddToPlotComponent';
-
-import { FILEVARIABLE_LENGTH } from '../constants';
-``
+const iconUnselectedColor = "rgba(255, 255, 255, 0.3)"
 const conf = [
-  {
-    id: "path",
-    title: "Path",
-    source: ({ path }) => path.slice(FILEVARIABLE_LENGTH),
-  },
-  {
-    id: "type",
-    title: "Type",
-    source: "type"
-  },
-  {
-    id: "description",
-    title: "Description",
-    source: 'description',
-  },
-  
   {
     id: "controls",
     title: "Controls",
     customComponent: GroupComponent,
-      
+
     configuration: [
       {
-        id: "showdetails",
-        customComponent: IconComponent,
-        configuration: {
-          action: "clickShowDetails",
-          icon: "info-circle",
-          label: "Show details",
-          tooltip: "Show details",
-        },
-      },
-      {
-        id: "plot",
-        customComponent: ColorComponent,
-        visible: entity => Instances.getInstance(entity.path + '.data') && Instances.getInstance(entity.path + '.timestamps'),
+        id: "showPlot",
+        customComponent: CustomIconComponent,
+        visible: entity =>
+          Instances.getInstance(entity.path + ".data")
+          && Instances.getInstance(entity.path + ".timestamps"),
+
         source: entity => entity,
         configuration: {
           action: "clickShowPlot",
-          icon: "area-chart",
           label: "Plot",
           tooltip: "Plot time series",
-          defaultColor: entity => Instances.getInstance(entity.path).color,
-          
+          color: iconUnselectedColor,
+          icon: RemoveRedEyeIcon,
+          defaultColor: entity => entity.color
         },
       },
       {
         id: "image",
-        customComponent: IconComponent,
-        visible: entity => entity.type === 'ImageSeries',
+        customComponent: CustomIconComponent,
+        visible: entity => entity.type === "ImageSeries",
         source: entity => entity,
         configuration: {
           action: "clickShowImg",
-          icon: "picture-o",
+          icon: RemoveRedEyeIcon,
           label: "Plot",
-          tooltip: "Plot image series"
+          tooltip: "Plot image series",
+          color: iconUnselectedColor,
+          defaultColor: entity => entity.color
         },
       },
       {
-        id: "addToPlot",
-        customComponent: AddToPlotComponent,
-        visible: entity => Instances.getInstance(entity.path + '.data') && Instances.getInstance(entity.path + '.timestamps'),
+        id: "showDetails",
+        customComponent: CustomIconComponent,
+        visible: entity =>
+          !((Instances.getInstance(entity.path + ".data")
+        && Instances.getInstance(entity.path + ".timestamps")) || entity.type === "ImageSeries"),
+        source: entity => entity,
         configuration: {
-          icon: "gpt-addplot",
-          action: "clickAddToPlot",
-          label: "Add Plot",
-          tooltip: "Add plot",
-        }
-      }
-    ]
+          action: "clickShowDetails",
+          label: "Show details",
+          tooltip: "Show details",
+          color: iconUnselectedColor,
+          icon: RemoveRedEyeIcon,
+          defaultColor: entity => entity.color
+        },
+      },
+      {
+        id: "menuOptions",
+        customComponent: ListControlsComponent,
+        source: entity => entity,
+        visible: entity =>
+          (Instances.getInstance(entity.path + ".data")
+          && Instances.getInstance(entity.path + ".timestamps")) || entity.type === "ImageSeries",
+        configuration: {
+          actions: "clickShowDetails",
+          label: "Show details",
+          tooltip: "Show details",
+          color: "#ffffff",
+        },
+      },
+    ],
   },
-  
+  {
+    id: "path",
+    title: "Path",
+    customComponent:  ({ action }) => ({ value }) => <span onClick={() => action(value)} style={{ cursor: 'pointer' }}>{value}</span>,
+    source: ({ path }) => path.slice(FILEVARIABLE_LENGTH),
+    configuration: { action: "clickTitleDetails", }
+    
+  },
+  {
+    id: "type",
+    title: "Type",
+    source: "type",
+  },
+  {
+    id: "description",
+    title: "Description",
+    source: "description",
+  },
 ];
 
 export default conf;

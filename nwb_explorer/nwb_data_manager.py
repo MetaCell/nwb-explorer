@@ -10,9 +10,9 @@ from pygeppetto.services.model_interpreter import add_model_interpreter
 
 from nwb_explorer.nwb_model_interpreter import NWBModelInterpreter
 
-CACHE_DIRNAME = 'nwb_files_cache'
+CACHE_DIRNAME = './workspace'
 # TODO this path must be a shared storage inside the cluster
-CACHE_DEFAULT_DIR = f"webapp/{CACHE_DIRNAME}/"
+CACHE_DEFAULT_DIR = f"{CACHE_DIRNAME}/"
 
 
 class NWBFileNotFound(FileNotFoundError): pass
@@ -29,7 +29,7 @@ def get_file_path(file_name_or_url):
         if not os.path.exists(file_name):
             if not os.path.exists(os.path.dirname(file_name)):
                 os.makedirs(os.path.dirname(file_name))
-            shutil.copyfile(file_name_or_url, file_name)
+                shutil.copyfile(file_name_or_url, file_name)
         return file_name
 
 

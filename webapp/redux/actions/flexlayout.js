@@ -1,4 +1,4 @@
-import { WidgetStatus, FILEVARIABLE_LENGTH } from '../components/constants';
+import { WidgetStatus, FILEVARIABLE_LENGTH } from '../../constants';
 
 export const UPDATE_WIDGET = 'UPDATE_WIDGET';
 export const ACTIVATE_WIDGET = 'ACTIVATE_WIDGET';
@@ -45,7 +45,7 @@ export const plotAll = ({ plots, title }) => ({
   }
 });
 
-export const showImageSeries = ({ path, type }) => ({
+export const showImageSeries = ({ path, showDetail }) => ({
   type: ADD_WIDGET,
   data: {
     id: 'img@' + path,
@@ -55,7 +55,7 @@ export const showImageSeries = ({ path, type }) => ({
     name: path.slice(FILEVARIABLE_LENGTH),
     status: WidgetStatus.ACTIVE,
     panelName: 'bottomPanel',
-    config: {}
+    config: { showDetail }
   }
 });
 

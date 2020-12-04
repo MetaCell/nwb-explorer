@@ -1,25 +1,25 @@
 import { 
   RAISE_ERROR, 
   RECOVER_FROM_ERROR,
-  WAIT_DATA
+  WAIT_DATA,
+  OPEN_DIALOG,
+  CLOSE_DIALOG
 } from '../actions/general';
 
-import { NWB_FILE_NOT_FOUND_ERROR,MODULE_NOT_FOUND_ERROR, NAME_ERROR } from '../components/constants';
+import { NWB_FILE_NOT_FOUND_ERROR,MODULE_NOT_FOUND_ERROR, NAME_ERROR } from '../../constants';
 import * as nwbfileActions from '../actions/nwbfile';
 import * as notebookActions from '../actions/notebook';
 
-function isEmbeddedInIframe () {
-  return window.location !== window.parent.location;
-}
+import { isEmbeddedInIframe } from '../../Utils';
 
-export const GENERAL_DEFAULT_STATUS = { 
+export const GENERAL_DEFAULT_STATUS = {
   embedded: isEmbeddedInIframe(),
   toggleInfoPanel: false,
   loading: false,
   error: undefined
 };
 
-export default ( state = {}, action ) => ({ 
+export default ( state = {}, action ) => ({
   ...state, 
   ...reduceGeneral(state, action) 
 });
@@ -60,6 +60,12 @@ function reduceGeneral (state, action) {
       showNotebook: true, 
       isNotebookReady: false
     }
+
+  case OPEN_DIALOG:
+    return { ...state, dialogOpen: true, dialogTitle: action.payload.title, dialogMessage: action.payload.message }
+
+  case CLOSE_DIALOG:
+    return { ...state, dialogOpen: false }
   
   default:{
     const loading = { ...state.loading };

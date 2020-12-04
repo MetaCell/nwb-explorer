@@ -1,4 +1,4 @@
-import Utils from '../Utils';
+import Utils from '../../Utils';
 
 export const LOAD_NOTEBOOK = 'LOAD_NOTEBOOK';
 export const UNLOAD_NOTEBOOK = 'UNLOAD_NOTEBOOK';

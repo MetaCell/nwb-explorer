@@ -1,23 +1,23 @@
 import NWBFileService from './NWBFileService';
-import PythonConsole from 'geppetto-client/js/components/interface/pythonConsole/PythonConsole';
+import PythonConsole from '@geppettoengine/geppetto-ui/python-console/PythonConsole';
 import React from 'react';
 
-export function getNotebookPath () {
+export function getNotebookPath (forceNew = true, useFilename = true) {
   const nwbFileParam = NWBFileService.getNWBFileUrl();
-  if (nwbFileParam){
-    return "notebook?path=" + nwbFileParam.split('/').slice(-1) + '.ipynb';
+  if (nwbFileParam && useFilename){
+    return "workspace/notebook?path=" + nwbFileParam.split('/').slice(-1) + '.ipynb';
   }
-  const key = Math.random().toString(36).slice(3);
+  const key = forceNew ? Math.random().toString(36).slice(3) : '';
 
-  return "notebook?path=nwbnotebook" + key + '.ipynb';
+  return "notebook?path=workspace/nwbexplorer" + key + '.ipynb';
 }
 
 var console = null;
 
 
-export function getConsole () {
+export function getConsole (forceNew = true, useFilename = true) {
   if (console === null) {
-    console = [<PythonConsole key="console" pythonNotebookPath={getNotebookPath()} />]
+    console = [<PythonConsole key="console" pythonNotebookPath={getNotebookPath(forceNew, useFilename)} />]
   }
   return console;
 }

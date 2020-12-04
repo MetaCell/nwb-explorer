@@ -1,11 +1,13 @@
 {% macro modal(title, btn_label=None, btn_class="btn-primary") %}
 {% set key = title.replace(' ', '-').lower() %}
 {% set btn_label = btn_label or title %}
-<div class="modal fade" id="{{key}}-dialog" tabindex="-1" role="dialog" aria-labelledby="{{key}}-label" aria-hidden="true">
+<div class="modal fade" id="{{key}}-dialog" tabindex="-1" role="dialog" aria-labelledby="{{key}}-label"
+  aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span
+            class="sr-only">Close</span></button>
         <h4 class="modal-title" id="{{key}}-label">{{title}}</h4>
       </div>
       <div class="modal-body">
@@ -25,76 +27,175 @@
 <html>
 
 <head>
-    <meta charset="utf-8">
+  <meta charset="utf-8">
 
-    <title>{% block title %}NWB-Explorer{% endblock %}</title>
-    <meta http-equiv="X-UA-Compatible" content="chrome=1,IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    {% block stylesheet %}
-    <link rel="stylesheet" href="{{ static_url("css/style.min.css") }}" type="text/css"/>
-    <link rel="shortcut icon" type="image/x-icon" href="{{ static_url("images/favicon.ico") }}">
-    {% endblock %}
-    <script src="{{static_url("components/requirejs/require.js") }}" type="text/javascript" charset="utf-8"></script>
-    <script src="{{static_url("components/jquery/dist/jquery.min.js") }}" type="text/javascript" charset="utf-8"></script>
-    <script src="{{static_url("components/bootstrap/dist/js/bootstrap.min.js") }}" type="text/javascript" charset="utf-8"></script>
-    <script>
-      require.config({
+  <title>{% block title %}NWB-Explorer{% endblock %}</title>
+  <meta http-equiv="X-UA-Compatible" content="chrome=1,IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  {% block stylesheet %}
+  <link rel="stylesheet" href="{{ static_url("css/style.min.css") }}" type="text/css" />
+  <link rel="shortcut icon" type="image/x-icon" href="{{ static_url("images/favicon.ico") }}">
+  {% endblock %}
+  <script src="{{static_url("components/requirejs/require.js") }}" type="text/javascript" charset="utf-8"></script>
+  <script src="{{static_url("components/jquery/dist/jquery.min.js") }}" type="text/javascript" charset="utf-8"></script>
+  <script src="{{static_url("components/bootstrap/dist/js/bootstrap.min.js") }}" type="text/javascript"
+    charset="utf-8"></script>
+  <script>
+    require.config({
           {% if version_hash %}
-          urlArgs: "v={{version_hash}}",
-          {% endif %}
-          baseUrl: '{{static_url("js", include_version=False)}}',
-          paths: {
-            components: '../components',
-            jquery: '../components/jquery/dist/jquery.min',
-            bootstrap: '../components/bootstrap/dist/js/bootstrap.min',
+    urlArgs: "v={{version_hash}}",
+      {% endif %}
+    baseUrl: '{{static_url("js", include_version=False)}}',
+      paths: {
+      components: '../components',
+        jquery: '../components/jquery/dist/jquery.min',
+          bootstrap: '../components/bootstrap/dist/js/bootstrap.min',
             moment: "../components/moment/moment",
           },
-          shim: {
-            bootstrap: {
-              deps: ["jquery"],
-              exports: "bootstrap"
-            },
-          }
+    shim: {
+      bootstrap: {
+        deps: ["jquery"],
+          exports: "bootstrap"
+      },
+    }
       });
-    </script>
+  </script>
 
-    <script type="text/javascript">
-      window.jhdata = {
-        base_url: "{{base_url}}",
-        prefix: "{{prefix}}",
+  <script type="text/javascript">
+    window.jhdata = {
+      base_url: "{{base_url}}",
+      prefix: "{{prefix}}",
         {% if user %}
-        user: "{{user.name}}",
-        {% endif %}
-        {% if admin_access %}
-        admin_access: true,
-        {% else %}
-        admin_access: false,
-        {% endif %}
-        {% if not no_spawner_check and user and user.spawner.options_form %}
-        options_form: true,
-        {% else %}
-        options_form: false,
-        {% endif %}
+    user: "{{user.name}}",
+      {% endif %}
+    {% if admin_access %}
+    admin_access: true,
+      {% else %}
+    admin_access: false,
+      {% endif %}
+    {% if not no_spawner_check and user and user.spawner.options_form %}
+    options_form: true,
+      {% else %}
+    options_form: false,
+      {% endif %}
       }
-    </script>
+  </script>
 
-    <script src="{{ static_url("hot_fix_for_eventsource.js") }}" type="text/javascript" charset="utf-8"></script>
-    {% block meta %}
-    {% endblock %}
+  <script src="{{ static_url("hot_fix_for_eventsource.js") }}" type="text/javascript" charset="utf-8"></script>
+  {% block meta %}
+  {% endblock %}
 
 </head>
+<style>
+  @import url("https://fonts.googleapis.com/css2?family=Roboto&display=swap");
+
+  body {
+    background-color: #323232;
+    font-family: "Roboto", sans-serif;
+    color: #ffffff;
+    font-size: 20px;
+  }
+
+  .mt-auto {
+    margin-top: auto;
+  }
+
+  .message-container {
+    text-align: center;
+    min-width: 100%;
+    max-width: 615px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .progress {
+    height: 5px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 69px;
+    overflow: visible;
+    width: 100%;
+    max-width: 602px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .progress-bar {
+    background: #ffffff;
+    height: 1px;
+    margin-top: 2px;
+  }
+
+  #progress-message {
+    color: rgba(255, 255, 255, 0.3);
+    margin-bottom: 57px;
+  }
+
+  .spawn-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: calc(100vh - 100px);
+    flex-direction: column;
+  }
+
+  .spawn-container p {
+    line-height: 32px;
+    letter-spacing: 0.5px;
+    margin-bottom: 0;
+  }
+
+  #progress-details {
+    color: rgba(255, 255, 255, 0.3);
+  }
+
+  #sr-progress {
+    display: inline-block;
+    transition: all 0.6s ease;
+    letter-spacing: 0.5px;
+    font-size: 20px;
+    line-height: 32px;
+    text-align: right;
+    margin-left: 0;
+    width: 100%;
+    margin-top: 10px;
+  }
+
+  summary {
+    position: relative;
+  }
+
+  summary::-webkit-details-marker {
+    display: none;
+  }
+
+  summary:before {
+    background: url(./arrow-dropdown.svg) no-repeat center;
+    float: left;
+    height: 28px;
+    width: 28px;
+    content: "";
+    transition: all 0.6s ease;
+    position: absolute;
+    left: 85px;
+    top: 0;
+  }
+
+  details[open] summary:before {
+    transform: rotate(180deg);
+  }
+</style>
 
 <body>
 
-<noscript>
-  <div id='noscript'>
-    JupyterHub requires JavaScript.<br>
-    Please enable it to proceed.
-  </div>
-</noscript>
+  <noscript>
+    <div id='noscript'>
+      JupyterHub requires JavaScript.<br>
+      Please enable it to proceed.
+    </div>
+  </noscript>
 
-{% block nav_bar %}
+  {% block nav_bar %}
   <!-- <nav class="navbar navbar-default">
     <div class="container-fluid">
       <div class="navbar-header">
@@ -145,29 +246,29 @@
       {% endblock %}
     </div>
   </nav> -->
-{% endblock %}
+  {% endblock %}
 
 
-{% block announcement %}
-{% if announcement %}
-<div class="container text-center announcement">
-  {{ announcement | safe }}
-</div>
-{% endif %}
-{% endblock %}
+  {% block announcement %}
+  {% if announcement %}
+  <div class="container text-center announcement">
+    {{ announcement | safe }}
+  </div>
+  {% endif %}
+  {% endblock %}
 
 
-{% block main %}
-{% endblock %}
+  {% block main %}
+  {% endblock %}
 
-{% call modal('Error', btn_label='OK') %}
+  {% call modal('Error', btn_label='OK') %}
   <div class="ajax-error">
     The error
   </div>
-{% endcall %}
+  {% endcall %}
 
-{% block script %}
-{% endblock %}
+  {% block script %}
+  {% endblock %}
 
 </body>
 

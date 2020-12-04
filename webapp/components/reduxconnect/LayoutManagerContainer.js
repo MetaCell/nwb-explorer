@@ -5,7 +5,7 @@ import {
   destroyWidget,
   minimizeWidget,
   maximizeWidget,
-} from '../../actions/flexlayout';
+} from '../../redux/actions/flexlayout';
 
 const mapStateToProps = state => state.flexlayout;
 

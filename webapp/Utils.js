@@ -2,7 +2,7 @@ import React from 'react';
 import {
   execPythonMessage, 
   evalPythonMessage
-} from '@geppettoengine/geppetto-client/js/communication/geppettoJupyter/GeppettoJupyterUtils';
+} from '@geppettoengine/geppetto-client/communication/geppettoJupyter/GeppettoJupyterUtils';
 
 
 const Utils = {
@@ -90,6 +90,14 @@ export function nextColor () {
   currentColor++;
   const colorVariant = COLOR_DEPTHS[Math.floor(currentColor / TIMESERIES_PALETTE.length) % COLOR_DEPTHS.length];
   return TIMESERIES_PALETTE[currentColor % TIMESERIES_PALETTE.length][colorVariant];
+}
+
+export function isEmbeddedInIframe () {
+  return window.location !== window.parent.location;
+}
+
+export function isString (obj) {
+  return typeof obj === 'string' || obj instanceof String;
 }
 
 export default Utils;

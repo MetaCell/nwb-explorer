@@ -1,7 +1,7 @@
 import React from 'react';
-import PlotComponent from 'geppetto-client/js/components/interface/plot/PlotComponent.js';
+import PlotComponent from '@geppettoengine/geppetto-ui/plot/PlotComponent';
 
-import ExternalInstance from 'geppetto-client/js/geppettoModel/model/ExternalInstance';
+import ExternalInstance from '@geppettoengine/geppetto-core/model/ExternalInstance';
 
 export default class NWBTimeseriesPlotComponent extends React.Component {
 
@@ -43,18 +43,19 @@ export default class NWBTimeseriesPlotComponent extends React.Component {
   }
 
   render () {
-    const { instancePaths } = this.props;
+    const { instancePaths, key } = this.props;
 
 
     const plots = instancePaths.map(instancePath => ({ 
       x: `${instancePath}.timestamps`,
       y: `${instancePath}.data`,
-      lineOptions: { color: Instances.getInstance(instancePath).color } // TODO move color information to redux
+      lineOptions: { color: this.props.modelSettings[instancePath].color }
     }));
     
 
     return (
       <PlotComponent
+        id={key}
         plots={plots}
         extractLegendName={this.extractLegendName}
       />
