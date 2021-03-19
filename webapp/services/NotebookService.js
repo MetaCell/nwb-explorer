@@ -4,11 +4,11 @@ import React from 'react';
 
 export function getNotebookPath(forceNew = true, useFilename = true) {
   if (GEPPETTO_CONFIGURATION.notebookName) {
-    return GEPPETTO_CONFIGURATION.notebookName;
+    return "notebook?path=" + GEPPETTO_CONFIGURATION.notebookName;
   }
   const nwbFileParam = NWBFileService.getNWBFileUrl();
   if (nwbFileParam && useFilename) {
-    return "workspace/notebook?path=" + nwbFileParam.split('/').slice(-1) + '.ipynb';
+    return "notebook?path=" + nwbFileParam.split('/').slice(-1) + '.ipynb';
   }
   const key = forceNew ? Math.random().toString(36).slice(3) : '';
 
