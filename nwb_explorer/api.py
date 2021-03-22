@@ -51,7 +51,9 @@ To execute a command type it and press `Shift+Enter`. To execute a command and c
 def get_model_interpreter(runtime_project) -> NWBModelInterpreter:
     return get_model_interpreter_from_variable(runtime_project.model.variables[0])
 
-if os.path.exists('workspace'):
+
+# TODO move to jupyter geppetto, using notebook dir path
+if os.path.exists('workspace') and not os.path.exists('workspace/notebook.ipynb'):
     create_notebook('workspace/notebook.ipynb')
 
 class NWBController:  # pytest: no cover
