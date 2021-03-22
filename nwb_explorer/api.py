@@ -44,13 +44,15 @@ To execute a command type it and press `Shift+Enter`. To execute a command and c
 
     f = codecs.open(filename, encoding='utf-8', mode='w')
 
-    nbf.write(nb0, f, 4)
+    nbf.write(nb0, filename)
     f.close()
 
 
 def get_model_interpreter(runtime_project) -> NWBModelInterpreter:
     return get_model_interpreter_from_variable(runtime_project.model.variables[0])
 
+if os.path.exists('workspace'):
+    create_notebook('workspace/notebook.ipynb')
 
 class NWBController:  # pytest: no cover
 
