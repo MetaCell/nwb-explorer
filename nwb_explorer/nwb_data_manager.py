@@ -25,7 +25,7 @@ def get_file_path(file_name_or_url):
     elif not os.path.exists(file_name_or_url):
         raise NWBFileNotFound("NWB file not found", file_name_or_url)
     else:
-        return file_name
+        return file_name_or_url
 
 
 def get_file_from_url(file_url, fname=None, cache_dir=CACHE_DEFAULT_DIR):
