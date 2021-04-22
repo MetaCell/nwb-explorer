@@ -3,7 +3,7 @@ Run this to debug
 '''
 import sys
 import os
-from notebook.notebookapp import main, NotebookApp
+from notebook.notebookapp import NotebookApp
 from jupyter_geppetto import settings
 
 os.environ['JUPYTER_CONFIG_DIR'] = os.path.join(os.path.dirname(os.path.abspath(__file__)), '.jupyter-config')
@@ -19,4 +19,3 @@ if __name__ == '__main__':
     app.initialize(sys.argv)
     app.file_to_run = ''
     sys.exit(app.start())
-
