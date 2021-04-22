@@ -8,6 +8,7 @@ branch = None
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 
+
 # repos
 JUPYTER = 'https://github.com/openworm/org.geppetto.frontend.jupyter.git'
 PYGEPPETTO = 'https://github.com/openworm/pygeppetto.git'
@@ -18,6 +19,8 @@ DEPS_DIR = os.path.join(ROOT_DIR, 'src')
 
 WEBAPP_DIR = os.path.join(ROOT_DIR, 'webapp')
 JUPYTER_DIR = 'jupyter-geppetto'
+
+os.environ['JUPYTER_CONFIG_DIR'] = os.path.join(ROOT_DIR, '.jupyter-config')
 
 def cprint(string):
     print(f"\033[35;4m\U0001f560 {string} \033[0m \n")
@@ -116,6 +119,8 @@ def main(branch=branch, skipNpm=False, skipTest=False, development=False):
     execute(cmd=['jupyter', 'serverextension', 'enable', '--py', '--sys-prefix', 'jupyter_geppetto'])
 
     cprint("Installing notebook theme")
+    # Generate a default config if not already present
+    execute(cmd=['jupyter', 'notebook', '--generate-config'])
     from jupyter_core import paths
     config_dir = paths.jupyter_config_dir()
     print('Jupyter configuration dir is {}'.format(config_dir))
