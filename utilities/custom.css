@@ -2161,10 +2161,10 @@ div#notebook {
    width: 38% !important;
    margin-left: 10px;
   }
-  div.jupyter-widgets.widget-hprogress.widget-hbox .widget-label,
-  div.widget-hbox .widget-label,
-  .widget-hbox .widget-label,
-  .widget-inline-hbox .widget-label,
+  div.jupyter-widgets.widget-hprogress.widget-hbox div.widget-label,
+  div.widget-hbox div.widget-label,
+  .widget-hbox div.widget-label,
+  .widget-inline-hbox div.widget-label,
   div.widget-label {
    text-align: -webkit-auto !important;
    margin-left: 15px !important;
