@@ -2172,7 +2172,6 @@ div#notebook {
    min-width: 100px !important;
    vertical-align: text-top !important;
    color: #cccccc !important;
-   font-size: 14px !important;
   }
   .widget-hprogress .progress {
    flex-grow: 1;
