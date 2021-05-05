@@ -2912,6 +2912,7 @@ div#notebook {
    color: #f8f8f0;
   }
   div.CodeMirror-lines {
+   background-color: #3c3c3c !important;
    padding-bottom: .9em;
    padding-left: .5em;
    padding-right: 1.5em;
