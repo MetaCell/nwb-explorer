@@ -3053,7 +3053,7 @@ div#notebook {
    border-left: 2px solid #0095ff !important;
   }
   .cm-s-ipython span.cm-comment {
-   color: #75715e;
+   color: #e0e0e0 !important;
    font-style: italic;
   }
   .cm-s-ipython span.cm-atom {
