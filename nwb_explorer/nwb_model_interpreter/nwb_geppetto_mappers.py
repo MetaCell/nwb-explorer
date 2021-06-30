@@ -23,7 +23,7 @@ nwb_geppetto_mappers = []
 
 
 def is_metadata(value):
-    return isinstance(value, (str, int, float, bool, np.number))
+    return isinstance(value, (str, int, float, bool, bytes, np.number))
 
 
 def is_collection(value):
@@ -264,10 +264,13 @@ class SimpleArrayMapper(NWBGeppettoMapper):
         return is_collection(value) and value and is_metadata(next(iter(value)))
 
     def create_variable(self, name, pynwb_obj, parent_obj):
-        value = StringArray(tuple(str(v) for v in pynwb_obj))
+        if any(hasattr(pynwb_obj[k],'decode') for k in range(len(pynwb_obj))):
+            obj = tuple(pynwb_obj[k].decode() for k in range(len(pynwb_obj)) if hasattr(pynwb_obj[k],'decode'))
+        else:
+            obj = pynwb_obj
+        value = StringArray(tuple(str(v) for v in obj))
         array_variable = self.model_factory.create_simple_array_variable(name, value)
         return array_variable
-
 
 class VectorDataMapper(NWBGeppettoMapper):
 
