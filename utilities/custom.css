@@ -2161,10 +2161,10 @@ div#notebook {
    width: 38% !important;
    margin-left: 10px;
   }
-  div.jupyter-widgets.widget-hprogress.widget-hbox .widget-label,
-  div.widget-hbox .widget-label,
-  .widget-hbox .widget-label,
-  .widget-inline-hbox .widget-label,
+  div.jupyter-widgets.widget-hprogress.widget-hbox div.widget-label,
+  div.widget-hbox div.widget-label,
+  .widget-hbox div.widget-label,
+  .widget-inline-hbox div.widget-label,
   div.widget-label {
    text-align: -webkit-auto !important;
    margin-left: 15px !important;
@@ -2172,7 +2172,6 @@ div#notebook {
    min-width: 100px !important;
    vertical-align: text-top !important;
    color: #cccccc !important;
-   font-size: 14px !important;
   }
   .widget-hprogress .progress {
    flex-grow: 1;
@@ -2912,6 +2911,7 @@ div#notebook {
    color: #f8f8f0;
   }
   div.CodeMirror-lines {
+   background-color: #3c3c3c !important;
    padding-bottom: .9em;
    padding-left: .5em;
    padding-right: 1.5em;
@@ -3052,7 +3052,7 @@ div#notebook {
    border-left: 2px solid #0095ff !important;
   }
   .cm-s-ipython span.cm-comment {
-   color: #75715e;
+   color: #e0e0e0 !important;
    font-style: italic;
   }
   .cm-s-ipython span.cm-atom {
