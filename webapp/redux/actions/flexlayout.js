@@ -77,6 +77,8 @@ export const showAcquisition = showList('Acquisition', "^nwbfile\\.acquisition\\
 
 export const showStimulus = showList('Stimulus', "^nwbfile\\.stimulus\\.", /Series$/, WidgetStatus.HIDDEN);
 
+export const showProcessing = showList('Processing', "^nwbfile\\.processing\\.", /Series$/, WidgetStatus.HIDDEN);
+
 export const showSweeps = {
   type: ADD_WIDGET,
   data: {
