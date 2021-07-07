@@ -287,6 +287,8 @@ class VectorDataMapper(NWBGeppettoMapper):
 
     def get_value(self, v):
         if is_metadata(v):
+            if hasattr(v, 'decode'):
+                return Text(str(v.decode()))
             return Text(str(v))
         if id(v) in self.created_variables:
             return Pointer(path=self.created_variables[id(v)].getPath())
