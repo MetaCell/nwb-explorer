@@ -2,6 +2,7 @@ import logging
 import os
 import shutil
 import requests
+import re
 
 from pygeppetto.data_model import GeppettoProject
 from pygeppetto.services.data_manager import GeppettoDataManager
@@ -15,7 +16,8 @@ CACHE_DIRNAME = './workspace'
 CACHE_DEFAULT_DIR = f"{CACHE_DIRNAME}/"
 
 
-class NWBFileNotFound(FileNotFoundError): pass
+class NWBFileNotFound(FileNotFoundError):
+    pass
 
 
 def get_file_path(file_name_or_url):
@@ -38,8 +40,18 @@ def get_file_from_url(file_url, fname=None, cache_dir=CACHE_DEFAULT_DIR):
     if not os.path.exists(file_name):
         if not os.path.exists(os.path.dirname(file_name)):
             os.makedirs(os.path.dirname(file_name))
-        logging.info('Downloading {} to {}...'.format(file_url, file_name))
-        response = requests.get(file_url)
+        logging.info('Downloading {}'.format(file_url))
+        response = requests.get(file_url, allow_redirects=True)
+        if response.status_code != 200:
+            raise Exception(f"Error downloading file {file_url}")
+        if not fname and 'content-disposition' in response.headers:
+            fname = re.findall('filename="(.+)"',
+                               response.headers['content-disposition'])[0]
+        file_name = get_cache_path(response.url, fname, cache_dir)
+
+        dirname = os.path.dirname(file_name)
+        if not os.path.exists(dirname):
+            os.makedirs(dirname)
         with open(file_name, 'wb') as f:
             f.write(response.content)
         logging.info('Downloaded file to: {}'.format(file_name))
@@ -48,7 +60,7 @@ def get_file_from_url(file_url, fname=None, cache_dir=CACHE_DEFAULT_DIR):
 
 
 def get_cache_path(file_url, fname=None, cache_dir=CACHE_DEFAULT_DIR):
-    return os.path.join(cache_dir, (os.path.basename(file_url) if not fname else fname))
+    return os.path.join(cache_dir, file_url.strip('/').split('//')[1] if not fname else fname)
 
 
 class NWBDataManager(GeppettoDataManager, metaclass=Singleton):
@@ -61,8 +73,10 @@ class NWBDataManager(GeppettoDataManager, metaclass=Singleton):
         except Exception as e:
             raise Exception("Error retrieving file" + nwbfile) from e
         try:
-            model_interpreter = NWBModelInterpreter(nwbfilename, source_url=nwbfile)
-            add_model_interpreter(model_interpreter.library.id, model_interpreter)
+            model_interpreter = NWBModelInterpreter(
+                nwbfilename, source_url=nwbfile)
+            add_model_interpreter(
+                model_interpreter.library.id, model_interpreter)
 
             geppetto_model = model_interpreter.create_model()
             project = GeppettoProject(id=self.last_id, name='NWB file {}'.format(os.path.basename(nwbfilename)),
