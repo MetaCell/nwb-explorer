@@ -5,7 +5,7 @@ import React from 'react';
 export function getNotebookPath (forceNew = true, useFilename = true) {
   const nwbFileParam = NWBFileService.getNWBFileUrl();
   if (nwbFileParam && useFilename){
-    return "workspace/notebook?path=" + nwbFileParam.split('/').slice(-1) + '.ipynb';
+    return "notebook?path=workspace/" + nwbFileParam.split('/').slice(-1) + '.ipynb';
   }
   const key = forceNew ? Math.random().toString(36).slice(3) : '';
 
