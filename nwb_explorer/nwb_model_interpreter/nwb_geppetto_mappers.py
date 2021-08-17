@@ -342,6 +342,9 @@ class TimeseriesMapper(GenericCompositeMapper):
             variable = self.model_factory.create_state_variable(id="data", initialValue=import_val)
             geppetto_composite_type.variables.append(variable)
 
+            message = f"contains values from row {index} of {pynwb_obj.name}"
+            UnsupportedMapper.handle_unsupported(geppetto_composite_type, self.model_factory, message)
+
     def get_object_items(self, pynwb_obj):
         return ((key, value) for key, value in super().get_object_items(pynwb_obj) if key != 'timestamp_link')
 
