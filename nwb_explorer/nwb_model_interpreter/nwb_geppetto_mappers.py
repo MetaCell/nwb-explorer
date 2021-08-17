@@ -35,8 +35,9 @@ def is_array(value):
 
 def is_multidimensional_data(value):
     """ Use this function to decide whether to split up the data into multiple rows or not """
-    image_types = ('OpticalSeries', 'TwoPhotonSeries', 'ImageMaskSeries', 'VectorData')  # VectorData in PlaneSeg
-    return hasattr(value, 'data') and len(value.data.shape) > 1 and not (value.neurodata_type in image_types)
+    image_types = ('ImageSeries', 'OpticalSeries', 'TwoPhotonSeries', 'ImageMaskSeries', 'VectorData')
+    return hasattr(value, 'data') and value.data is not None and len(value.data.shape) > 1 and not(
+            value.neurodata_type in image_types)
 
 
 class MapperType(type):
