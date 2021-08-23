@@ -18,7 +18,6 @@ from pygeppetto.model.types.types import TextType, ImportType, CompositeType
 from pygeppetto.model.values import Image, Text, ImportValue, StringArray
 from pygeppetto.model.variables import Variable, TypeToValueMap
 
-
 nwb_geppetto_mappers = []
 
 
@@ -32,6 +31,13 @@ def is_collection(value):
 
 def is_array(value):
     return isinstance(value, (np.ndarray, Dataset))
+
+
+def is_multidimensional_data(value):
+    """ Use this function to decide whether to split up the data into multiple rows or not """
+    image_types = ('ImageSeries', 'OpticalSeries', 'TwoPhotonSeries', 'ImageMaskSeries', 'VectorData')
+    return hasattr(value, 'data') and value.data is not None and len(value.data.shape) > 1 and not(
+            value.neurodata_type in image_types)
 
 
 class MapperType(type):
@@ -139,7 +145,7 @@ class GenericCompositeMapper(NWBGeppettoMapper):
         return self.single_id(obj_id)
 
     def create_type(self, pynwb_obj, type_id=None, type_name=None):
-        if id(pynwb_obj) in self.created_types:
+        if id(pynwb_obj) in self.created_types and not is_multidimensional_data(pynwb_obj):
             return self.created_types[id(pynwb_obj)]
         obj_type = CompositeType(id=type_id, name=type_name, abstract=False)
 
@@ -188,9 +194,18 @@ class GenericCompositeMapper(NWBGeppettoMapper):
                     logging.debug(f'No mappers are defined for: {value}')
                 continue
 
-            variable = supportingmapper.create_variable(self.sanitize(key), value, pynwb_obj)
-            self.created_variables[id(value)] = variable
-            obj_type.variables.append(variable)
+            if is_multidimensional_data(value):
+                for index in range(value.data.shape[1]):  # loop through data rows to make separate variables
+                    name = f"{self.sanitize(key)}_row{index:02}"  # pad row name so ordered correctly in list view
+                    variable = supportingmapper.create_variable(name, value, pynwb_obj)
+                    self.created_variables[id(value.data[:, index])] = variable
+                    obj_type.variables.append(variable)
+            elif is_multidimensional_data(pynwb_obj) and key == 'data':
+                continue  # create data variable in TimeSeriesMapper.modify_type instead
+            else:
+                variable = supportingmapper.create_variable(self.sanitize(key), value, pynwb_obj)
+                self.created_variables[id(value)] = variable
+                obj_type.variables.append(variable)
 
     def get_object_items(self, pynwb_obj):
         obj_dict = pynwb_obj.fields if hasattr(pynwb_obj, 'fields') else pynwb_obj
@@ -320,6 +335,16 @@ class TimeseriesMapper(GenericCompositeMapper):
             variable = self.model_factory.create_text_variable(id="timestamp_link",
                                                                text=next(iter(pynwb_obj.timestamp_link)).name)
             geppetto_composite_type.variables.append(variable)
+
+        if is_multidimensional_data(pynwb_obj):  # if multidimensional data, select data from relevant row
+            index = self.type_ids[pynwb_obj.name]
+            timeseries_dict = {**pynwb_obj.fields, 'data': pynwb_obj.data[:, index]}
+            import_val = ImportValueMapper.create_import_value(timeseries_dict)
+            variable = self.model_factory.create_state_variable(id="data", initialValue=import_val)
+            geppetto_composite_type.variables.append(variable)
+
+            message = f"contains values from row {index} of {pynwb_obj.name}"
+            UnsupportedMapper.handle_unsupported(geppetto_composite_type, self.model_factory, message)
 
     def get_object_items(self, pynwb_obj):
         return ((key, value) for key, value in super().get_object_items(pynwb_obj) if key != 'timestamp_link')

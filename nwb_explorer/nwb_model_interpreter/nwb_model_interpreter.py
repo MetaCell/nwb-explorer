@@ -97,6 +97,14 @@ class NWBModelInterpreter(ModelInterpreter):
                         time_series_value.value[index] = time_series_value.value[index] * time_series.conversion
                 stringV = str(time_series_value)
                 return time_series_value
+        elif isinstance(nwb_obj, dict):
+            plottable_timeseries = NWBReader.get_mono_dimensional_timeseries_aux(nwb_obj['data'])
+            unit = guess_units(nwb_obj['unit'])
+            time_series_value = GeppettoModelFactory.create_time_series(plottable_timeseries[0], unit)
+            if nwb_obj['conversion'] is not None:
+                for index, item in enumerate(time_series_value.value):
+                    time_series_value.value[index] = time_series_value.value[index] * nwb_obj['conversion']
+            return time_series_value
         else:
             # TODO handle other possible ImportValue(s)
             pass
