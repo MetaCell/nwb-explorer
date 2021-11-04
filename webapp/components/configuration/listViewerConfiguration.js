@@ -16,8 +16,8 @@ const conf = [
       {
         id: "showPlot",
         customComponent: CustomIconComponent,
-        visible: entity =>
-          Instances.getInstance(entity.path + ".data")
+        visible: entity => entity.type !== "ImageSeries"
+          && Instances.getInstance(entity.path + ".data")
           && Instances.getInstance(entity.path + ".timestamps"),
 
         source: entity => entity,
@@ -49,7 +49,7 @@ const conf = [
         customComponent: CustomIconComponent,
         visible: entity =>
           !((Instances.getInstance(entity.path + ".data")
-        && Instances.getInstance(entity.path + ".timestamps")) || entity.type === "ImageSeries"),
+            && Instances.getInstance(entity.path + ".timestamps")) || entity.type === "ImageSeries"),
         source: entity => entity,
         configuration: {
           action: "clickShowDetails",
@@ -66,7 +66,7 @@ const conf = [
         source: entity => entity,
         visible: entity =>
           (Instances.getInstance(entity.path + ".data")
-          && Instances.getInstance(entity.path + ".timestamps")) || entity.type === "ImageSeries",
+            && Instances.getInstance(entity.path + ".timestamps")) || entity.type === "ImageSeries",
         configuration: {
           actions: "clickShowDetails",
           label: "Show details",
@@ -79,10 +79,10 @@ const conf = [
   {
     id: "path",
     title: "Path",
-    customComponent:  ({ action }) => ({ value }) => <span onClick={() => action(value)} style={{ cursor: 'pointer' }}>{value}</span>,
+    customComponent: ({ action }) => ({ value }) => <span onClick={() => action(value)} style={{ cursor: 'pointer' }}>{value}</span>,
     source: ({ path }) => path.slice(FILEVARIABLE_LENGTH),
     configuration: { action: "clickTitleDetails", }
-    
+
   },
   {
     id: "type",
