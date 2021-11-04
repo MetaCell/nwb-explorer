@@ -49,9 +49,9 @@ setuptools.setup(
         'redis>=2.10.6',
         'seaborn>=0.8.1',
         'uuid>=1.30',
-        'pynwb>=1.2.1',
+        'pynwb>=2.0.0',
         'imageio>=2.5.0',
         'quantities>=0.12.3',
-        'nwbwidgets>=0.2.0'
+        'nwbwidgets>=0.8.0'
     ],
 )
