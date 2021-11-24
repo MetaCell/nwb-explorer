@@ -137,7 +137,6 @@ def test_importType(nwbfile):
     assert imported_type.id
     assert imported_type.name
     assert 'acquisition' in var_names
-    assert 'stimulus' in var_names
 
     assert len(imported_type.variables[0].types) == 1
 

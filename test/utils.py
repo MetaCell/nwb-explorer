@@ -84,6 +84,7 @@ def create_image(name, nwbfile, external_storage):
     else:
         return ImageSeries(name=name,
                                data=np.array([imageio.imread(image_uri) for image_uri in images_uri]),
+                               unit="x",
                                timestamps=timestamps,
                                starting_frame=[0], 
                                format='png,tiff,png', 

@@ -53,7 +53,7 @@ git clone -b development https://github.com/MetaCell/nwb-explorer
 If you have Docker installed, you can run NWB explorer with one single command:
 
 ```bash
-docker run -it -p8888:8888 gcr.io/metacellllc/nwb-explorer:0.6.0
+docker run -it -p8888:8888 gcr.io/metacellllc/nwb-explorer:0.6.2
 ```
 
 #### Build Docker image
