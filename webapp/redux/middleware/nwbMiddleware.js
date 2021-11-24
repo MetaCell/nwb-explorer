@@ -6,7 +6,7 @@ import {
   loadedNWBFileInNotebook, loadNWBFileInNotebook, updateSettings
 } from '../actions/nwbfile';
 
-import { ADD_WIDGET, UPDATE_WIDGET, ADD_PLOT_TO_EXISTING_WIDGET, updateDetailsWidget, showSweeps, showGeneral, showAcquisition, showStimulus } from '../actions/flexlayout';
+import { ADD_WIDGET, UPDATE_WIDGET, ADD_PLOT_TO_EXISTING_WIDGET, updateDetailsWidget, showSweeps, showGeneral, showAcquisition, showStimulus, showProcessing } from '../actions/flexlayout';
 import { waitData } from '../actions/general';
 import { NOTEBOOK_READY, notebookReady } from '../actions/notebook';
 

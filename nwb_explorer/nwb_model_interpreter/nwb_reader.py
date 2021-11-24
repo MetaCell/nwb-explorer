@@ -110,7 +110,7 @@ class NWBReader:
             try:
 
 
-                io = NWBHDF5IO(nwbfile_or_path, 'r')
+                io = NWBHDF5IO(nwbfile_or_path, mode='r', load_namespaces=True)
                 nwbfile = io.read()
             except Exception  as e:
                 raise ValueError('Error reading the NWB file.', e.args)

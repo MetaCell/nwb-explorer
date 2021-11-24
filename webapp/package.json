@@ -1,6 +1,6 @@
 {
   "name": "nwb-explorer",
-  "version": "0.6.0",
+  "version": "0.6.2",
   "description": "NWB Explorer is an application that can be used by scientists to read, visualize and explore the content of NWB 2 files.",
   "repository": "https://github.com/MetaCell/geppetto-nwbexplorer",
   "license": "MIT",
@@ -23,7 +23,6 @@
     "react-color": "^2.18.1",
     "react-linkify": "^1.0.0-alpha",
     "react-redux": "^7.0.3",
-    "react-scripts": "0.9.5",
     "redux": "^4.0.1"
   },
   "devDependencies": {
@@ -58,7 +57,7 @@
     "mini-css-extract-plugin": "^0.7.0",
     "raw-loader": "^0.5.1",
     "style-loader": "^0.13.2",
-    "typedoc": "^0.11.1",
+    "typedoc": "^0.22.9",
     "typescript": "^3.0.0",
     "url-loader": "^4.0.0",
     "webpack": "^4.35.0",
