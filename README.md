@@ -14,7 +14,9 @@ Learn more about the [Neurodata Without Borders](https://www.nwb.org/).
 ## Getting Started
 
 These instructions will get you a copy of the project up and running on your local machine for development and testing 
-purposes. See deployment for notes on how to deploy the project on a live system. 
+purposes. See deployment for notes on how to deploy the project on a live system.
+
+Alternatively, to see a working demo of nwb explorer without a local setup see the [Open source brain website](http://nwbexplorer.opensourcebrain.org/).
 
 ### Prerequisites
 
@@ -53,10 +55,11 @@ git clone -b development https://github.com/MetaCell/nwb-explorer
 If you have Docker installed, you can run NWB explorer with one single command:
 
 ```bash
-docker run -it -p8888:8888 gcr.io/metacellllc/nwb-explorer:0.6.2
+docker run -it -p8888:8888 gcr.io/metacellllc/nwb-explorer:0.6.2-RC
 ```
 
 #### Build Docker image
+
 There is a [Dockerfile](./Dockerfile) ready to build a container for NWB-Explorer:
 
 ```bash
@@ -99,7 +102,7 @@ For further information about the Python API, see the [PyNWB docs](https://pynwb
 
 ### Python code from sources
 
-In order to have all the Python files NWB:N 2 ed from sources, the application and the dependencies must be installed in development mode, i.e. with the command
+In order to have all the Python files NWB:N 2 loaded from sources, the application and the dependencies must be installed in development mode, i.e. with the command
 
 ```bash
 pip install -e .
@@ -123,7 +126,6 @@ To check if a dependency is installed in development mode, run `pip list`.
 * [PyNWB](https://github.com/NeurodataWithoutBorders/pynwb) - Used to read and manipulate NWB:N 2 files
 * [Jupyter notebook](https://jupyter.org/) - Jupyter notebook is used as a backend.
 
-
 ## Background
 
 The NWB Explorer was initially created by [MetaCell](http://metacell.us) to showcase the features of the [Geppetto](http://www.geppetto.org/) platform to share
@@ -140,6 +142,5 @@ This work is currently funded by the [Wellcome Trust](https://wellcome.ac.uk/).
 * Rodriguez Facundo ([MetaCell](http://metacell.us))
 * Afonso Pinto ([MetaCell](http://metacell.us))
 * Padraig Gleeson ([UCL/Open Source Brain](http://opensourcebrain.org))
-
 
 See also the list of [contributors](https://github.com/Metacell/nwb-explorer/contributors) who participated in this project.
