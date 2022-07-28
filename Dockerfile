@@ -22,7 +22,7 @@ USER root
 RUN jupyter labextension disable @jupyterlab/hub-extension
 RUN apt-get update -qq &&\
     apt-get install python3-tk vim nano unzip git g++ -qq
-  
+RUN conda install python=3.7 -y  
 COPY --chown=1000:1000 requirements.txt .   
 RUN pip install -r requirements.txt --no-cache-dir
 USER $NB_UID

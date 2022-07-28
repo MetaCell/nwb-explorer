@@ -1,0 +1,17 @@
+hub:
+  allowNamedServers: true
+  extraConfig:
+    timing: |
+      c.Spawner.port = 8000
+      c.Spawner.http_timeout = 300
+      c.Spawner.start_timeout = 300
+      c.JupyterHub.tornado_settings = { "headers": { "Content-Security-Policy": "frame-ancestors 'self' http://opensourcebrain.org:80 http://localhost:3000 http://comodl.org:80"}}
+    spawner: >-
+      c.Spawner.args = ["--debug", "--NotebookApp.tornado_settings={\"headers\":{\"Content-Security-Policy\": \"frame-ancestors 'self' http://opensourcebrain.org:80 http://localhost:3000 http://comodl.org:80\"}}", "--NotebookApp.default_url=/geppetto", "--library=nwb_explorer"]
+  resources:
+    requests:
+      cpu: 10m
+proxy:
+  secretToken: b3fed077c7538cfc5e2a6469ddac7d43a18fc645789407b53e580b7342b968d8
+auth:
+  type: tmp
