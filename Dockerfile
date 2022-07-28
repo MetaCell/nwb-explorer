@@ -15,7 +15,7 @@ RUN rm -Rf node_modules/*
 RUN mv @geppettoengine node_modules
 
 ###
-FROM jupyter/base-notebook:hub-1.1.0
+FROM jupyter/base-notebook:hub-1.4.2
 ENV NB_UID=jovyan
 ENV FOLDER=nwb-explorer
 USER root
