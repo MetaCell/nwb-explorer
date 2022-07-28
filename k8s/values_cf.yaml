@@ -1,5 +1,8 @@
 hub:
   allowNamedServers: true
+  config:                                                                                                                                                                     
+    JupyterHub:                                                                                                                                                               
+      authenticator_class: tmpauthenticator.TmpAuthenticator 
   extraConfig:
     timing: |
       c.Spawner.port = 8000
@@ -12,6 +15,5 @@ hub:
     requests:
       cpu: 10m
 proxy:
-  secretToken: b3fed077c7538cfc5e2a6469ddac7d43a18fc645789407b53e580b7342b968d8
-auth:
-  type: tmp
+  secretToken: b3fed077c7538cfc5e2a6469ddac7d43a18fc645789407b53e580b7342b968d8                                                                                                                                                                         
+  

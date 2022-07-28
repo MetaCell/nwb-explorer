@@ -1,4 +1,4 @@
-import createMuiTheme from "@material-ui/core/styles/createMuiTheme";
+import { createTheme } from '@material-ui/core/styles';
 import lessToJs from "less-vars-to-js";
 
 require("./styles/main.less");
@@ -143,4 +143,4 @@ const baseTheme = {
   },
 };
 
-export default createMuiTheme(baseTheme);
+export default createTheme(baseTheme);

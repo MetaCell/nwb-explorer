@@ -46,7 +46,8 @@ RUN rm -rf /var/lib/apt/lists
 RUN mkdir -p /opt/workspace
 RUN mkdir -p /opt/home
 RUN chown -R $NB_UID .
-RUN chown -R $NB_UID /opt/*
+RUN chown -R $NB_UID /opt/workspace
+RUN chown -R $NB_UID /opt/home
 RUN ln -s /opt/workspace ./workspace
 RUN ln -s /opt/home ./workspace
 
