@@ -11,6 +11,7 @@ export default class Appbar extends Component {
     this.showList = this.props.showList ? this.props.showList : () => console.debug('showList not defined in ' + typeof this);
     this.showAcquisition = this.props.showAcquisition ? this.props.showAcquisition : () => console.debug('showAcquisition not defined in ' + typeof this);
     this.showStimulus = this.props.showStimulus ? this.props.showStimulus : () => console.debug('showStimulus not defined in ' + typeof this);
+    this.showProcessing = this.props.showProcessing ? this.props.showProcessing : () => console.debug('showProcessing not defined in ' + typeof this);
   }
 
   handleClickBack () {
@@ -20,6 +21,7 @@ export default class Appbar extends Component {
   handleShowLists () {
     this.showAcquisition();
     this.showStimulus();
+    this.showProcessing();
   }
 
   handleShowAll () {

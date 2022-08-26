@@ -5,7 +5,7 @@ import {
   DESTROY_WIDGET,
   ACTIVATE_WIDGET,
   ADD_PLOT_TO_EXISTING_WIDGET,
-  showList, showAcquisition, showStimulus, showSweeps, showGeneral
+  showList, showAcquisition, showStimulus, showProcessing, showSweeps, showGeneral
 } from '../actions/flexlayout';
 
 import { NWB_FILE_LOADED } from '../actions/nwbfile'
@@ -172,6 +172,10 @@ function fileLoadedLayout () {
 
   if (Instances.getInstance('nwbfile.sweep_table')) {
     widgets[showSweeps.data.id] = showSweeps.data;
+  }
+
+  if (Instances.getInstance('nwbfile.processing') && Instances.getInstance('nwbfile.processing').getType().getVariables().length) {
+    widgets[showProcessing.data.id] = showProcessing.data;
   }
   return widgets;
 }

@@ -11,9 +11,9 @@ from pygeppetto.model.model_factory import GeppettoModelFactory
 from pygeppetto.services.model_interpreter import ModelInterpreter
 
 from nwb_explorer.nwb_model_interpreter.nwb_geppetto_mappers import *
-from .nwb_reader import NWBReader
-from .settings import *
-from ..utils import guess_units
+from nwb_explorer.nwb_model_interpreter.nwb_reader import NWBReader
+from nwb_explorer.nwb_model_interpreter.settings import *
+from nwb_explorer.utils import guess_units
 
 from jupyter_geppetto import settings, PathService
 
@@ -28,8 +28,10 @@ class NWBModelInterpreter(ModelInterpreter):
     def __init__(self, nwb_file_or_filename, source_url=None):
         if source_url == None:
             source_url = nwb_file_or_filename
-        logging.info(f'Creating a Model Interpreter for {nwb_file_or_filename}')
-        self.nwb_file_name = nwb_file_or_filename if isinstance(nwb_file_or_filename, str) else 'in-memory file'
+        logging.info(
+            f'Creating a Model Interpreter for {nwb_file_or_filename}')
+        self.nwb_file_name = nwb_file_or_filename if isinstance(
+            nwb_file_or_filename, str) else 'in-memory file'
         self.source_url = source_url
         self.nwb_reader = NWBReader(nwb_file_or_filename)
         self.library = GeppettoLibrary(name='nwbfile', id='nwbfile')
@@ -48,19 +50,23 @@ class NWBModelInterpreter(ModelInterpreter):
 
         geppetto_model.libraries.append(self.library)
 
-        obj_type = ImportType(autoresolve=True, url=self.nwb_file_name, id="nwbfile", name='nwbfile')
+        obj_type = ImportType(
+            autoresolve=True, url=self.nwb_file_name, id="nwbfile", name='nwbfile')
         self.library.types.append(obj_type)
-        obj_variable = Variable(id='nwbfile', name='nwbfile', types=(obj_type,))
+        obj_variable = Variable(
+            id='nwbfile', name='nwbfile', types=(obj_type,))
         geppetto_model.variables.append(obj_variable)
 
         return geppetto_model
 
     def importType(self, url, type_name, library, geppetto_model_access: GeppettoModelAccess):
         logging.info(f"Importing type {type_name}, url: {url}")
-        model_factory = GeppettoModelFactory(geppetto_model_access.geppetto_common_library)
+        model_factory = GeppettoModelFactory(
+            geppetto_model_access.geppetto_common_library)
         mapper = GenericCompositeMapper(model_factory, library)
         # build compositeTypes for pynwb objects
-        root_type = mapper.create_type(self.get_nwbfile(), type_name=type_name, type_id=type_name)
+        root_type = mapper.create_type(
+            self.get_nwbfile(), type_name=type_name, type_id=type_name)
         if isinstance(self.nwb_file_name, str) and type_name == 'nwbfile':
 
             root_type.variables.append(
@@ -72,7 +78,8 @@ class NWBModelInterpreter(ModelInterpreter):
         return root_type
 
     def importValue(self, import_value: ImportValue):
-        logging.info(f"Importing value {import_value.eContainer().eContainer().getPath()}")
+        logging.info(
+            f"Importing value {import_value.eContainer().eContainer().getPath()}")
         nwb_obj = ImportValueMapper.import_values[import_value]
         var_to_extract = import_value.eContainer().eContainer().id
 
@@ -82,21 +89,36 @@ class NWBModelInterpreter(ModelInterpreter):
                 timestamps = NWBReader.get_timeseries_timestamps(time_series)
                 if time_series.rate is not None:
                     for index, item in enumerate(timestamps):
-                        timestamps[index] = ( timestamps[index] / time_series.rate / time_series.rate ) + time_series.starting_time
+                        timestamps[index] = (
+                            timestamps[index] / time_series.rate / time_series.rate) + time_series.starting_time
                 timestamps_unit = guess_units(time_series.timestamps_unit) if hasattr(time_series,
                                                                                       'timestamps_unit') and time_series.timestamps_unit else 's'
                 return GeppettoModelFactory.create_time_series(timestamps, timestamps_unit)
             else:
 
-                plottable_timeseries = NWBReader.get_plottable_timeseries(time_series)
+                plottable_timeseries = NWBReader.get_plottable_timeseries(
+                    time_series)
 
                 unit = guess_units(time_series.unit)
-                time_series_value = GeppettoModelFactory.create_time_series(plottable_timeseries[0], unit)
+                time_series_value = GeppettoModelFactory.create_time_series(
+                    plottable_timeseries and plottable_timeseries[0], unit)
                 if time_series.conversion is not None:
                     for index, item in enumerate(time_series_value.value):
-                        time_series_value.value[index] = time_series_value.value[index] * time_series.conversion
+                        time_series_value.value[index] = time_series_value.value[index] * \
+                            time_series.conversion
                 stringV = str(time_series_value)
                 return time_series_value
+        elif isinstance(nwb_obj, dict):
+            plottable_timeseries = NWBReader.get_mono_dimensional_timeseries_aux(
+                nwb_obj['data'])
+            unit = guess_units(nwb_obj['unit'])
+            time_series_value = GeppettoModelFactory.create_time_series(
+                plottable_timeseries and plottable_timeseries[0], unit)
+            if nwb_obj['conversion'] is not None:
+                for index, item in enumerate(time_series_value.value):
+                    time_series_value.value[index] = time_series_value.value[index] * \
+                        nwb_obj['conversion']
+            return time_series_value
         else:
             # TODO handle other possible ImportValue(s)
             pass
