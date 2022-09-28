@@ -16,7 +16,7 @@ export default class App extends React.Component {
   componentDidMount () {
     const { loadNWBFile, reset, model, nwbFileLoaded, raiseError } = this.props;
     self = this;
-    window.postMessage({ data: "ready" });
+    window.parent.postMessage("ready", "*");
 
     GEPPETTO.on(GEPPETTO.Events.Error_while_exec_python_command, error => {
       if (error) {
@@ -96,7 +96,7 @@ export default class App extends React.Component {
     var page;
     if (nwbFileUrl) {
       page = <FileExplorerPage />
-    } else if (! document.cookie.includes("workspaceId")) {
+    } else if (! window.parent === window) {
       page = <WelcomePage />
     } else {
       page = <Backdrop
