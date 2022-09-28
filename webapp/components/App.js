@@ -2,18 +2,21 @@ import React from 'react';
 import WelcomePage from './pages/WelcomePage';
 import nwbFileService from '../services/NWBFileService';
 import FileExplorerPage from './pages/FileExplorerPage';
+import Backdrop from '@material-ui/core/Backdrop';
+import CircularProgress from '@material-ui/core/CircularProgress';
+
 // import { Route, Switch, Redirect, BrowserRouter as Router } from 'react-router-dom';
 
 export default class App extends React.Component {
 
-  constructor(props, context) {
+  constructor (props, context) {
     super(props, context);
   }
 
-  componentDidMount() {
+  componentDidMount () {
     const { loadNWBFile, reset, model, nwbFileLoaded, raiseError } = this.props;
     self = this;
-
+    window.postMessage({ data: "ready" });
 
     GEPPETTO.on(GEPPETTO.Events.Error_while_exec_python_command, error => {
       if (error) {
@@ -56,7 +59,7 @@ export default class App extends React.Component {
 
   }
 
-  componentDidUpdate() {
+  componentDidUpdate () {
     const {
       notebookReady, model, loading,
       isLoadedInNotebook, isLoadingInNotebook, error
@@ -78,7 +81,7 @@ export default class App extends React.Component {
   }
 
 
-  showSpinner(loading) {
+  showSpinner (loading) {
     if (Object.values(loading).length !== 0) {
       const msg = Object.values(loading)[0];
       setTimeout(() => {
@@ -87,14 +90,21 @@ export default class App extends React.Component {
     }
   }
 
-  render() {
+  render () {
     const { embedded, nwbFileUrl } = this.props;
 
     var page;
     if (nwbFileUrl) {
       page = <FileExplorerPage />
-    } else {
+    } else if (! document.cookie.includes("workspaceId")) {
       page = <WelcomePage />
+    } else {
+      page = <Backdrop
+        open={true}
+      >
+
+        <CircularProgress color="inherit" />
+      </Backdrop>
     }
     return (
       <div style={{ height: '100%', width: '100%' }}>

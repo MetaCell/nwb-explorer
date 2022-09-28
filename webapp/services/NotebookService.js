@@ -2,7 +2,7 @@ import NWBFileService from './NWBFileService';
 import PythonConsole from '@geppettoengine/geppetto-ui/python-console/PythonConsole';
 import React from 'react';
 
-export function getNotebookPath(forceNew = true, useFilename = true) {
+export function getNotebookPath (forceNew = true, useFilename = true) {
   if (GEPPETTO_CONFIGURATION.notebookName) {
     return "notebook?path=" + GEPPETTO_CONFIGURATION.notebookName;
   }
@@ -18,7 +18,7 @@ export function getNotebookPath(forceNew = true, useFilename = true) {
 var console = null;
 
 
-export function getConsole(forceNew = true, useFilename = true) {
+export function getConsole (forceNew = true, useFilename = true) {
   if (console === null) {
     console = [<PythonConsole key="console" pythonNotebookPath={getNotebookPath(forceNew, useFilename)} />]
   }
