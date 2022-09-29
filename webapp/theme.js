@@ -74,6 +74,7 @@ const baseTheme = {
       }
     },
     MuiFormControl: { root: { overflow: "visible" } },
+    MuiBackdrop: { root: { zIndex: 9999 } },
     MuiButton: {
       contained: {
         color: fontColor,

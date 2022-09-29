@@ -9,14 +9,18 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 
 export default class App extends React.Component {
 
-  constructor (props, context) {
-    super(props, context);
+  constructor () {
+    super();
+    this.state = { waitFile: window.parent !== window }
   }
 
   componentDidMount () {
     const { loadNWBFile, reset, model, nwbFileLoaded, raiseError } = this.props;
     self = this;
-    window.parent.postMessage("ready", "*");
+    if (window !== window.parent){
+      window.parent.postMessage({ type: "APP_READY" }, "*");
+    }
+    
 
     GEPPETTO.on(GEPPETTO.Events.Error_while_exec_python_command, error => {
       if (error) {
@@ -27,16 +31,21 @@ export default class App extends React.Component {
     if (nwbFileService.getNWBFileUrl()) {
       loadNWBFile(nwbFileService.getNWBFileUrl());
     }
+
     const loadFromEvent = event => {
       // console.debug('Parent frame message received:', event)
 
       // Here we would expect some cross-origin check, but we don't do anything more than load a nwb file here
-      if (typeof (event.data) == 'string') {
+      switch (event.data.type ) {
+      case 'LOAD_RESOURCE':
         if (self.props.model) {
           reset();
         }
-        loadNWBFile(event.data);
-        // The message may be triggered after the notebook was ready
+        loadNWBFile(event.data.payload);
+        break;
+      case 'NO_RESOURCE': {
+        this.setState({ waitFile: false })
+      }
       }
     }
     // A message from the parent frame can specify the file to load
@@ -91,19 +100,19 @@ export default class App extends React.Component {
   }
 
   render () {
-    const { embedded, nwbFileUrl } = this.props;
+    const { nwbFileUrl } = this.props;
+    const { waitFile } = this.state;
 
     var page;
     if (nwbFileUrl) {
       page = <FileExplorerPage />
-    } else if (! window.parent === window) {
+    } else if (!waitFile) {
       page = <WelcomePage />
     } else {
       page = <Backdrop
         open={true}
       >
-
-        <CircularProgress color="inherit" />
+        <CircularProgress color="primary" />
       </Backdrop>
     }
     return (

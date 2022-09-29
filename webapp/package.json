@@ -11,8 +11,8 @@
     "build-dev": "webpack --mode development --devtool eval",
     "prebuild-dev-noTest": "eslint . --fix",
     "build-dev-noTest": "webpack --mode development --devtool source-map --env.noTest=true",
-    "prebuild-dev-noTest:watch": "eslint . --color --fix",
-    "build-dev-noTest:watch": "webpack --mode development --devtool source-map --env.noTest=true --progress --watch",
+    "prebuild-dev:watch": "eslint . --color --fix",
+    "build-dev:watch": "webpack --mode development --devtool source-map --env.noTest=true --progress --watch",
     "start": "node --max-old-space-size=2048 node_modules/webpack-dev-server/bin/webpack-dev-server.js --progress --env.noTest=true  --config webpack.config.dev.js"
   },
   "dependencies": {
