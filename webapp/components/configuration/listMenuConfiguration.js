@@ -1,4 +1,6 @@
 import React from "react";
+import Icon from '@material-ui/core/Icon';
+
 import {
   bgRegular,
   bgDark,
@@ -97,7 +99,7 @@ export const listMenuConfigurations = (Instances, entity, availablePlots) => {
       {
         label: "",
         position: "bottom-start",
-        icon: "fa fa-chevron-down",
+        icon: <Icon className='fa fa-chevron-down' fontSize="small" />,
         list: [
           {
             label: "Open in new plot",

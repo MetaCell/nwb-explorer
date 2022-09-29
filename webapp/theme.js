@@ -1,4 +1,4 @@
-import createMuiTheme from "@material-ui/core/styles/createMuiTheme";
+import createMuiTheme from "@material-ui/core/styles/createTheme";
 import lessToJs from "less-vars-to-js";
 
 require("./styles/main.less");
