@@ -11,7 +11,6 @@ export default class App extends React.Component {
 
   constructor () {
     super();
-    this.state = { waitFile: window.parent !== window }
   }
 
   componentDidMount () {
@@ -101,20 +100,14 @@ export default class App extends React.Component {
 
   render () {
     const { nwbFileUrl } = this.props;
-    const { waitFile } = this.state;
+
 
     var page;
     if (nwbFileUrl) {
       page = <FileExplorerPage />
-    } else if (!waitFile) {
-      page = <WelcomePage />
     } else {
-      page = <Backdrop
-        open={true}
-      >
-        <CircularProgress color="primary" />
-      </Backdrop>
-    }
+      page = <WelcomePage />
+    } 
     return (
       <div style={{ height: '100%', width: '100%' }}>
         <div id="main-container-inner">
