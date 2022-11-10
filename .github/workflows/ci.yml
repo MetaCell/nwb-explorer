@@ -26,6 +26,8 @@ jobs:
         python-version:  ${{ matrix.python-version }}
 
 
+    - name: Install NWBE locally
+      run: python utilities/install.py
 
     - name: Final file info
       run: |
