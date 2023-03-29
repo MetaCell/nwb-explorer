@@ -26,3 +26,4 @@ geppetto-client
 /nwb-explorer
 pyvenv.cfg
 .jupyter-config
+/build
