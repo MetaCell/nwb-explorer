@@ -5,21 +5,21 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import Typography from '@material-ui/core/Typography';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import { fontColor } from '../theme'
-import Paper from '@material-ui/core/Paper'
-import Grid from '@material-ui/core/Grid'
-import Box from '@material-ui/core/Box'
-import Link from '@material-ui/core/Link'
+import Paper from '@material-ui/core/Paper';
+import Grid from '@material-ui/core/Grid';
+import Box from '@material-ui/core/Box';
+import Link from '@material-ui/core/Link';
+import { withStyles } from '@material-ui/core/styles';
+import { fontColor } from '../theme';
 import logo_nwb_explorer from '../resources/logos/nwb-explorer.png';
 import logo_metacell from '../resources/logos/metacell_new.png';
 import logo_osb from '../resources/logos/osb.png';
 import logo_osb_colour from '../resources/logos/osblogofull.png';
-import { withStyles } from '@material-ui/core/styles';
 import { NWBE_WEBSITE } from '../constants';
 
 const styles = theme => ({
   paper: {
-    backgroundColor: "#4a4a4a",
+    backgroundColor: '#4a4a4a',
     textAlign: 'center',
     padding: theme.spacing(2),
   },
@@ -27,7 +27,7 @@ const styles = theme => ({
 
 const AboutContent = withStyles(styles)(({ classes }) => (
 
-  <Paper className={ classes.paper }>
+  <Paper className={classes.paper}>
     <Grid container className="p-0">
       <Grid item xs={6}>
         <Box mb={1} alignItems="flex-start" display="flex">
@@ -37,7 +37,7 @@ const AboutContent = withStyles(styles)(({ classes }) => (
       <Grid item xs={6}>
         <Box mb={1} justifyContent="flex-end" display="flex">
           <Link href="http://www.metacell.us" target="_blank">
-            <img width="150" src={logo_metacell}></img>
+            <img width="150" src={logo_metacell} />
           </Link>
         </Box>
       </Grid>
@@ -47,7 +47,7 @@ const AboutContent = withStyles(styles)(({ classes }) => (
       <Typography variant="h5" color={fontColor}>NWB Explorer v0.6.2</Typography>
     </Box>
 
-    <Box m={1} >
+    <Box m={1}>
       <Typography variant="body2" color={fontColor}>
         NWB Explorer is a web application that can be used by scientists to read, visualize and explore the content of NWB:N 2 files.
       </Typography>
@@ -55,7 +55,10 @@ const AboutContent = withStyles(styles)(({ classes }) => (
 
     <Box m={1} pb={2}>
       <Typography variant="body2" color={fontColor}>
-        Want to know more? Go to our <Link href={NWBE_WEBSITE} target="_blank">website</Link>.
+        Want to know more? Go to our
+        {' '}
+        <Link href={NWBE_WEBSITE} target="_blank">website</Link>
+        .
       </Typography>
     </Box>
 
@@ -64,16 +67,15 @@ const AboutContent = withStyles(styles)(({ classes }) => (
         NWB Explorer is being developed in collaboration with:
       </Typography>
       <Link href="http://www.opensourcebrain.org" target="_blank">
-        <img width="200" src={logo_osb_colour}></img>
+        <img width="200" src={logo_osb_colour} />
       </Link>
     </Box>
 
-
   </Paper>
 
-))
+));
 
-export default function Dialog ({ open, title, message, handleClose }) {
+export default function Dialog ({ open, title, message, handleClose, }) {
   return (
     <div>
       <MuiDialog
@@ -84,7 +86,7 @@ export default function Dialog ({ open, title, message, handleClose }) {
       >
         <DialogTitle className="modal-title">{title}</DialogTitle>
         <DialogContent>
-          <AboutContent/>
+          <AboutContent />
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose} color="primary" className="font-16" autoFocus>

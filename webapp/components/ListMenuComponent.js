@@ -1,7 +1,7 @@
 import React from 'react';
 import ListMenuComponentConnect from './reduxconnect/ListMenuContainer';
 
-const ListControlsComponent = ({ icon, actions, color, tooltip }) => ({ value, }) => (
+const ListControlsComponent = ({ icon, actions, color, tooltip, }) => ({ value }) => (
   <ListMenuComponentConnect
     color={color}
     title={tooltip}

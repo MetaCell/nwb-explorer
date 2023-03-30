@@ -6,11 +6,11 @@ export const CLOSE_DIALOG = 'CLOSE_DIALOG';
 
 export const openDialog = payload => ({ type: OPEN_DIALOG, payload });
 
-export const closeDialog = { type: CLOSE_DIALOG }
+export const closeDialog = { type: CLOSE_DIALOG };
 
-export const raiseError = error => ({ 
+export const raiseError = error => ({
   error,
-  type: RAISE_ERROR 
-})
+  type: RAISE_ERROR,
+});
 
-export const waitData = (message, offAction) => ({ type: WAIT_DATA, data: { message: message, offAction: offAction } })
+export const waitData = (message, offAction) => ({ type: WAIT_DATA, data: { message, offAction } });
