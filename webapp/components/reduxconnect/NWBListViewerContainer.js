@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 import NWBListViewer from '../NWBListViewer';
-import { showPlot, showImageSeries, updateDetailsWidget, addToPlot, showNWBWidget, plotAll, } from '../../redux/actions/flexlayout';
+import { showPlot, showImageSeries, updateDetailsWidget, addToPlot, showNWBWidget, plotAll, } from '../../redux/actions/widgets';
 
 const mapStateToProps = state => ({ modelSettings: state.nwbfile.modelSettings });
 

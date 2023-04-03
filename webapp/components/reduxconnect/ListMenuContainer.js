@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 import ListMenuComponent from '../ListMenu';
-import { showPlot, showImageSeries, updateDetailsWidget, addToPlot, } from '../../redux/actions/flexlayout';
+import { showPlot, showImageSeries, updateDetailsWidget, addToPlot, } from '../../redux/actions/widgets';
 import { updateSettings } from '../../redux/actions/nwbfile';
 
 const mapStateToProps = state => ({

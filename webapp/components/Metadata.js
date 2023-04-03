@@ -1,15 +1,15 @@
-import React from 'react';
-import Collapsible from 'react-collapsible';
-import Linkify from 'react-linkify';
+import React from "react";
+import Collapsible from "react-collapsible";
+import Linkify from "react-linkify";
 
-const Type = require('@metacell/geppetto-meta-core/model/Type');
+const Type = require("@metacell/geppetto-meta-core/model/Type");
 
 export default class Metadata extends React.Component {
-  state = { content: [] }
+  state = { content: [] };
 
   prettyLabel (string) {
     const output = string.charAt(0).toUpperCase() + string.slice(1);
-    return output.replace('_interface_map', '').replace('_', ' ');
+    return output.replace("_interface_map", "").replace("_", " ");
   }
 
   prettyContent (string) {
@@ -23,17 +23,22 @@ export default class Metadata extends React.Component {
       return;
     }
 
-    const type = (geppettoInstanceOrType instanceof Type) ? geppettoInstanceOrType : geppettoInstanceOrType.getType();
+    const type
+      = geppettoInstanceOrType instanceof Type
+        ? geppettoInstanceOrType
+        : geppettoInstanceOrType.getType();
     if (this.props.showObjectInfo) {
       content.push(
-        this.formatCollapsible('Info',
-          [
-            this.formatField('Name', type.getId()),
-            this.formatField('Type', type.getName()),
+        this.formatCollapsible("Info", [
+          this.formatField("Name", type.getId()),
+          this.formatField("Type", type.getName()),
 
-            this.formatField('Path', this.props.instancePath),
-            this.formatField('NWB Explorer support', this.getTypeSupport(type.getName())),
-          ]),
+          this.formatField("Path", this.props.instancePath),
+          this.formatField(
+            "NWB Explorer support",
+            this.getTypeSupport(type.getName())
+          )
+        ])
       );
     }
 
@@ -44,30 +49,63 @@ export default class Metadata extends React.Component {
       const { prettyLabel } = this;
       let metadata;
 
-      if (variableType.getName() == 'Text') {
+      if (variableType.getName() == "Text") {
         const value = variable.getInitialValue().value.text;
 
         metadata = this.prettyContent(value);
-      } else if (variableType.getName() == 'HTML') {
-        metadata = <span dangerouslySetInnerHTML={{ __html: variable.getInitialValue().value.html }} />;
-      } else if (variableType.getName() == 'URL') {
-        if (variable.getInitialValue().value.url.includes('http')) {
-          metadata = <a target="_blank" title="Download file" href={variable.getInitialValue().value.url} rel="noreferrer">{ variable.getInitialValue().value.url.split('/').slice(-1) }</a>;
+      } else if (variableType.getName() == "HTML") {
+        metadata = (
+          <span
+            dangerouslySetInnerHTML={{ __html: variable.getInitialValue().value.html }}
+          />
+        );
+      } else if (variableType.getName() == "URL") {
+        if (variable.getInitialValue().value.url.includes("http")) {
+          metadata = (
+            <a
+              target="_blank"
+              title="Download file"
+              href={variable.getInitialValue().value.url}
+              rel="noreferrer"
+            >
+              {variable
+                .getInitialValue()
+                .value.url.split("/")
+                .slice(-1)}
+            </a>
+          );
         } else {
-          metadata = <span>{ variable.getInitialValue().value.url.split('//').slice(-1) }</span>;
+          metadata = (
+            <span>
+              {variable
+                .getInitialValue()
+                .value.url.split("//")
+                .slice(-1)}
+            </span>
+          );
         }
       } else if (variableType.getChildren && variableType.getChildren()) {
-        metadata = variable.getType().getChildren().filter(v => v.getType().getName() == 'Text').map(v => this.formatField(prettyLabel(v.getId()), this.prettyContent(v.getInitialValue().value.text)));
-      } else if (variableType.getName() == 'Simple Array') {
-        metadata = variable.getInitialValue().value.elements.map(v => v.text || v).join(', ');
+        metadata = variable
+          .getType()
+          .getChildren()
+          .filter(v => v.getType().getName() == "Text")
+          .map(v =>
+            this.formatField(
+              prettyLabel(v.getId()),
+              this.prettyContent(v.getInitialValue().value.text)
+            )
+          );
+      } else if (variableType.getName() == "Simple Array") {
+        metadata = variable
+          .getInitialValue()
+          .value.elements.map(v => v.text || v)
+          .join(", ");
       } else {
-        console.debug('Unsupported variable', variable);
+        console.debug("Unsupported variable", variable);
       }
 
       if (metadata && (metadata.length || metadata.type)) {
-        content.push(
-          this.formatCollapsible(name, metadata),
-        );
+        content.push(this.formatCollapsible(name, metadata));
       }
     });
 
@@ -75,14 +113,16 @@ export default class Metadata extends React.Component {
   }
 
   getTypeSupport (typeName) {
-    if (typeName == 'TimeSeries' || typeName == 'ImageSeries') {
-      return 'metadata and experimental data';
-    } if (typeName === 'Unsupported') {
-      return 'Unsupported';
-    } if (typeName.includes('Series')) {
-      return 'partial - metadata and possibly experimental data';
+    if (typeName == "TimeSeries" || typeName == "ImageSeries") {
+      return "metadata and experimental data";
     }
-    return 'partial - metadata only';
+    if (typeName === "Unsupported") {
+      return "Unsupported";
+    }
+    if (typeName.includes("Series")) {
+      return "partial - metadata and possibly experimental data";
+    }
+    return "partial - metadata only";
   }
 
   formatCollapsible (name, metadata) {
@@ -97,10 +137,7 @@ export default class Metadata extends React.Component {
   formatField (name, value) {
     return (
       <p key={name}>
-        <span className="meta-label">{name}</span>
-        :
-        {' '}
-        {value}
+        <span className="meta-label">{name}</span>: {value}
       </p>
     );
   }
@@ -110,18 +147,19 @@ export default class Metadata extends React.Component {
   }
 
   render () {
+    if (!window.Instances) {
+      return "Loading...";
+    }
+    if (!this.props.instancePath) {
+      return "No instance is selected"
+    }
     const instance = Instances.getInstance(this.props.instancePath);
     const content = this.getContent(instance);
     return (
-      <div style={{ marginBottom: '1em' }}>
-
-        {
-          content.map((item, key) => (
-            <div key={key}>
-              {item}
-            </div>
-          ))
-        }
+      <div style={{ marginBottom: "1em" }}>
+        {content.map((item, key) => (
+          <div key={key}>{item}</div>
+        ))}
       </div>
     );
   }

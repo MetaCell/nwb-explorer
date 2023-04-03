@@ -2,7 +2,7 @@ import { connect } from 'react-redux';
 import Appbar from '../appBar/AppBar';
 import { unloadNWBFile, unloadNWBFileInNotebook } from '../../redux/actions/nwbfile';
 import { unloadNotebook } from '../../redux/actions/notebook';
-import { showPlot, resetLayout, showList, showAcquisition, showStimulus, showProcessing, } from '../../redux/actions/flexlayout';
+import { showPlot, resetLayout, showList, showAcquisition, showStimulus, showProcessing, } from '../../redux/actions/widgets';
 
 const mapStateToProps = state => ({ dialogOpen: state.general.dialogOpen, embedded: state.general.embedded });
 

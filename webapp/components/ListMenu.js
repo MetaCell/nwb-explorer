@@ -2,7 +2,7 @@ import React from 'react';
 import Menu from '@metacell/geppetto-meta-ui//menu/Menu';
 import { CompactPicker } from 'react-color';
 import { listMenuConfigurations } from './configuration/listMenuConfiguration';
-import { addToPlot } from '../redux/actions/flexlayout';
+import { addToPlot } from '../redux/actions/widgets';
 
 export default class ListMenuComponent extends React.Component {
   constructor (props) {

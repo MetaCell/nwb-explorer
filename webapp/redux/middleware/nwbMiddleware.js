@@ -8,7 +8,7 @@ import {
   UNLOAD_NWB_FILE_IN_NOTEBOOK,
   loadedNWBFileInNotebook,
   loadNWBFileInNotebook,
-  updateSettings
+  nwbFileLoaded
 } from "../actions/nwbfile";
 
 import * as GeppettoActions from "@metacell/geppetto-meta-client/common/actions/actions";
@@ -20,12 +20,11 @@ import {
   ADD_PLOT_TO_EXISTING_WIDGET,
   updateDetailsWidget,
   showSweeps,
-  showGeneral,
   showAcquisition,
   showStimulus,
   showProcessing
-} from "../actions/flexlayout";
-import { waitData } from "../actions/general";
+} from "../actions/widgets";
+import { waitData, raiseError, RECOVER_FROM_ERROR } from "../actions/general";
 import { NOTEBOOK_READY, notebookReady } from "../actions/notebook";
 
 import { WidgetStatus } from "@metacell/geppetto-meta-client/common/layout/model";
@@ -41,15 +40,20 @@ export const DEFAULT_WIDGETS = {
     component: "PythonConsole",
     panelName: "bottomPanel",
     enableClose: false,
-    config: { pythonNotebookPath: getNotebookPath(true, true) }
+    config: {
+      pythonNotebookPath: getNotebookPath(true, true),
+      extensionLoaded: true
+    }
   },
   general: {
     id: "general",
     name: "General",
     status: WidgetStatus.ACTIVE,
-    component: "placeholder",
+    component: "Metadata",
     panelName: "leftPanel",
-    enableClose: false
+    enableClose: false,
+    pos: 1,
+    config: { instancePath: "nwbfile" },
   },
 
   details: {
@@ -57,10 +61,11 @@ export const DEFAULT_WIDGETS = {
     name: "Details",
     config: { instancePath: "" },
     status: WidgetStatus.HIDDEN,
-    component: "placeholder",
+    component: "Metadata",
     panelName: "leftPanel",
     enableClose: false,
-    showObjectInfo: true
+    showObjectInfo: true,
+    pos: 2
   }
 };
 
@@ -76,16 +81,14 @@ function handleShowWidget (store, next, action) {
       && store.dispatch(updateDetailsWidget(action.data.config.instancePath));
     return handleImportTimestamps(store, next, action);
   }
-  return next(action);
+  if (action.data.id) {
+    return next(action);
+  }
 }
 
 function fileLoadedLayout () {
   const widgets = [
-    {
-      ...DEFAULT_WIDGETS.general,
-      component: "Metadata",
-      config: { instancePath: "nwbfile" }
-    }
+   
   ];
 
   if (
@@ -232,11 +235,19 @@ const nwbMiddleware = store => next => action => {
   case ADD_WIDGET:
   case ADD_PLOT_TO_EXISTING_WIDGET:
     return handleShowWidget(store, next, action);
-  case NWB_FILE_LOADED:
+  case GeppettoActions.backendActions.MODEL_LOADED:
     next(action);
+    next(nwbFileLoaded());
     next(LayoutActions.addWidgets(fileLoadedLayout()));
     break;
-
+  case GeppettoActions.clientActions.ERROR_WHILE_EXEC_PYTHON_COMMAND:
+    next(raiseError(action.data.response));
+    next(GeppettoActions.hideSpinner());
+    break;
+  case GeppettoActions.clientActions.GEPPETTO_ERROR:
+    next(raiseError(action.data.message));
+    next(GeppettoActions.hideSpinner());
+    break;
   default:
     next(action);
   }

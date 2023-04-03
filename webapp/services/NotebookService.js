@@ -15,11 +15,13 @@ export function getNotebookPath (forceNew = true, useFilename = true) {
   return `notebook?path=workspace/nwbexplorer${key}.ipynb`;
 }
 
+
+
 let console = null;
 
-export function getConsole (forceNew = true, useFilename = true) {
-  if (console === null) {
-    console = [<PythonConsole key="console" pythonNotebookPath={getNotebookPath(forceNew, useFilename)} />];
-  }
-  return console;
-}
+// export function getConsole (forceNew = true, useFilename = true) {
+//   if (console === null) {
+//     console = [<PythonConsole pythonNotebookPath="notebooks/notebook.ipynb" extensionLoaded={this.props.extensionLoaded} /><iframe key="console" src={getNotebookPath(forceNew, useFilename)} />];
+//   }
+//   return console;
+// }

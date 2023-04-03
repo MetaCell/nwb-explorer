@@ -67,7 +67,8 @@ export const showList = (
   name,
   pathPattern,
   typePattern,
-  status = WidgetStatus.ACTIVE
+  status = WidgetStatus.ACTIVE,
+  pos
 ) => ({
   type: ADD_WIDGET,
   data: {
@@ -81,28 +82,33 @@ export const showList = (
     component: "ListViewer",
     name,
     status,
-    panelName: "rightTop"
+    panelName: "rightTop",
+    pos
   }
 });
 
 export const showAcquisition = showList(
   "Acquisition",
   "^nwbfile\\.acquisition\\.",
-  /Series$/
+  /Series$/,
+  WidgetStatus.ACTIVE,
+  1
 );
 
 export const showStimulus = showList(
   "Stimulus",
   "^nwbfile\\.stimulus\\.",
   /Series$/,
-  WidgetStatus.HIDDEN
+  WidgetStatus.HIDDEN,
+  2
 );
 
 export const showProcessing = showList(
   "Processing",
   "^nwbfile\\.processing\\.",
   /Series$/,
-  WidgetStatus.HIDDEN
+  WidgetStatus.HIDDEN,
+  4
 );
 
 export const showSweeps = {
@@ -112,8 +118,9 @@ export const showSweeps = {
     component: "SweepTable",
     name: "Sweeps",
     status: WidgetStatus.HIDDEN,
-    panelName: "rightTop"
-  }
+    panelName: "rightTop",
+    pos: 3
+  },
 };
 
 export const showGeneral = {
@@ -125,7 +132,8 @@ export const showGeneral = {
     config: { instancePath: "nwbfile" },
     component: "Metadata",
     panelName: "leftPanel",
-    enableClose: false
+    enableClose: false,
+    pos: 1
   }
 };
 
@@ -182,7 +190,8 @@ export const updateDetailsWidget = path => ({
     component: "Metadata",
     panelName: "leftPanel",
     enableClose: false,
-    showObjectInfo: true
+    showObjectInfo: true,
+    pos: 2
   }
 });
 

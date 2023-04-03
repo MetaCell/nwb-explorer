@@ -25,10 +25,10 @@ export function unloadNWBFileInNotebook () {
 
 export const unloadNWBFile = { type: UNLOAD_NWB_FILE };
 
-export function nwbFileLoaded (model) {
+export function nwbFileLoaded () {
   return {
     type: NWB_FILE_LOADED,
-    data: { model: model.wrappedObj },
+    data: { model: Model.wrappedObj },
   };
 }
 

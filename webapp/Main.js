@@ -2,6 +2,7 @@
 global.GEPPETTO_CONFIGURATION = require('./GeppettoConfiguration.json');
 const { initGeppetto } = require('@metacell/geppetto-meta-client/GEPPETTO');
 import { LoadingSpinner } from '@metacell/geppetto-meta-client/components';
+import ErrorDialog from './components/reduxconnect/ErrorDialogContainer';
 require('babel-polyfill');
 const { Provider } = require('react-redux');
 const configureStore = require('./redux/store').default;
@@ -16,17 +17,17 @@ const App = require('./components/reduxconnect/AppContainer').default;
 
 // The service is also called from the parent frame to change file
 const nwbFileService = require('./services/NWBFileService').default;
-const nwbManager = require('./services/NWBGeppettoManager').default;
+import { loadNWBFile, reset } from './redux/actions/nwbfile';
+
 initGeppetto();
 // MUI theming
 const theme = require('./theme').default;
 
 window.updateFile = nwbFileService.setNWBFileUrl;
 
-// G.enableLocalStorage(false);
-// G.setIdleTimeOut(-1);
 
 const store = configureStore();
+
 
 (function init () {
   
@@ -35,11 +36,42 @@ const store = configureStore();
   // GEPPETTO.Manager = nwbManager; // Override standard Geppetto manager
   console.log(Utils);
 
+  if (window !== window.parent) {
+    window.parent.postMessage({ type: 'APP_READY' }, '*');
+  }
+
+  if (nwbFileService.getNWBFileUrl()) {
+    store.dispatch(loadNWBFile(nwbFileService.getNWBFileUrl()));
+  }
+
+  const loadFromEvent = event => {
+    // console.debug('Parent frame message received:', event)
+
+    // Here we would expect some cross-origin check, but we don't do anything more than load a nwb file here
+    switch (event.data.type) {
+    case 'LOAD_RESOURCE':
+      if (self.props.model) {
+        store.dispatch(reset());
+      }
+      store.dispatch(loadNWBFile(event.data.payload));
+      break;
+    case 'NO_RESOURCE': {
+      this.setState({ waitFile: false });
+    }
+    }
+  };
+  // A message from the parent frame can specify the file to load
+  window.addEventListener('message', loadFromEvent);
+
+  window.load = loadFromEvent;
+
+
   ReactDOM.render(
     <MuiThemeProvider theme={theme}>
       <Provider store={store}>
         <App />
         <LoadingSpinner />
+        <ErrorDialog />
       </Provider>
     </MuiThemeProvider>,
     document.getElementById('mainContainer'),
