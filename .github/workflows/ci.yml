@@ -1,0 +1,45 @@
+name: Continuous build
+
+on:
+  schedule:
+    - cron: "1 1 1 */1 *"
+  push:
+    branches: [ master, development, test* ]
+  pull_request:
+    branches: [ master, development, test* ]
+
+jobs:
+  build:
+
+    runs-on: [ubuntu-latest]
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: [ "3.7", "3.8", "3.9" ]
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up Python  ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version:  ${{ matrix.python-version }}
+
+    - name: Current file info
+      run: |
+        ls -alt
+        df -h
+        du -h
+
+    - name: Install NWBE locally
+      run: python utilities/install.py
+
+    - name: Final file info
+      run: |
+        ls -alt
+        df -h
+        du -h
+
+    - name: Final version info
+      run: |
+        pip list
