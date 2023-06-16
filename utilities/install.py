@@ -137,8 +137,8 @@ def main(branch=branch, skipNpm=False, skipTest=False, development=False):
 
     cprint("Installing client packages")
     if not skipNpm:
-        execute(cmd=['npm', 'install' if development else 'ci', '--legacy-peer-deps'], cwd=WEBAPP_DIR)
-        execute(cmd=['npm', 'run', 'build-dev' if development else 'build'], cwd=WEBAPP_DIR)
+        execute(cmd=['yarn', 'install'], cwd=WEBAPP_DIR)
+        execute(cmd=['yarn',  'build-dev' if development else 'build'], cwd=WEBAPP_DIR)
 
 
 def steps():

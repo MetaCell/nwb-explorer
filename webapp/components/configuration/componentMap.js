@@ -10,15 +10,15 @@ import ImageViewer from '../ImageViewer';
 
 
 export class PythonConsole extends React.Component {
-  constructor(props) {
+  constructor (props) {
     super(props);
   }
 
-  shouldComponentUpdate(nextProps) {
+  shouldComponentUpdate (nextProps) {
     return nextProps.extensionLoaded !== this.props.extensionLoaded;
   }
 
-  render() {
+  render () {
 
     return (
       <div className="col-lg-6 panel-body" id="pythonConsoleOutput">
