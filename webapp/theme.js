@@ -142,6 +142,11 @@ const baseTheme = {
       },
       root: { color: fontColor },
     },
+    MuiIcon: {
+      fontSizeSmall: {
+        fontSize: '10px'
+      }
+    }
   },
 };
 
