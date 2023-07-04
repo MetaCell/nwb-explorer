@@ -288,6 +288,10 @@ iframe {
     }
   }
 
+  .flexlayout__tabset_tabbar_outer {
+    right: 15px;
+  }
+
   .flexlayout__tab_button--unselected {
     background-color: @bgDarkest;
     border-top-right-radius: @panelradius;
@@ -389,6 +393,10 @@ iframe {
 
   td {
     font-weight: @font-weight-label;
+  }
+  td:first-of-type {
+    display: flex;
+    align-items: center;
   }
   th {
     font-weight: @font-weight-label;
@@ -744,4 +752,8 @@ iframe {
 .left-bordered-container {
   border-left: 2px solid #727272;
   padding-left: 0.5em;
+}
+
+.Component-container-24 {
+  margin-bottom: 40px;
 }
