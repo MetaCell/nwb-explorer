@@ -38,17 +38,14 @@
     <% var cssPaths = ''; %> <% } %>
 
     <!-- CSS -->
+    
     <link
       rel="stylesheet"
-      href="<%= cssPaths%>geppetto/node_modules/@metacell/geppetto-meta-client/geppetto-client/style/css/custom-theme/jquery-ui-1.10.0.custom.css"
+      href="<%= cssPaths%>geppetto/build/static/css/font-awesome.min.css"
     />
     <link
       rel="stylesheet"
-      href="<%= cssPaths%>geppetto/node_modules/@metacell/geppetto-meta-client/geppetto-client/style/css/font-awesome.min.css"
-    />
-    <link
-      rel="stylesheet"
-      href="<%= cssPaths%>geppetto/node_modules/@metacell/geppetto-meta-client/geppetto-client/style/css/gpt-icons.css"
+      href="<%= cssPaths%>geppetto/build/static/css/gpt-icons.css"
     />
     <link rel="stylesheet" href="geppetto/build/static/custom.css" />
     <% if(htmlWebpackPlugin.options.GEPPETTO_CONFIGURATION.customCss) { %>
@@ -81,7 +78,6 @@
     <div id="widgetContainer"></div>
     <div id="modal-region"></div>
     <div id="load-spinner"></div>
-
     <div id="mainContainer">
       <div
         id="loadingText"
@@ -176,5 +172,6 @@
       ga('create', 'UA-4584 1517-1', 'geppetto.org');
       ga('send', 'pageview');
     </script>
+    <script charset="utf-8" type="text/javascript" src="<%= cssPaths%>geppetto/build/main.bundle.js"></script>
   </body>
 </html>

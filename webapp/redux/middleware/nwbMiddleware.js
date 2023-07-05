@@ -14,6 +14,8 @@ import {
 import * as GeppettoActions from "@metacell/geppetto-meta-client/common/actions/actions";
 import * as LayoutActions from "@metacell/geppetto-meta-client/common/layout/actions";
 
+import MessageSocket from "@metacell/geppetto-meta-client/communication/MessageSocket";
+
 import {
   ADD_WIDGET,
   UPDATE_WIDGET,
@@ -53,7 +55,7 @@ export const DEFAULT_WIDGETS = {
     panelName: "leftPanel",
     enableClose: false,
     pos: 1,
-    config: { instancePath: "nwbfile" },
+    config: { instancePath: "tmp" }
   },
 
   details: {
@@ -68,6 +70,22 @@ export const DEFAULT_WIDGETS = {
     pos: 2
   }
 };
+
+
+/**
+ * Override standard Manager
+ *
+ */
+export async function resolveImportValue (typePath, callback) {
+  const params = {};
+  params.experimentId = -1;
+  params.projectId = window.Project.id;
+  // replace client naming first occurrence - the server doesn't know about it
+  params.path = typePath.replace(`${GEPPETTO.Resources.MODEL_PREFIX_CLIENT}.`, '');
+
+  const requestID = MessageSocket.send('resolve_import_value', params, callback);
+
+}
 
 function handleShowWidget (store, next, action) {
   // const instance = Instances.getInstance(path);
@@ -87,9 +105,7 @@ function handleShowWidget (store, next, action) {
 }
 
 function fileLoadedLayout () {
-  const widgets = [
-   
-  ];
+  const widgets = [];
 
   if (
     Instances.getInstance("nwbfile.stimulus")
@@ -116,6 +132,7 @@ function fileLoadedLayout () {
   ) {
     widgets.push(showProcessing.data);
   }
+
   return widgets;
 }
 
@@ -124,9 +141,8 @@ async function handlePlotTimeseries (store, next, action) {
 
   async function retrieveImportValue (data, data_path) {
     return new Promise((resolve, reject) => {
-      data.getValue().getPath = () => data.getPath();
-      data.getValue().resolve(dataValue => {
-        next(GeppettoActions.deleteInstance(data));
+      resolveImportValue(data.getPath(), dataValue => {
+        // next(GeppettoActions.clientActions.deleteInstance(data));
         Instances.getInstance(data_path);
         resolve();
       });
@@ -194,28 +210,8 @@ const nwbMiddleware = store => next => action => {
     store.dispatch(
       GeppettoActions.loadProjectFromUrl(action.data.nwbFileUrl)
     );
-
-    GEPPETTO.on("jupyter_geppetto_extension_ready", data => {
-      // It's triggered once
-      console.log("Initializing Python extension");
-
-      store.dispatch(notebookReady);
-
-      /*
-       *
-       * Utils.execPythonMessage('utils.start_notebook_server()');
-       */
-    });
     break;
   }
-
-  case LOAD_NWB_FILE_IN_NOTEBOOK:
-    next(action);
-    nwbFileService
-      .loadNWBFileInNotebook(store.getState().nwbfile.nwbFileUrl)
-      .then(() => store.dispatch(loadedNWBFileInNotebook));
-
-    break;
 
   case UNLOAD_NWB_FILE_IN_NOTEBOOK:
     next(action);
@@ -224,11 +220,14 @@ const nwbMiddleware = store => next => action => {
     break;
 
   case NOTEBOOK_READY:
+  case GeppettoActions.clientActions.JUPYTER_GEPPETTO_EXTENSION_READY:
     next(action);
     // FIXME for some reason the callback for python messages is not being always called
     Utils.execPythonMessage("from nwb_explorer.nwb_main import main");
-    store.dispatch(loadNWBFileInNotebook);
-
+    next(loadNWBFileInNotebook);
+    nwbFileService
+      .loadNWBFileInNotebook(store.getState().nwbfile.nwbFileUrl)
+      .then(() => next(loadedNWBFileInNotebook));
     break;
 
   case UPDATE_WIDGET:
@@ -239,6 +238,9 @@ const nwbMiddleware = store => next => action => {
     next(action);
     next(nwbFileLoaded());
     next(LayoutActions.addWidgets(fileLoadedLayout()));
+    next(
+      LayoutActions.updateWidget({ id: "general", config: { instancePath: "nwbfile" } })
+    );
     break;
   case GeppettoActions.clientActions.ERROR_WHILE_EXEC_PYTHON_COMMAND:
     next(raiseError(action.data.response));

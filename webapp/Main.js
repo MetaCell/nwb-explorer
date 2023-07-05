@@ -17,9 +17,9 @@ const App = require('./components/reduxconnect/AppContainer').default;
 
 // The service is also called from the parent frame to change file
 const nwbFileService = require('./services/NWBFileService').default;
-import { loadNWBFile, reset } from './redux/actions/nwbfile';
+import { loadNWBFile, clearModel } from './redux/actions/nwbfile';
 
-initGeppetto();
+initGeppetto(true);
 // MUI theming
 const theme = require('./theme').default;
 
@@ -51,7 +51,7 @@ const store = configureStore();
     switch (event.data.type) {
     case 'LOAD_RESOURCE':
       if (self.props.model) {
-        store.dispatch(reset());
+        store.dispatch(clearModel());
       }
       store.dispatch(loadNWBFile(event.data.payload));
       break;
