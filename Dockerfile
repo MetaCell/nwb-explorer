@@ -10,9 +10,7 @@ RUN yarn install --network-timeout 1000000000
 COPY webapp/ .
 RUN yarn build
 #Remove node_modules, need to keep the geppetto client
-RUN mv node_modules/@geppettoengine .
-RUN rm -Rf node_modules/*
-RUN mv @geppettoengine node_modules
+RUN rm -Rf node_modules
 
 ###
 FROM jupyter/base-notebook:hub-1.1.0

@@ -117,7 +117,7 @@ def main(branch=branch, skipNpm=False, skipTest=False, development=False):
 
     cprint("Installing notebook theme")
     # Generate a default config if not already present
-    execute(cmd=['jupyter', 'notebook', '--generate-config'])
+    execute(cmd=['jupyter', 'notebook', '--generate-config', '-y'])
     from jupyter_core import paths
     config_dir = paths.jupyter_config_dir()
     print('Jupyter configuration dir is {}'.format(config_dir))
