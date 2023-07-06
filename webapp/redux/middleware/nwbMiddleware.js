@@ -142,7 +142,7 @@ async function handlePlotTimeseries (store, next, action) {
   async function retrieveImportValue (data, data_path) {
     return new Promise((resolve, reject) => {
       resolveImportValue(data.getPath(), dataValue => {
-        // next(GeppettoActions.clientActions.deleteInstance(data));
+        GEPPETTO.ModelFactory.deleteInstance(data);
         Instances.getInstance(data_path);
         resolve();
       });
