@@ -6,6 +6,7 @@ namespaces:
   - namespace: core
     neurodata_types:
     - LabMetaData
+    - NWBData
   - source: silverlab.ophys.yaml
   - source: silverlab.metadata.yaml
   version: '0.2'

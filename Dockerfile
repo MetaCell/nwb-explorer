@@ -13,7 +13,7 @@ RUN yarn build
 RUN rm -Rf node_modules
 
 ###
-FROM jupyter/base-notebook:hub-1.1.0
+FROM jupyter/base-notebook:hub-1.5.0
 ENV NB_UID=jovyan
 ENV FOLDER=nwb-explorer
 USER root
@@ -22,13 +22,15 @@ RUN apt-get update -qq &&\
     apt-get install python3-tk vim nano unzip git g++ -qq
   
 COPY --chown=1000:1000 requirements.txt .   
-RUN pip install -r requirements.txt --no-cache-dir
+RUN --mount=type=cache,target=/root/.cache python -m pip install --upgrade pip &&\ 
+    pip install -r requirements.txt
 USER $NB_UID
-COPY  . $FOLDER 
+
+COPY --chown=$NB_UID:$NB_UID . $FOLDER 
 COPY --from=jsbuild --chown=1000:1000 $FOLDER $FOLDER
 
 WORKDIR $FOLDER
-
+RUN mkdir workspace
 
 
 
@@ -36,6 +38,7 @@ WORKDIR $FOLDER
 # RUN pip install setuptools==45
 
 USER root
+
 RUN python utilities/install.py --npm-skip
 
 
@@ -43,8 +46,11 @@ RUN rm -rf /var/lib/apt/lists
 # sym link workspace pvc to $FOLDER
 RUN mkdir -p /opt/workspace
 RUN mkdir -p /opt/home
-RUN chown -R $NB_UID .
-RUN chown -R $NB_UID /opt/*
+# clean workspace from tests
+RUN rm -Rf workspace/* 
+RUN chown $NB_UID app.log
+RUN chown $NB_UID /opt/workspace
+RUN chown $NB_UID /opt/home
 RUN ln -s /opt/workspace ./workspace
 RUN ln -s /opt/home ./workspace
 

@@ -43,6 +43,9 @@ setuptools.setup(
         'jupyter_geppetto>=1.1.0',
         'bokeh>=0.13.0',
         'holoviews>=1.10.6',
+        'jupyter-core<5',
+        'jupyter-client<8',
+        'jupyter-server<2',
         'msgpack-python==0.5.6',
         'nose>=1.3.7',
         'Pillow>=7.0.0',
@@ -52,6 +55,6 @@ setuptools.setup(
         'pynwb>=2.3.0',
         'imageio>=2.5.0',
         'quantities>=0.12.3',
-        'nwbwidgets>=0.10.0'
+        'nwbwidgets>=0.10.0',
     ],
 )
