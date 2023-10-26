@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 import Icon from '@material-ui/core/Icon';
 
 import {
@@ -8,18 +8,18 @@ import {
   primaryColor,
   gutter,
   radius,
-} from "../../theme";
+} from '../../theme';
 
 const style = {
   standard: {
     border: 0,
-    background: "transparent",
-    padding: "0",
-    width: "20px",
-    height: "20px",
-    boxShadow: "none",
-    minWidth: "10px",
-    fontSize: "10px",
+    background: 'transparent',
+    padding: '0',
+    width: '20px',
+    height: '20px',
+    boxShadow: 'none',
+    minWidth: '10px',
+    fontSize: '10px',
     hr: {},
   },
   lighter: { background: primaryColor },
@@ -31,11 +31,11 @@ const style = {
 };
 
 const topLevelMenuItemStyle = {
-  standard: { background: "transparent" },
+  standard: { background: 'transparent' },
   hover: {},
 };
 
-const firstItemCustom = { fontWeight: "bold" };
+const firstItemCustom = { fontWeight: 'bold' };
 
 const firstItemStyle = {
   standard: { ...topLevelMenuItemStyle.standard, ...firstItemCustom },
@@ -43,28 +43,28 @@ const firstItemStyle = {
 };
 
 const hiddenMenuItemStyle = {
-  standard: { display: "none" },
+  standard: { display: 'none' },
   hover: {},
 };
 
 export const listMenuConfigurations = (Instances, entity, availablePlots) => {
-  const color = entity.color || "";
-  const isImage = entity.type === "ImageSeries";
-  const arePlotsAvailable = availablePlots.length > 0
+  const color = entity.color || '';
+  const isImage = entity.type === 'ImageSeries';
+  const arePlotsAvailable = availablePlots.length > 0;
 
   const config = {
     global: {
-      color: "white",
+      color: 'white',
       subMenuOpenOnHover: true,
       menuOpenOnClick: true,
       menuPadding: 0,
       fontFamily: font,
-      menuFontSize: "14",
-      subMenuFontSize: "12",
+      menuFontSize: '14',
+      subMenuFontSize: '12',
       background: bgRegular,
       buttonsStyle: {
         standard: style.standard,
-        position: "relative",
+        position: 'relative',
         hover: {
           ...style.standard,
           ...style.lighter,
@@ -82,7 +82,7 @@ export const listMenuConfigurations = (Instances, entity, availablePlots) => {
           top: 10,
           backgroundColor: bgDark,
           borderRadius: 0,
-          color: "#ffffff",
+          color: '#ffffff',
           fontSize: 14,
           fontFamily: font,
           minWidth: 110,
@@ -97,46 +97,49 @@ export const listMenuConfigurations = (Instances, entity, availablePlots) => {
     itemOptions: { customArrow: <i className="fa fa-caret-right menu-caret" /> },
     buttons: [
       {
-        label: "",
-        position: "bottom-start",
-        icon: <Icon className='fa fa-chevron-down' fontSize="small" />,
+        label: '',
+        position: 'bottom-start',
+        icon: <Icon className="fa fa-chevron-down" fontSize="small" />,
         list: [
           {
-            label: "Open in new plot",
-            icon: "",
-            action: { handlerAction: "plot" },
+            label: 'Open in new plot',
+            icon: '',
+            action: { handlerAction: 'plot' },
             style: isImage ? hiddenMenuItemStyle : {},
           },
           {
-            label: "Add to an existing plot",
-            icon: "",
-            position: "right",
+            label: 'Add to an existing plot',
+            icon: '',
+            position: 'right',
             style: isImage || (!isImage && !arePlotsAvailable) ? hiddenMenuItemStyle : topLevelMenuItemStyle,
             dynamicListInjector: {
-              handlerAction: "menuInjector",
-              parameters: ["AddPlot"],
+              handlerAction: 'menuInjector',
+              parameters: ['AddPlot'],
             },
           },
           {
-            label: <span>Colors <span>{color}</span></span>,
-            icon: "",
-            position: "right",
+            label: <span>
+              Colors
+              <span>{color}</span>
+            </span>,
+            icon: '',
+            position: 'right',
             style: isImage ? hiddenMenuItemStyle : topLevelMenuItemStyle,
             dynamicListInjector: {
-              handlerAction: "menuInjector",
-              parameters: ["Color"],
+              handlerAction: 'menuInjector',
+              parameters: ['Color'],
             },
           },
           {
-            label: "Show Image Series",
-            icon: "",
-            action: { handlerAction: "image" },
+            label: 'Show Image Series',
+            icon: '',
+            action: { handlerAction: 'image' },
             style: !isImage ? hiddenMenuItemStyle : {},
           },
           {
-            label: "Show Details",
-            icon: "",
-            action: { handlerAction: "details" },
+            label: 'Show Details',
+            icon: '',
+            action: { handlerAction: 'details' },
           },
         ],
         style: firstItemStyle,

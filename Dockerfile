@@ -1,18 +1,16 @@
-FROM node:13.14 as jsbuild
+FROM node:16 as jsbuild
 
 ENV FOLDER=nwb-explorer
 
 
 WORKDIR $FOLDER/webapp
-COPY webapp/package-lock.json .
+COPY webapp/yarn.lock .
 COPY webapp/package.json .
-RUN npm ci
+RUN yarn install --network-timeout 1000000000
 COPY webapp/ .
-RUN npm run build
+RUN yarn build
 #Remove node_modules, need to keep the geppetto client
-RUN mv node_modules/@geppettoengine .
-RUN rm -Rf node_modules/*
-RUN mv @geppettoengine node_modules
+RUN rm -Rf node_modules
 
 ###
 FROM jupyter/base-notebook:hub-1.1.0

@@ -117,7 +117,7 @@ def main(branch=branch, skipNpm=False, skipTest=False, development=False):
 
     cprint("Installing notebook theme")
     # Generate a default config if not already present
-    execute(cmd=['jupyter', 'notebook', '--generate-config'])
+    execute(cmd=['jupyter', 'notebook', '--generate-config', '-y'])
     from jupyter_core import paths
     config_dir = paths.jupyter_config_dir()
     print('Jupyter configuration dir is {}'.format(config_dir))
@@ -137,8 +137,8 @@ def main(branch=branch, skipNpm=False, skipTest=False, development=False):
 
     cprint("Installing client packages")
     if not skipNpm:
-        execute(cmd=['npm', 'install' if development else 'ci'], cwd=WEBAPP_DIR)
-        execute(cmd=['npm', 'run', 'build-dev' if development else 'build'], cwd=WEBAPP_DIR)
+        execute(cmd=['yarn', 'install'], cwd=WEBAPP_DIR)
+        execute(cmd=['yarn',  'build-dev' if development else 'build'], cwd=WEBAPP_DIR)
 
 
 def steps():

@@ -1,15 +1,12 @@
 import React, { Component } from 'react';
-import ListViewer from '@geppettoengine/geppetto-ui/list-viewer/ListViewer';
 import NWBListViewer from './NWBListViewer';
 
 import sweepTableConf from './configuration/sweepTableConfiguration';
 
-const DEFAULT_MODEL_SETTINGS = { color:  'white' };
+const DEFAULT_MODEL_SETTINGS = { color: 'white' };
 const TYPE_INCLUDE_REGEX = /^(?!.*details)Model.nwbfile.*$/;
 
-
 export default class SweepTableViewer extends NWBListViewer {
-
   constructor (props) {
     super(props);
   }
@@ -23,17 +20,12 @@ export default class SweepTableViewer extends NWBListViewer {
         const instanceType = instance.getType();
         return instanceType.sweep_number && !instanceType.series_index && super.filter(pathObj);
       }
-    } 
+    }
 
     return false;
-    
   }
-
 
   getColumnConfiguration () {
     return sweepTableConf;
   }
-  
-  
 }
-

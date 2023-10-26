@@ -1,51 +1,51 @@
-var webpackBaseConfig = require('./webpack.config.js');
-var extended = webpackBaseConfig();
+const webpackBaseConfig = require('./webpack.config.js');
+
+const extended = webpackBaseConfig();
 
 extended.devServer = {
-  progress : false,
-  port : 8081,
-  inline : true,
+  progress: false,
+  port: 8081,
+  inline: true,
   publicPath: '/geppetto/build',
 
-  proxy : [
+  proxy: [
     {
-      path : '/',
-      target : 'http://localhost:8888'
+      path: '/',
+      target: 'http://localhost:8888',
     },
     {
-      path : '/org.geppetto.frontend',
-      target : 'ws://localhost:8888',
-      ws : true
-    }, 
-    {
-      path : '/notebooks',
-      target : 'http://localhost:8888'
+      path: '/org.geppetto.frontend',
+      target: 'ws://localhost:8888',
+      ws: true,
     },
     {
-      path : '/api',
-      target : 'http://localhost:8888'
+      path: '/notebooks',
+      target: 'http://localhost:8888',
     },
     {
-      path : '/api/kernels',
-      target : 'ws://localhost:8888',
-      ws: true
+      path: '/api',
+      target: 'http://localhost:8888',
     },
     {
-      path : '/static',
-      target : 'http://localhost:8888'
+      path: '/api/kernels',
+      target: 'ws://localhost:8888',
+      ws: true,
     },
     {
-      path : '/custom',
-      target : 'http://localhost:8888'
+      path: '/static',
+      target: 'http://localhost:8888',
+    },
+    {
+      path: '/custom',
+      target: 'http://localhost:8888',
     },
 
     {
-      path : '/nbextensions',
-      target : 'http://localhost:8888'
+      path: '/nbextensions',
+      target: 'http://localhost:8888',
     },
   ],
 };
-
 
 extended.optimization = {
   ...extended.optimization,

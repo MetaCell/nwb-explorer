@@ -1,17 +1,17 @@
 import React, { Component, Fragment } from 'react';
-import { Icon, Box, Tooltip, Grid, AppBar, Typography, Toolbar, IconButton, withStyles } from '@material-ui/core';
-import Menu from "@geppettoengine/geppetto-ui//menu/Menu";
+import { Icon, Box, Tooltip, Grid, AppBar, Typography, Toolbar, IconButton, withStyles, } from '@material-ui/core';
+import Menu from '@metacell/geppetto-meta-ui//menu/Menu';
 import { WidgetStatus, APPBAR_CONSTANTS } from '../../constants';
-import toolbarConfig from "./menuConfiguration";
+import toolbarConfig from './menuConfiguration';
 
 export default class Appbar extends Component {
   constructor (props) {
     super(props);
-    this.exit = this.props.exit ? this.props.exit : () => console.debug('exit not defined in ' + typeof this);
-    this.showList = this.props.showList ? this.props.showList : () => console.debug('showList not defined in ' + typeof this);
-    this.showAcquisition = this.props.showAcquisition ? this.props.showAcquisition : () => console.debug('showAcquisition not defined in ' + typeof this);
-    this.showStimulus = this.props.showStimulus ? this.props.showStimulus : () => console.debug('showStimulus not defined in ' + typeof this);
-    this.showProcessing = this.props.showProcessing ? this.props.showProcessing : () => console.debug('showProcessing not defined in ' + typeof this);
+    this.exit = this.props.exit ? this.props.exit : () => console.debug(`exit not defined in ${typeof this}`);
+    this.showList = this.props.showList ? this.props.showList : () => console.debug(`showList not defined in ${typeof this}`);
+    this.showAcquisition = this.props.showAcquisition ? this.props.showAcquisition : () => console.debug(`showAcquisition not defined in ${typeof this}`);
+    this.showStimulus = this.props.showStimulus ? this.props.showStimulus : () => console.debug(`showStimulus not defined in ${typeof this}`);
+    this.showProcessing = this.props.showProcessing ? this.props.showProcessing : () => console.debug(`showProcessing not defined in ${typeof this}`);
   }
 
   handleClickBack () {
@@ -25,7 +25,7 @@ export default class Appbar extends Component {
   }
 
   handleShowAll () {
-    this.showList('Content index', "nwbfile.", "^(?!LabelledDict).*")
+    this.showList('Content index', 'nwbfile.', '^(?!LabelledDict).*');
   }
 
   menuHandler (click) {
@@ -33,7 +33,7 @@ export default class Appbar extends Component {
       return;
     }
     switch (click.handlerAction) {
-    case "redux": {
+    case 'redux': {
       const [action, payload] = click.parameters;
       if (payload !== undefined) {
         this.props.dispatchAction(action(payload));
@@ -43,33 +43,32 @@ export default class Appbar extends Component {
       break;
     }
     case APPBAR_CONSTANTS.HOME: {
-      this.handleClickBack()
+      this.handleClickBack();
       break;
     }
     case APPBAR_CONSTANTS.SHOW_ALL_CONTENT: {
-      this.handleShowAll()
+      this.handleShowAll();
       break;
     }
     case APPBAR_CONSTANTS.RESTORE_VIEW: {
-      this.handleShowLists()
+      this.handleShowLists();
       break;
     }
     case APPBAR_CONSTANTS.NEW_PAGE: {
       const [url] = click.parameters;
-      window.open(url, "_blank");
+      window.open(url, '_blank');
       break;
     }
     default:
-      console.log("Menu action not mapped, it is " + click);
+      console.log(`Menu action not mapped, it is ${click}`);
     }
   }
 
   render () {
-
     const { classes } = this.props;
     return (
-      <Fragment>
-        <AppBar position="static" color="secondary" >
+      <>
+        <AppBar position="static" color="secondary">
           <Toolbar variant="dense" classes={{ gutters: 'toolbar-gutters' }}>
             <Grid
               container
@@ -97,7 +96,6 @@ export default class Appbar extends Component {
                   </IconButton>
                 </CustomTooltip>
 
-
                 <CustomTooltip tooltip="Restore tabs">
                   <IconButton
                     onClick={() => this.handleShowLists()}
@@ -120,7 +118,7 @@ export default class Appbar extends Component {
           </Toolbar>
 
         </AppBar>
-      </Fragment>
+      </>
     );
   }
 }
