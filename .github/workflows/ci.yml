@@ -30,6 +30,7 @@ jobs:
         ls -alt
         df -h
         du -h
+        pip list
 
     - name: Install NWBE locally
       run: python utilities/install.py
