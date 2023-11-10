@@ -63,8 +63,8 @@ export default (state = {}, action) => {
     const widgets = { ...state.widgets };
     delete widgets[action.data.hostId];
 
-    widget.instancePaths.push(action.data.instancePath);
-    const newId = `plot@${widget.instancePaths.join('-')}`;
+    widget.config.instancePaths.push(action.data.config.instancePath);
+    const newId = `plot@${widget.config.instancePaths.join('-')}`;
     if (widget) {
       return {
         widgets: {

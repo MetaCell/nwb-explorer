@@ -57,6 +57,7 @@ export default class ListMenuComponent extends React.Component {
           parameters: [addToPlot, {
             hostId: availablePlot.id,
             instancePath: this.props.entity.path,
+            component: 'Plot',
             type: 'timeseries',
           }],
         },

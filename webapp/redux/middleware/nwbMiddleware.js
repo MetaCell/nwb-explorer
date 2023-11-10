@@ -32,6 +32,8 @@ import { NOTEBOOK_READY, notebookReady } from "../actions/notebook";
 import { WidgetStatus } from "@metacell/geppetto-meta-client/common/layout/model";
 
 import { getNotebookPath } from "../../services/NotebookService";
+import { Layout } from "@metacell/geppetto-meta-ui/flex-layout/src";
+import { call } from "file-loader";
 
 export const DEFAULT_WIDGETS = {
   python: {
@@ -87,20 +89,24 @@ export async function resolveImportValue (typePath, callback) {
 
 }
 
-function handleShowWidget (store, next, action) {
+function handleShowWidget (store, next, action, callback) {
   // const instance = Instances.getInstance(path);
-  if (action.data.type === "TimeSeries") {
+  if (action.data.component === "Plot") {
     // Instances.getInstance(path).getType().wrappedObj.name
-    return handlePlotTimeseries(store, next, action);
+    return handlePlotTimeseries(store, next, action, callback);
   }
-  if (action.data.type === "ImageSeries") {
+  if (action.data.component === "ImageSeries") {
     // Instances.getInstance(path).getType().wrappedObj.name
     action.data.config.showDetail
       && store.dispatch(updateDetailsWidget(action.data.config.instancePath));
     return handleImportTimestamps(store, next, action);
   }
   if (action.data.id) {
-    return next(action);
+    if (callback) {
+      callback();
+    }
+    next(action);
+    
   }
 }
 
@@ -136,7 +142,7 @@ function fileLoadedLayout () {
   return widgets;
 }
 
-async function handlePlotTimeseries (store, next, action) {
+async function handlePlotTimeseries (store, next, action, callback) {
   // If a set of actions are passed, loop through them and execute each one independently
 
   async function retrieveImportValue (data, data_path) {
@@ -145,6 +151,7 @@ async function handlePlotTimeseries (store, next, action) {
         GEPPETTO.ModelFactory.deleteInstance(data);
         Instances.getInstance(data_path);
         resolve();
+        
       });
     });
   }
@@ -169,14 +176,22 @@ async function handlePlotTimeseries (store, next, action) {
   }
   if (promises.length) {
     store.dispatch(waitData("Loading timeseries data...", action.type));
-    Promise.allSettled(promises).then(() => next(action));
+    Promise.allSettled(promises).then(() => {
+      next(action);
+      if (callback){
+        callback();
+      }
+    });
   } else {
     next(action);
+    if (callback){
+      callback();
+    }
   }
 }
 
 function handleImportTimestamps (store, next, action) {
-  const time_path = `${action.data.instancePath}.timestamps`;
+  const time_path = `${action.data.config.instancePath}.timestamps`;
   const timestamps = Instances.getInstance(time_path);
 
   if (timestamps.getValue().resolve == "ImportValue") {
@@ -232,8 +247,21 @@ const nwbMiddleware = store => next => action => {
 
   case UPDATE_WIDGET:
   case ADD_WIDGET:
-  case ADD_PLOT_TO_EXISTING_WIDGET:
     return handleShowWidget(store, next, action);
+
+  case ADD_PLOT_TO_EXISTING_WIDGET: {
+    const widgets = store.getState().widgets;
+    const widget = widgets[action.data.hostId];
+    
+    const instancePaths = [...widget.config.instancePaths, action.data.config.instancePath];
+    const newId = 'plot@' + instancePaths.join('-');
+    return handleShowWidget(store, next, LayoutActions.addWidget({ 
+      ...widget, 
+      id: newId,
+      name: widget.name + '+', 
+      config: { ...widget.config, instancePaths } 
+    }), () => next(LayoutActions.deleteWidget(action.data.hostId)));
+  }
   case GeppettoActions.backendActions.MODEL_LOADED:
     next(action);
     next(nwbFileLoaded());

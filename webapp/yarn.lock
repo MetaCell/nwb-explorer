@@ -1201,10 +1201,10 @@
     prop-types "^15.7.2"
     react-is "^16.8.0 || ^17.0.0"
 
-"@metacell/geppetto-meta-client@^2.0.0-rc0":
-  version "2.0.0-rc0"
-  resolved "https://registry.yarnpkg.com/@metacell/geppetto-meta-client/-/geppetto-meta-client-2.0.0-rc0.tgz#e18fc527cf1af17b3e37b3e394b6bed73434d878"
-  integrity sha512-Fm9YHLW461FqFfmov1tg9R5HG0Tg9R6oRxilUxNnwxvtaFYwiVLyNGfergyJt528IiDiUOUmXo53R5iKE5KMUw==
+"@metacell/geppetto-meta-client@1.2.4":
+  version "1.2.4"
+  resolved "https://registry.yarnpkg.com/@metacell/geppetto-meta-client/-/geppetto-meta-client-1.2.4.tgz#ba79df8849f52879d76245f9ea1b3ea0cabec9f3"
+  integrity sha512-CSwzeo8JwTZKT4TspyC3i6CU3FZp9XSprTPXN5rM7iIG6yOTN3WaEkgYTKuPM7dD8OvAEAQ24dJPK+fPDx3xyQ==
   dependencies:
     "@material-ui/core" "^4.1.3"
     pako "^1.0.3"
@@ -1214,15 +1214,15 @@
     redux "^4.1.0"
     url-join "^4.0.0"
 
-"@metacell/geppetto-meta-core@^2.0.0-rc0":
-  version "2.0.0-rc0"
-  resolved "https://registry.yarnpkg.com/@metacell/geppetto-meta-core/-/geppetto-meta-core-2.0.0-rc0.tgz#823fd8aa612633e9184e58c77cecd07b9849d452"
-  integrity sha512-c104DE3CZRyw+TUjqgD1uX/+CY//6Hc1Inj4gMjzuSoZ7SkdcvxYoE+GLg7T9dzd9xLLU11sLCX+S7scMogVzg==
+"@metacell/geppetto-meta-core@1.2.4":
+  version "1.2.4"
+  resolved "https://registry.yarnpkg.com/@metacell/geppetto-meta-core/-/geppetto-meta-core-1.2.4.tgz#3504817e35ef05e95909c39a76bbbe7616a1496e"
+  integrity sha512-2JfJm//3Lool1+X+LVVqGgw8O7YgSL1MCbRAsOzOYNdmbD1LUVDL2MdoMs0fdW5IilazxOAoEulWxyjBB5B7YQ==
 
-"@metacell/geppetto-meta-ui@^2.0.0-rc0":
-  version "2.0.0-rc0"
-  resolved "https://registry.yarnpkg.com/@metacell/geppetto-meta-ui/-/geppetto-meta-ui-2.0.0-rc0.tgz#2a40d6c91f56f3db57952d7f2aeb49763399c9c7"
-  integrity sha512-hb55WyCPQnzZ6UWS08Vfj85D6oRp7XRvsFxTTk6DVJh3DBWNaLPt4X56bVZ5GuK1N2cux9wKYskPWCZEySex3g==
+"@metacell/geppetto-meta-ui@1.2.4":
+  version "1.2.4"
+  resolved "https://registry.yarnpkg.com/@metacell/geppetto-meta-ui/-/geppetto-meta-ui-1.2.4.tgz#fa062f37954e618524f710a6bb67029a698d6fdd"
+  integrity sha512-AVVcpflEr7Ad5S4HjHSSPgbT/pDltOjgtgRensNIUo7cqS1cHXdWqHK8g3mY5nBeJBoj/40KSyVtZhwCQIe+Vg==
 
 "@plotly/d3-sankey-circular@0.33.1":
   version "0.33.1"

@@ -51,9 +51,9 @@ export default (state = {}, action) => {
     return { ...state, modelSettings: { ...state.modelSettings, [action.data.path]: { ...action.data } } };
   }
   case LayoutActions.layoutActions.ADD_WIDGET: {
-    if (action.data.instancePaths && action.data.type === 'TimeSeries') {
+    if (action.data.config?.instancePaths && action.data.component === 'Plot') {
       const modelSettings = { ...state.modelSettings };
-      for (const path of action.data.instancePaths) {
+      for (const path of action.data.config.instancePaths) {
         if (!state.modelSettings[path]) {
           const color = nextColor();
           modelSettings[path] = { color };
@@ -64,7 +64,7 @@ export default (state = {}, action) => {
     return state;
   }
   case LayoutActions.layoutActions.ADD_PLOT_TO_EXISTING_WIDGET: {
-    const path = action.data.instancePath;
+    const path = action.data.config.instancePath;
     if (!state.modelSettings[path]) {
       const modelSettings = { ...state.modelSettings };
       const color = nextColor();
