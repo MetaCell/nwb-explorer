@@ -229,8 +229,12 @@ const nwbMiddleware = store => next => action => {
   }
 
   case UNLOAD_NWB_FILE_IN_NOTEBOOK:
-    next(action);
-    Utils.execPythonMessage("del nwbfile");
+    try {
+      Utils.execPythonMessage("del nwbfile");
+      next(action);
+    } catch (e) {
+      console.error(e);
+    }
 
     break;
 
@@ -262,6 +266,10 @@ const nwbMiddleware = store => next => action => {
       config: { ...widget.config, instancePaths } 
     }), () => next(LayoutActions.deleteWidget(action.data.hostId)));
   }
+  case LayoutActions.layoutActions.RESET_LAYOUT:
+    next(action);
+    next(LayoutActions.setWidgets([]));
+    break;
   case GeppettoActions.backendActions.MODEL_LOADED:
     next(action);
     next(nwbFileLoaded());
