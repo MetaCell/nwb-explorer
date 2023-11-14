@@ -8,7 +8,8 @@ import {
   UNLOAD_NWB_FILE_IN_NOTEBOOK,
   loadedNWBFileInNotebook,
   loadNWBFileInNotebook,
-  nwbFileLoaded
+  nwbFileLoaded,
+  CLEAR_MODEL
 } from "../actions/nwbfile";
 
 import * as GeppettoActions from "@metacell/geppetto-meta-client/common/actions/actions";
@@ -32,8 +33,7 @@ import { NOTEBOOK_READY, notebookReady } from "../actions/notebook";
 import { WidgetStatus } from "@metacell/geppetto-meta-client/common/layout/model";
 
 import { getNotebookPath } from "../../services/NotebookService";
-import { Layout } from "@metacell/geppetto-meta-ui/flex-layout/src";
-import { call } from "file-loader";
+
 
 export const DEFAULT_WIDGETS = {
   python: {
@@ -57,7 +57,7 @@ export const DEFAULT_WIDGETS = {
     panelName: "leftPanel",
     enableClose: false,
     pos: 1,
-    config: { instancePath: "tmp" }
+    config: { instancePath: "" }
   },
 
   details: {
@@ -214,6 +214,7 @@ const nwbMiddleware = store => next => action => {
 
   switch (action.type) {
   case LOAD_NWB_FILE: {
+    next(LayoutActions.setWidgets([]));
     const fileName = action.data.nwbFileUrl.match(/^http|^\//g)
       ? action.data.nwbFileUrl
       : `workspace/${action.data.nwbFileUrl}`;
@@ -267,8 +268,10 @@ const nwbMiddleware = store => next => action => {
     }), () => next(LayoutActions.deleteWidget(action.data.hostId)));
   }
   case LayoutActions.layoutActions.RESET_LAYOUT:
+  case CLEAR_MODEL:
+    next(LayoutActions.setWidgets(DEFAULT_WIDGETS));
     next(action);
-    next(LayoutActions.setWidgets([]));
+    
     break;
   case GeppettoActions.backendActions.MODEL_LOADED:
     next(action);

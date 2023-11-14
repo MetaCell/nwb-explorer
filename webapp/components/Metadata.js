@@ -151,7 +151,7 @@ export default class Metadata extends React.Component {
       return "Loading...";
     }
     if (!this.props.instancePath) {
-      return "No instance is selected"
+      return ""
     }
     const instance = Instances.getInstance(this.props.instancePath);
     const content = this.getContent(instance);
