@@ -50,7 +50,7 @@ const store = configureStore();
     // Here we would expect some cross-origin check, but we don't do anything more than load a nwb file here
     switch (event.data.type) {
     case 'LOAD_RESOURCE':
-      if (self.props.model) {
+      if (store.getState().nwbfile.model) {
         store.dispatch(clearModel());
       }
       store.dispatch(loadNWBFile(event.data.payload));
