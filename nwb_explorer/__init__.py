@@ -39,7 +39,9 @@ def init_extensions():
             try:
                 with open(init_file) as f:
                     for line in f:
+                        logging.info("evaluating `%s`", line)
                         eval(line)
             except Exception as e:
                 logging.error("Error evaluating extension init file " + init_file, exc_info=True)
+                
 init_extensions()

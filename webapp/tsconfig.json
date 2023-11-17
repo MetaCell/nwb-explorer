@@ -16,8 +16,8 @@
     "types": []
   },
   "include": [
-    "./node_modules/@geppettoengine/geppetto-client/geppetto-ui/src/flex-layout/**/*",
-    "./node_modules/@geppettoengine/geppetto-client/geppetto-ui/src/flex-layout/examples/demo/*"
+    "./node_modules/@metacell/geppetto-meta-client/geppetto-ui/src/flex-layout/**/*",
+    "./node_modules/@metacell/geppetto-meta-client/geppetto-ui/src/flex-layout/examples/demo/*"
   ],
   "exclude" : [
     "./node_modules"

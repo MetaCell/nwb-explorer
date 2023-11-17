@@ -2,11 +2,12 @@ import { connect } from 'react-redux';
 import Appbar from '../appBar/AppBar';
 import { unloadNWBFile, unloadNWBFileInNotebook } from '../../redux/actions/nwbfile';
 import { unloadNotebook } from '../../redux/actions/notebook';
-import { showPlot, resetLayout, showList, showAcquisition, showStimulus, showProcessing } from '../../redux/actions/flexlayout';
+import { showPlot, showList, showAcquisition, showStimulus, showProcessing, } from '../../redux/actions/widgets';
+import { resetLayout } from '@metacell/geppetto-meta-client/common/layout/actions';
 
 const mapStateToProps = state => ({ dialogOpen: state.general.dialogOpen, embedded: state.general.embedded });
 
-const mapDispatchToProps = dispatch => ({ 
+const mapDispatchToProps = dispatch => ({
   exit: () => {
     dispatch(unloadNWBFileInNotebook());
     dispatch(unloadNWBFile);
@@ -19,7 +20,7 @@ const mapDispatchToProps = dispatch => ({
   showAcquisition: () => dispatch(showAcquisition),
   showStimulus: () => dispatch(showStimulus),
   showProcessing: () => dispatch(showProcessing),
-  dispatchAction: action => dispatch(action)
+  dispatchAction: action => dispatch(action),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Appbar);

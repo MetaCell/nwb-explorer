@@ -3240,7 +3240,7 @@ div#notebook {
   #header-container {
    display: none !important;
   }
-  
+
   <script>
       MathJax.Hub.Config({
           "HTML-CSS": {
