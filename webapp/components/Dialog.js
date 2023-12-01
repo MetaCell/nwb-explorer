@@ -12,7 +12,7 @@ import Link from '@material-ui/core/Link';
 import { withStyles } from '@material-ui/core/styles';
 import { fontColor } from '../theme';
 import logo_nwb_explorer from '../resources/logos/nwb-explorer.png';
-import logo_metacell from '../resources/logos/metacell_new.png';
+import logo_metacell from '../resources/logos/metacell_logo.png';
 import logo_osb from '../resources/logos/osb.png';
 import logo_osb_colour from '../resources/logos/osblogofull.png';
 import { NWBE_WEBSITE } from '../constants';
@@ -21,7 +21,7 @@ const styles = theme => ({
   paper: {
     backgroundColor: '#4a4a4a',
     textAlign: 'center',
-    padding: theme.spacing(2),
+    padding: theme.spacing(2)
   },
 });
 
@@ -35,16 +35,17 @@ const AboutContent = withStyles(styles)(({ classes }) => (
         </Box>
       </Grid>
       <Grid item xs={6}>
-        <Box mb={1} justifyContent="flex-end" display="flex">
+        <Box mb={1} justifyContent="flex-end" display="flex" alignItems="center">
+          <Typography variant='caption' style={{marginRight: '0.75rem'}}>Powered by</Typography>
           <Link href="http://www.metacell.us" target="_blank">
-            <img width="150" src={logo_metacell} />
+            <img width="120" src={logo_metacell} />
           </Link>
         </Box>
       </Grid>
     </Grid>
 
     <Box m={1}>
-      <Typography variant="h5" color={fontColor}>NWB Explorer v0.6.2</Typography>
+      <Typography variant="h5" color={fontColor}>NWB Explorer v0.7.0</Typography>
     </Box>
 
     <Box m={1}>
