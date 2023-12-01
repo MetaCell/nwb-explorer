@@ -142,6 +142,7 @@ const baseTheme = {
       },
       root: { color: fontColor },
     },
+    MuiDialog: { paper: { zIndex: 10000 } }
   },
 };
 
