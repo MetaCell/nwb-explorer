@@ -142,7 +142,8 @@ const baseTheme = {
       },
       root: { color: fontColor },
     },
-    MuiIcon: { fontSizeSmall: { fontSize: '10px' } }
+    MuiIcon: { fontSizeSmall: { fontSize: '10px' } },
+    MuiDialog: { paper: { zIndex: 10000 } }
   },
 };
 
