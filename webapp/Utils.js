@@ -1,62 +1,60 @@
 import React from 'react';
 import {
-  execPythonMessage, 
-  evalPythonMessage
-} from '@geppettoengine/geppetto-client/communication/geppettoJupyter/GeppettoJupyterUtils';
-
+  execPythonMessage,
+  evalPythonMessage,
+} from '@metacell/geppetto-meta-client/communication/geppettoJupyter/GeppettoJupyterUtils';
+import { teal, deepOrange, lightGreen, purple, amber, cyan, brown, lime, pink, yellow, indigo, red, lightBlue, orange, green, blueGrey, } from '@material-ui/core/colors';
 
 const Utils = {
 
-  getHTMLType: function (type) {
-
+  getHTMLType (type) {
     let htmlType;
     switch (type) {
-    case "int":
-      htmlType = "number";
+    case 'int':
+      htmlType = 'number';
       break;
     default:
-      htmlType = "text";
+      htmlType = 'text';
       break;
     }
     return htmlType;
-
   },
- 
-  isObject: function (item) {
+
+  isObject (item) {
     return (item && typeof item === 'object' && !Array.isArray(item));
   },
-    
+
   // FIXME: Hack to remove scaped chars (\\ -> \ and \' -> ') manually
-  convertToJSON (data){
-    if (typeof data === 'string' || data instanceof String){
-      return JSON.parse(data.replace(/\\\\/g, '\\').replace(/\\'/g, '\''))
+  convertToJSON (data) {
+    if (typeof data === 'string' || data instanceof String) {
+      return JSON.parse(data.replace(/\\\\/g, '\\').replace(/\\'/g, '\''));
     }
-    return data
+    return data;
   },
 
-  getErrorResponse (data){
-    let parsedData = this.convertToJSON(data)
-    if (parsedData["type"] && parsedData['type'] == 'ERROR'){
-      return { 'message': parsedData['message'], 'details' : parsedData['details'] }
+  getErrorResponse (data) {
+    const parsedData = this.convertToJSON(data);
+    if (parsedData.type && parsedData.type == 'ERROR') {
+      return { message: parsedData.message, details: parsedData.details };
     }
     return null;
   },
 
-  parsePythonException (exception){
-    return <pre dangerouslySetInnerHTML={{ __html: IPython.utils.fixConsole(exception) }} />
+  parsePythonException (exception) {
+    return <pre dangerouslySetInnerHTML={{ __html: IPython.utils.fixConsole(exception) }} />;
   },
   isNotebookLoaded () {
     return window.IPython != undefined;
   },
 
   execPythonMessage,
-  evalPythonMessage
-}
+  evalPythonMessage,
+};
 
 /**
  * Deep object comparison
- * @param {*} a 
- * @param {*} b 
+ * @param {*} a
+ * @param {*} b
  */
 export function isEqual (a, b) {
   if (a === b) {
@@ -74,13 +72,12 @@ export function isEqual (a, b) {
   if (a.prototype !== b.prototype) {
     return false;
   }
-  let keys = Object.keys(a);
+  const keys = Object.keys(a);
   if (keys.length !== Object.keys(b).length) {
     return false;
   }
   return keys.every(k => isEqual(a[k], b[k]));
 }
-import { teal, deepOrange, lightGreen, purple, amber, cyan, brown, lime, pink, yellow, indigo, red, lightBlue, orange, green, blueGrey } from '@material-ui/core/colors';
 const TIMESERIES_PALETTE = [teal, deepOrange, lightGreen, purple, amber, cyan, brown, lime, pink, yellow, indigo, red, lightBlue, orange, green, blueGrey];
 
 const COLOR_DEPTHS = ['A200', '200', 'A400', '500', 'A100'];

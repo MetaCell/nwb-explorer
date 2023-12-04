@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 import {
   bgRegular,
   bgDark,
@@ -6,32 +6,32 @@ import {
   primaryColor,
   gutter,
   radius,
-} from "../../theme";
+} from '../../theme';
 
-import { openDialog } from "../../redux/actions/general";
+import { openDialog } from '../../redux/actions/general';
 
-import { APPBAR_CONSTANTS, NWBE_WEBSITE, NWB_WEBSITE } from "../../constants";
+import { APPBAR_CONSTANTS, NWBE_WEBSITE, NWB_WEBSITE } from '../../constants';
 
 const style = {
   standard: {
     background: bgRegular,
     borderRadius: 0,
     border: 0,
-    boxShadow: "0px 0px",
-    color: "#ffffff",
+    boxShadow: '0px 0px',
+    color: '#ffffff',
     paddingLeft: `calc(${gutter} * 2)`,
     paddingRight: `calc(${gutter} * 2)`,
     fontSize: 16,
     fontWeight: 400,
     fontFamily: font,
-    margin: "0px 0px 0px 0px",
-    height: "100%",
+    margin: '0px 0px 0px 0px',
+    height: '100%',
     borderLeft: 0,
     borderRight: 0,
     borderBottom: 0,
-    textTransform: "capitalize",
-    textAlign: "left",
-    justifyContent: "start",
+    textTransform: 'capitalize',
+    textAlign: 'left',
+    justifyContent: 'start',
 
     hr: {},
   },
@@ -44,12 +44,12 @@ const style = {
 };
 
 const topLevelMenuItemStyle = {
-  standard: { background: "transparent" },
+  standard: { background: 'transparent' },
   hover: {},
 };
 
 const firstItemCustom = {
-  fontWeight: "bold",
+  fontWeight: 'bold',
   paddingLeft: `calc(${gutter} / 2)`,
 };
 
@@ -60,13 +60,13 @@ const firstItemStyle = {
 
 export default {
   global: {
-    color: "white",
+    color: 'white',
     subMenuOpenOnHover: true,
     menuOpenOnClick: true,
     menuPadding: 0,
     fontFamily: font,
-    menuFontSize: "14",
-    subMenuFontSize: "12",
+    menuFontSize: '14',
+    subMenuFontSize: '12',
     background: bgRegular,
     buttonsStyle: {
       standard: style.standard,
@@ -87,7 +87,7 @@ export default {
         top: 10,
         backgroundColor: bgDark,
         borderRadius: 0,
-        color: "#ffffff",
+        color: '#ffffff',
         fontSize: 14,
         fontFamily: font,
         minWidth: 110,
@@ -102,23 +102,23 @@ export default {
   itemOptions: { customArrow: <i className="fa fa-caret-right menu-caret" /> },
   buttons: [
     {
-      label: "NWB Explorer",
-      position: "bottom-start",
-      icon: "",
+      label: 'NWB Explorer',
+      position: 'bottom-start',
+      icon: '',
       list: [
         {
           label: APPBAR_CONSTANTS.HOME,
-          icon: "",
-          action: { handlerAction: APPBAR_CONSTANTS.HOME, },
+          icon: '',
+          action: { handlerAction: APPBAR_CONSTANTS.HOME },
         },
         {
           label: APPBAR_CONSTANTS.ABOUT,
-          icon: "",
+          icon: '',
           action: {
-            handlerAction: "redux",
+            handlerAction: 'redux',
             parameters: [
               openDialog,
-              { title: APPBAR_CONSTANTS.ABOUT, message: "This is about tab" },
+              { title: APPBAR_CONSTANTS.ABOUT, message: 'This is about tab' },
             ],
           },
         },
@@ -126,32 +126,32 @@ export default {
       style: firstItemStyle,
     },
     {
-      label: "View",
-      position: "bottom-start",
-      icon: "",
+      label: 'View',
+      position: 'bottom-start',
+      icon: '',
       style: topLevelMenuItemStyle,
       list: [
         {
           label: APPBAR_CONSTANTS.SHOW_ALL_CONTENT,
-          icon: "",
+          icon: '',
           action: { handlerAction: APPBAR_CONSTANTS.SHOW_ALL_CONTENT },
         },
         {
           label: APPBAR_CONSTANTS.RESTORE_VIEW,
-          icon: "",
+          icon: '',
           action: { handlerAction: APPBAR_CONSTANTS.RESTORE_VIEW },
         },
       ],
     },
     {
-      label: "Help",
-      icon: "",
-      position: "bottom-start",
+      label: 'Help',
+      icon: '',
+      position: 'bottom-start',
       style: topLevelMenuItemStyle,
       list: [
         {
           label: APPBAR_CONSTANTS.NWBE_DOCUMENTATION,
-          icon: "",
+          icon: '',
           action: {
             handlerAction: APPBAR_CONSTANTS.NEW_PAGE,
             parameters: [NWBE_WEBSITE],
@@ -159,7 +159,7 @@ export default {
         },
         {
           label: APPBAR_CONSTANTS.NWB_DOCUMENTATION,
-          icon: "",
+          icon: '',
           action: {
             handlerAction: APPBAR_CONSTANTS.NEW_PAGE,
             parameters: [NWB_WEBSITE],
@@ -169,4 +169,3 @@ export default {
     },
   ],
 };
-

@@ -1,6 +1,6 @@
-import { connect } from "react-redux";
-import FileUrlSelector from '../FileUrlSelector';
+import { connect } from 'react-redux';
 import { withStyles } from '@material-ui/core/styles';
+import FileUrlSelector from '../FileUrlSelector';
 
 import { loadNWBFile } from '../../redux/actions/nwbfile';
 

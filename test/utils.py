@@ -53,12 +53,12 @@ def create_nwb_file():
     interface = mod.add(pynwb.TimeSeries(name='t3', data=data, unit='pA', timestamps=timestamps))
     mod.add(pynwb.TimeSeries(name='t4', data=data, unit='UA', timestamps=timestamps))
 
-    nwbfile.add_acquisition(create_image('internal_storaged_image', nwbfile, False))
-    nwbfile.add_acquisition(create_image('external_storaged_image', nwbfile, True))
+    nwbfile.add_acquisition(create_image('internal_storaged_image', False))
+    nwbfile.add_acquisition(create_image('external_storaged_image', True))
     
     return nwbfile
 
-def create_image(name, nwbfile, external_storage):
+def create_image(name, external_storage):
     import imageio
     formats = ['png', 'jpg', 'tiff']
     
@@ -78,7 +78,7 @@ def create_image(name, nwbfile, external_storage):
         return ImageSeries(name=name,
                                external_file=images_uri,
                                timestamps=timestamps,
-                               starting_frame=[0], 
+                               starting_frame=[0, 0, 0], 
                                format='external', 
                                description='Series of images from a simulation of the cerebellum via neuroConstruct')
     else:

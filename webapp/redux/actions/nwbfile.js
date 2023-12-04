@@ -9,34 +9,29 @@ export const CLEAR_MODEL = 'CLEAR_MODEL';
 export const UPDATE_SETTINGS = 'UPDATE_SETTINGS';
 
 export function loadNWBFile (nwbFileUrl) {
-  
   return {
     type: LOAD_NWB_FILE,
-    data: { nwbFileUrl: nwbFileUrl }
-  }
+    data: { nwbFileUrl },
+  };
 }
 
 export const loadNWBFileInNotebook = { type: LOAD_NWB_FILE_IN_NOTEBOOK };
 
-
 export const loadedNWBFileInNotebook = { type: LOADED_NWB_FILE_IN_NOTEBOOK };
 
-
 export function unloadNWBFileInNotebook () {
-  
-  return { type: UNLOAD_NWB_FILE_IN_NOTEBOOK, };
+  return { type: UNLOAD_NWB_FILE_IN_NOTEBOOK };
 }
 
-export const unloadNWBFile = { type: UNLOAD_NWB_FILE }
+export const unloadNWBFile = { type: UNLOAD_NWB_FILE };
 
-export function nwbFileLoaded (model) { 
+export function nwbFileLoaded () {
   return {
     type: NWB_FILE_LOADED,
-    data: { model: model.wrappedObj }
-  }
+    data: { model: Model.wrappedObj },
+  };
 }
 
 export const updateSettings = settings => ({ type: UPDATE_SETTINGS, data: settings });
 
-
-export const clearModel = () => ({ type: CLEAR_MODEL })
+export const clearModel = () => ({ type: CLEAR_MODEL });

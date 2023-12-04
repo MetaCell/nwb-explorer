@@ -1,12 +1,12 @@
 function pathjoin (...paths) {
-  return paths.join('/').replace('//', '/')
+  return paths.join('/').replace('//', '/');
 }
 
 function getBasePath (fullPath) {
   return pathjoin(...fullPath.split('/').slice(0, -1));
 }
 
-const contextPath = GEPPETTO_CONFIGURATION.contextPath;
+const { contextPath } = GEPPETTO_CONFIGURATION;
 const basePath = getBasePath(window.location.pathname);
 const baseUrl = getBasePath(window.location.href);
 
@@ -19,8 +19,8 @@ function serverPath (applicationPath) {
 }
 
 const GeppettoPathService = {
-  staticPath: staticPath,
-  serverPath: serverPath
-}
+  staticPath,
+  serverPath,
+};
 
 export default GeppettoPathService;

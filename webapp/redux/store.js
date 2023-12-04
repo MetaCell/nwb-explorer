@@ -1,26 +1,27 @@
-import { createStore, applyMiddleware, compose } from "redux";
-import all from "./reducers/all";
-import { GENERAL_DEFAULT_STATUS } from "./reducers/general";
-import { NOTEBOOK_DEFAULT_STATUS } from "./reducers/notebook";
-import { NWBFILE_DEFAULT_STATUS } from "./reducers/nwbfile";
-import { FLEXLAYOUT_DEFAULT_STATUS } from "./reducers/flexlayout";
+import { createStore } from '@metacell/geppetto-meta-client/common';
+import all from './reducers/all';
+import { GENERAL_DEFAULT_STATUS } from './reducers/general';
+import { NOTEBOOK_DEFAULT_STATUS } from './reducers/notebook';
+import { NWBFILE_DEFAULT_STATUS } from './reducers/nwbfile';
+
 import nwbMiddleware from './middleware/nwbMiddleware';
 
-const INIT_STATE = { 
+import baseLayout from '../components/configuration/layout';
+import componentMap from '../components/configuration/componentMap';
+
+const INIT_STATE = {
   general: GENERAL_DEFAULT_STATUS,
   nwbfile: NWBFILE_DEFAULT_STATUS,
   notebook: NOTEBOOK_DEFAULT_STATUS,
-  flexlayout: FLEXLAYOUT_DEFAULT_STATUS
+  widgets: {}
 };
-
-const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
-
 
 function configureStore (state = INIT_STATE) {
   return createStore(
     all,
     state,
-    composeEnhancers(applyMiddleware(nwbMiddleware))
+    [nwbMiddleware],
+    { baseLayout, componentMap },
   );
 }
 
