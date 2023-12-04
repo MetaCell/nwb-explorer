@@ -14,7 +14,7 @@ if __name__ == '__main__':
     sys.argv.append('--NotebookApp.default_url=/geppetto')
     sys.argv.append("--NotebookApp.token=''")
     sys.argv.append('--library=nwb_explorer')
-
+    
     app = NotebookApp.instance()
     app.initialize(sys.argv)
     app.file_to_run = ''

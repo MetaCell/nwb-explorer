@@ -5,16 +5,19 @@
     <title>NWB explorer embedding example</title>
     <script>
 
-        function updateFile(){
+        function updateFile(fileName){
             console.log("Update called");
             let frame = document.getElementById("nwb-explorer");
-            let fileName = "https://github.com/OpenSourceBrain/NWBShowcase/raw/master/NWB/time_series_data.nwb";
-            frame.contentWindow.postMessage(fileName, '*');
+            frame.contentWindow.postMessage({ type: 'LOAD_RESOURCE', payload: fileName }, '*');
         }
+
+        
     </script>
 </head>
 
 <body>
-    <iframe id="nwb-explorer" src="http://localhost:8888/geppetto" style="width:100%; min-height: 800px" onLoad="updateFile();"></iframe>
+    <button onclick="updateFile('https://github.com/OpenSourceBrain/NWBShowcase/raw/master/FergusonEtAl2015/FergusonEtAl2015.nwb');">Load NWB file</button>
+    <iframe id="nwb-explorer" src="http://localhost:8081/geppetto" style="width:100%; height: 100vh" onLoad="updateFile('https://github.com/OpenSourceBrain/NWBShowcase/raw/master/NWB/time_series_data.nwb');"></iframe>
+
 </body>
 </html>

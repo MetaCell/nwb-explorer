@@ -1,5 +1,5 @@
-import PythonConsole from '@metacell/geppetto-meta-ui/python-console/PythonConsole';
-import React from 'react';
+import { PythonConsole } from '../components/reduxconnect';
+import React, { useMemo } from 'react';
 import NWBFileService from './NWBFileService';
 
 export function getNotebookPath (forceNew = true, useFilename = true) {
@@ -16,12 +16,4 @@ export function getNotebookPath (forceNew = true, useFilename = true) {
 }
 
 
-
-let console = null;
-
-// export function getConsole (forceNew = true, useFilename = true) {
-//   if (console === null) {
-//     console = [<PythonConsole pythonNotebookPath="notebooks/notebook.ipynb" extensionLoaded={this.props.extensionLoaded} /><iframe key="console" src={getNotebookPath(forceNew, useFilename)} />];
-//   }
-//   return console;
-// }
+export const getConsole = ( forceNew = true, useFilename = true ) => () => <PythonConsole key="console" pythonNotebookPath={getNotebookPath(forceNew, useFilename)} />

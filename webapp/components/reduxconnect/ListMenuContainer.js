@@ -5,7 +5,7 @@ import { updateSettings } from '../../redux/actions/nwbfile';
 
 const mapStateToProps = state => ({
   modelSettings: state.nwbfile.modelSettings,
-  widgets: Object.values(state.widgets).filter(w => w.component == 'Plot').map(w => ({ instancePaths: w.instancePaths, id: w.id, name: w.name })),
+  widgets: Object.values(state.widgets).filter(w => w.component == 'Plot').map(w => ({ instancePaths: w.config.instancePaths, id: w.id, name: w.name })),
 });
 
 const mapDispatchToProps = dispatch => ({

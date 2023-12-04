@@ -4,13 +4,14 @@ import * as LayoutActions from "@metacell/geppetto-meta-client/common/layout/act
 
 export const {
   ADD_WIDGET,
-  ADD_PLOT_TO_EXISTING_WIDGET,
   UPDATE_WIDGET,
   SET_LAYOUT,
   DESTROY_WIDGET,
   ACTIVATE_WIDGET,
   RESET_LAYOUT
 } = LayoutActions.layoutActions;
+
+export const ADD_PLOT_TO_EXISTING_WIDGET = "ADD_PLOT_TO_EXISTING_WIDGET";
 
 export const showPlot = ({ path, title }) => ({
   type: ADD_WIDGET,
@@ -19,7 +20,7 @@ export const showPlot = ({ path, title }) => ({
     config: { instancePaths: [path] },
 
     component: "Plot",
-    type: "TimeSeries",
+    
     name: title || path.slice(FILEVARIABLE_LENGTH),
     status: WidgetStatus.ACTIVE,
     panelName: "bottomPanel"
@@ -31,7 +32,7 @@ export const addToPlot = ({ hostId, instancePath }) => ({
   data: {
     hostId,
     config: { instancePath },
-    type: "TimeSeries"
+    component: "Plot" 
   }
 });
 
@@ -39,9 +40,7 @@ export const plotAll = ({ plots, title }) => ({
   type: ADD_WIDGET,
   data: {
     id: `plot@${plots.join("-")}`,
-
     component: "Plot",
-    type: "TimeSeries",
     name: title,
     status: WidgetStatus.ACTIVE,
     panelName: "bottomPanel",
@@ -55,7 +54,7 @@ export const showImageSeries = ({ path, showDetail }) => ({
     id: `img@${path}`,
 
     component: "ImageSeries",
-    type: "ImageSeries",
+    
     name: path.slice(FILEVARIABLE_LENGTH),
     status: WidgetStatus.ACTIVE,
     panelName: "bottomPanel",

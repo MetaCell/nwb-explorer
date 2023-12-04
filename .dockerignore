@@ -23,3 +23,5 @@ tox.ini
 geppetto-client
 .git
 **/__pycache__
+*.log
+workspace

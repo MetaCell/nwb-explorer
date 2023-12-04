@@ -33,9 +33,9 @@ export default class AddPlotMenu extends Component {
   }
 
   dontGoToSameHostTwice (widget) {
-    const { instancePaths } = widget;
+    const { instancePaths } = widget.config;
 
-    return instancePaths && instancePaths.indexOf(this.props.instancePath) == -1;
+    return widget.instancePaths && instancePaths.indexOf(this.props.instancePath) == -1;
   }
 
   goOnlyToTimeseriesWidgets (widget) {

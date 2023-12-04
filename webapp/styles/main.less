@@ -148,7 +148,6 @@ body {
   margin-right: 0.5em;
   .MuiSelect-icon {
     color: @white;
-    font-size: 2.5rem;
   }
   .MuiOutlinedInput-root {
     border-radius: 16px;
@@ -229,10 +228,13 @@ iframe {
   top: 0;
   bottom: 0;
   margin-bottom: 40px;
+  border-left: 8px solid transparent !important;
+    border-right: 8px solid transparent !important;
 
   flex: 1;
   a {
     color: @color-link;
+    text-decoration: none;
   }
   .flexlayout__tab {
     padding: 1em 0.5em;
@@ -256,9 +258,12 @@ iframe {
       }
       width: 100%;
     }
-    #pythonConsoleOutput {
-      padding: 0;
-      display: flex;
+
+    #pythonConsoleFrame {
+      height: 100%;
+      width: 100%;
+      border: 0;
+      overflow: auto;
     }
   }
 
@@ -285,6 +290,10 @@ iframe {
     .flexlayout__tab_button_content {
       color: @primary_color;
     }
+  }
+
+  .flexlayout__tabset_tabbar_outer {
+    right: 15px;
   }
 
   .flexlayout__tab_button--unselected {
@@ -389,6 +398,10 @@ iframe {
   td {
     font-weight: @font-weight-label;
   }
+  td:first-of-type {
+    display: flex;
+    align-items: center;
+  }
   th {
     font-weight: @font-weight-label;
     font-style: italic;
@@ -445,7 +458,7 @@ iframe {
     font-size: 15px;
     font-weight: 400;
     font-style: italic;
-    border-color: @bgLight;
+    border-color: transparent;
     box-shadow: none;
     z-index: 1;
     margin: 8px 9px 0 auto;
@@ -454,6 +467,7 @@ iframe {
     padding-right: 35px;
     background: @bgLight url(../resources/search.png) no-repeat 95% center;
     background-size: 8%;
+    margin-bottom: 0 !important;
   }
   > div{
     width: 100%;
@@ -465,8 +479,9 @@ iframe {
 #mainContainer,
 #mainContainer > div,
 #main-container-inner {
-  height: 100%;
+  height: 100vh;
   display: flex;
+  overflow: hidden;
   flex-direction: column;
   // .MuiGrid-item {
   //   padding-top: 0;
@@ -742,4 +757,8 @@ iframe {
 .left-bordered-container {
   border-left: 2px solid #727272;
   padding-left: 0.5em;
+}
+
+.Component-container-24 {
+  margin-bottom: 40px;
 }

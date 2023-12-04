@@ -17,9 +17,9 @@ const App = require('./components/reduxconnect/AppContainer').default;
 
 // The service is also called from the parent frame to change file
 const nwbFileService = require('./services/NWBFileService').default;
-import { loadNWBFile, reset } from './redux/actions/nwbfile';
+import { loadNWBFile, clearModel } from './redux/actions/nwbfile';
 
-initGeppetto();
+initGeppetto(true);
 // MUI theming
 const theme = require('./theme').default;
 
@@ -50,8 +50,8 @@ const store = configureStore();
     // Here we would expect some cross-origin check, but we don't do anything more than load a nwb file here
     switch (event.data.type) {
     case 'LOAD_RESOURCE':
-      if (self.props.model) {
-        store.dispatch(reset());
+      if (store.getState().nwbfile.model) {
+        store.dispatch(clearModel());
       }
       store.dispatch(loadNWBFile(event.data.payload));
       break;

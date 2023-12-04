@@ -13,7 +13,6 @@ import { withStyles } from '@material-ui/core/styles';
 import { fontColor } from '../theme';
 import logo_nwb_explorer from '../resources/logos/nwb-explorer.png';
 import logo_metacell from '../resources/logos/metacell_logo.png';
-import logo_osb from '../resources/logos/osb.png';
 import logo_osb_colour from '../resources/logos/osblogofull.png';
 import { NWBE_WEBSITE } from '../constants';
 
@@ -36,7 +35,7 @@ const AboutContent = withStyles(styles)(({ classes }) => (
       </Grid>
       <Grid item xs={6}>
         <Box mb={1} justifyContent="flex-end" display="flex" alignItems="center">
-          <Typography variant='caption' style={{marginRight: '0.75rem'}}>Powered by</Typography>
+          <Typography variant='caption' style={{ marginRight: '0.75rem' }}>Powered by</Typography>
           <Link href="http://www.metacell.us" target="_blank">
             <img width="120" src={logo_metacell} />
           </Link>

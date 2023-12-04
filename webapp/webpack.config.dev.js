@@ -8,6 +8,10 @@ extended.devServer = {
   inline: true,
   publicPath: '/geppetto/build',
 
+  headers: {
+    // Set Content-Security-Policy header to allow only self as frame ancestor
+    "Content-Security-Policy": "frame-ancestors '*' 'wsl.localhost' 'localhost'"
+  },
   proxy: [
     {
       path: '/',
