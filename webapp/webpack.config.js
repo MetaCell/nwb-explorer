@@ -39,21 +39,7 @@ const availableExtensions = [
     from: path.resolve(__dirname, geppettoClientPath, 'style/css/gpt-icons.css'),
     to: 'static/css',
   },
-  {
-    from: path.resolve(__dirname, geppettoClientPath, 'static/*'),
-    to: 'static',
-    flatten: true,
-  },
-  {
-    from: path.resolve(__dirname, geppettoCorePath, 'static/*'),
-    to: 'static',
-    flatten: true,
-  },
-  {
-    from: path.resolve(__dirname, geppettoUIPath, 'static/*'),
-    to: 'static',
-    flatten: true,
-  },
+
   {
     from: path.resolve(__dirname, 'images/*'),
     to: '',
@@ -96,6 +82,7 @@ module.exports = function (env) {
 
   return {
     entry: entries,
+    mode: 'development',
 
     optimization: {
       splitChunks: {
@@ -122,21 +109,16 @@ module.exports = function (env) {
        *     analyzerMode: 'static'
        * }),
        */
-      new CopyWebpackPlugin(availableExtensions),
+      new CopyWebpackPlugin({ patterns: availableExtensions }),
+   
+
+      new MiniCssExtractPlugin({ filename: '[name].css' }),
       new HtmlWebpackPlugin({
         filename: 'geppetto.vm',
         template: path.resolve(__dirname, 'geppetto.ejs'),
         GEPPETTO_CONFIGURATION: geppettoConfig,
-        /*
-         * chunks: ['main'] Not specifying the chunk since its not possible
-         * yet (need to go to Webpack2) to specify UTF-8 as charset without
-         * which we have errors
-         */
         chunks: [],
       }),
-
-      new webpack.DefinePlugin({ 'process.env': { NODE_ENV: JSON.stringify(isProduction ? 'production' : 'development') } }),
-      new MiniCssExtractPlugin({ filename: '[name].css' }),
     ],
 
     resolve: {
@@ -150,6 +132,8 @@ module.exports = function (env) {
         handlebars: 'handlebars/dist/handlebars.js',
       },
       extensions: ['*', '.js', '.json', '.ts', '.tsx', '.jsx'],
+      // fallback: { fs: false }
+      
     },
 
     module: {
@@ -171,6 +155,17 @@ module.exports = function (env) {
           },
         },
         {
+          test: /\.less$/,
+          use: [
+            { loader: 'style-loader' },
+            { loader: 'css-loader' },
+            {
+              loader: 'less-loader',
+              options: { lessOptions: { modifyVars: { url: path.resolve(__dirname, geppettoConfig.themes) } } },
+            },
+          ],
+        },
+        {
           test: /\.tsx?$/,
           loader: 'awesome-typescript-loader',
         },
@@ -179,12 +174,12 @@ module.exports = function (env) {
           loader: 'ignore-loader',
         },
         {
-          test: /\.(py|jpeg|svg|gif|css|md|hbs|dcm|gz|xmi|dzi|sh|obj|yml|nii)$/,
+          test: /\.(py|svg|gif|md|hbs|dcm|gz|xmi|dzi|sh|obj|yml|nii)$/,
           loader: 'ignore-loader',
         },
         {
           test: /\.(png|jpg|eot|ttf|woff|woff2|svg)(\?[a-z0-9=.]+)?$/,
-          loader: 'url-loader?limit=100000',
+          type: 'asset/resource'
         },
         {
           test: /\.css$/,
@@ -193,27 +188,12 @@ module.exports = function (env) {
             { loader: 'css-loader' },
           ],
         },
-        {
-          test: /\.less$/,
-          use: [
-            { loader: 'style-loader' },
-            { loader: 'css-loader' },
-            {
-              loader: 'less-loader',
-              options: { modifyVars: { url: path.resolve(__dirname, geppettoConfig.themes) } },
-            },
-          ],
-        },
+        
         {
           test: /\.html$/,
           loader: 'raw-loader',
         },
       ],
-    },
-    node: {
-      fs: 'empty',
-      child_process: 'empty',
-      module: 'empty',
-    },
+    }
   };
 };

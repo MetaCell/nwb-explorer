@@ -3,10 +3,10 @@ const webpackBaseConfig = require('./webpack.config.js');
 const extended = webpackBaseConfig();
 
 extended.devServer = {
-  progress: false,
+
   port: 8081,
-  inline: true,
-  publicPath: '/geppetto/build',
+
+  static: '/geppetto/build',
 
   headers: {
     // Set Content-Security-Policy header to allow only self as frame ancestor

@@ -3,6 +3,8 @@ global.GEPPETTO_CONFIGURATION = require('./GeppettoConfiguration.json');
 const { initGeppetto } = require('@metacell/geppetto-meta-client/GEPPETTO');
 import { LoadingSpinner } from '@metacell/geppetto-meta-client/components';
 import ErrorDialog from './components/reduxconnect/ErrorDialogContainer';
+
+
 require('babel-polyfill');
 const { Provider } = require('react-redux');
 const configureStore = require('./redux/store').default;
@@ -27,7 +29,7 @@ window.updateFile = nwbFileService.setNWBFileUrl;
 
 
 const store = configureStore();
-
+import './styles/main.less';
 
 (function init () {
   

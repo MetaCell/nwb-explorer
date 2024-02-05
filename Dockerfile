@@ -1,4 +1,4 @@
-FROM node:16 as jsbuild
+FROM node:20 as jsbuild
 
 ENV FOLDER=nwb-explorer
 
