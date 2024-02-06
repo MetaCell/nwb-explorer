@@ -39,12 +39,6 @@ const availableExtensions = [
     from: path.resolve(__dirname, geppettoClientPath, 'style/css/gpt-icons.css'),
     to: 'static/css',
   },
-
-  {
-    from: path.resolve(__dirname, 'images/*'),
-    to: '',
-    flatten: true,
-  },
   {
     from: path.resolve(__dirname, 'static'),
     to: 'static',
