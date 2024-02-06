@@ -82,7 +82,8 @@ module.exports = function (env) {
 
   return {
     entry: entries,
-    mode: 'development',
+    mode: 'production',
+    devtool: 'source-map',
 
     optimization: {
       splitChunks: {
