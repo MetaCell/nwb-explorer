@@ -6,7 +6,7 @@ import FileSampleSelector from '../reduxconnect/FileSampleSelectorContainer';
 
 import logo_osb from '../../resources/logos/osb.png';
 import logo_openworm from '../../resources/logos/openworm.png';
-import logo_metacell from '../../resources/logos/metacell_logo.png';
+import logo_metacell from '../../resources/logos/metacell-blue.png';
 import logo_wellcome from '../../resources/logos/wellcome.png';
 import logo_nwb_explorer from '../../resources/logos/nwb-explorer.png';
 
