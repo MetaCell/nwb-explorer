@@ -103,7 +103,7 @@ def main(branch=branch, skipNpm=False, skipTest=False, development=False):
         execute(cmd=['pip', 'install', '-r', 'requirements.txt'], cwd=ROOT_DIR)
 
         cprint("Installing UI python package...")
-        execute(cmd=['pip', 'install', '.', '--no-deps'], cwd=ROOT_DIR)
+        execute(cmd=['pip', 'install', '-e', '.', '--no-deps'], cwd=ROOT_DIR)
 
     if not skipNpm and os.path.exists(os.path.join(DEPS_DIR, JUPYTER_DIR)):
         cprint("Building Jupyter Geppetto extension...")
