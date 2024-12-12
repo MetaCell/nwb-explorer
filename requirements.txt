@@ -1,13 +1,16 @@
-jupyter_geppetto==1.1.5
+
 jupyter-client==7.0.6
-jupyter-core==4.9.1
-jupyterhub==1.5.0
+jupyter-core<6.0.0
+# jupyterhub==4.0.2
 jupyterthemes==0.20.0
+nbclient==0.10.0
+jupyter_geppetto==1.1.5
 pynwb==2.8.3
 nwbwidgets==0.11.3
 nwbinspector==0.6.0
 quantities
-pyecore==0.13.2
+pyecore==0.15.2
+pygeppetto==0.9.0
 # from nwbwidgets
 botocore==1.35.35
 etelemetry==0.3.0

@@ -40,8 +40,8 @@ RUN pip install setuptools==45
 
 
 
-RUN --mount=type=cache,target=/root/.cache python -m pip install --upgrade pip &&\
-    python utilities/install.py --npm-skip
+# RUN --mount=type=cache,target=/root/.cache python -m pip install --upgrade pip &&\
+#     python utilities/install.py --npm-skip
 
 
 RUN rm -rf /var/lib/apt/lists
