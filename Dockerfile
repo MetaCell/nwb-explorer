@@ -1,4 +1,4 @@
-FROM node:16 as jsbuild
+FROM node:20 as jsbuild
 
 ENV FOLDER=nwb-explorer
 
@@ -21,13 +21,14 @@ RUN jupyter labextension disable @jupyterlab/hub-extension
 RUN apt-get update -qq &&\
     apt-get install python3-tk vim nano unzip git g++ -qq
   
+USER $NB_UID
 COPY --chown=1000:1000 requirements.txt .   
 RUN --mount=type=cache,target=/root/.cache python -m pip install --upgrade pip &&\ 
     pip install -r requirements.txt
-USER $NB_UID
+
 
 COPY --chown=$NB_UID:$NB_UID . $FOLDER 
-COPY --from=jsbuild --chown=1000:1000 $FOLDER $FOLDER
+COPY --from=jsbuild --chown=$NB_UID:$NB_UID $FOLDER $FOLDER
 
 WORKDIR $FOLDER
 RUN mkdir workspace
@@ -35,12 +36,12 @@ RUN mkdir workspace
 
 
 # Temporary fix for deprecated api usage on some requirement
-# RUN pip install setuptools==45
+RUN pip install setuptools==45
 
-USER root
 
-RUN --mount=type=cache,target=/root/.cache python -m pip install --upgrade pip &&\
-    python utilities/install.py --npm-skip
+
+# RUN --mount=type=cache,target=/root/.cache python -m pip install --upgrade pip &&\
+#     python utilities/install.py --npm-skip
 
 
 RUN rm -rf /var/lib/apt/lists

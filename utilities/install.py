@@ -9,8 +9,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 
 
 # repos
-JUPYTER = 'https://github.com/openworm/org.geppetto.frontend.jupyter.git'
-PYGEPPETTO = 'https://github.com/openworm/pygeppetto.git'
+GEPPETTO_META = 'git@github.com:MetaCell/geppetto-meta.git'
 
 
 ROOT_DIR = os.path.join(HERE, os.pardir)
@@ -83,27 +82,24 @@ def main(branch=branch, skipNpm=False, skipTest=False, development=False):
         os.chdir(DEPS_DIR)
         # install pygeppetto
         cprint("Installing pygeppetto")
-        clone(repository=PYGEPPETTO,
-              folder='pygeppetto',
-              default_branch_or_tag='development'
+        clone(repository=GEPPETTO_META,
+              folder='geppetto-meta',
+              default_branch_or_tag='develop'
               )
-        execute(cmd=['pip', 'install', '-e', '.'], cwd='pygeppetto')
+        execute(cmd=['pip', 'install', '-e', '.'], cwd='geppetto-meta/pygeppetto')
 
         # install jupyter geppetto
         cprint("Installing org.geppetto.frontend.jupyter")
-        clone(repository=JUPYTER,
-              folder=JUPYTER_DIR,
-              default_branch_or_tag='development'
-              )
+        
         os.chdir(ROOT_DIR)
-        execute(cmd=['pip', 'install', '-e', '.'], cwd=os.path.join(DEPS_DIR, JUPYTER_DIR))
+        execute(cmd=['pip', 'install', '-e', '.'], cwd=os.path.join(DEPS_DIR, "geppetto-meta/jupyter-geppetto"))
     else:
         # install requirements
         cprint("Installing requirements")
         execute(cmd=['pip', 'install', '-r', 'requirements.txt'], cwd=ROOT_DIR)
 
         cprint("Installing UI python package...")
-        execute(cmd=['pip', 'install', '.', '--no-deps'], cwd=ROOT_DIR)
+        execute(cmd=['pip', 'install', '-e', '.', '--no-deps'], cwd=ROOT_DIR)
 
     if not skipNpm and os.path.exists(os.path.join(DEPS_DIR, JUPYTER_DIR)):
         cprint("Building Jupyter Geppetto extension...")

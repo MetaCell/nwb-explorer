@@ -38,7 +38,7 @@ source nwb-explorer/bin/activate
 Or, with conda
 
 ```bash
-conda create -n nwb-explorer python=3.9
+conda create -n nwb-explorer python=3.12
 conda activate nwb-explorer
 ```
 
