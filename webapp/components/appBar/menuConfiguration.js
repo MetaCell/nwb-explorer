@@ -60,7 +60,7 @@ const firstItemStyle = {
 
 export default {
   global: {
-    color: 'white',
+    color: '#ffffff',
     subMenuOpenOnHover: true,
     menuOpenOnClick: true,
     menuPadding: 0,

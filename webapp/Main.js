@@ -3,15 +3,15 @@ global.GEPPETTO_CONFIGURATION = require('./GeppettoConfiguration.json');
 const { initGeppetto } = require('@metacell/geppetto-meta-client/GEPPETTO');
 import { LoadingSpinner } from '@metacell/geppetto-meta-client/components';
 import ErrorDialog from './components/reduxconnect/ErrorDialogContainer';
-
+import CssBaseline from '@mui/material/CssBaseline';
 
 require('babel-polyfill');
 const { Provider } = require('react-redux');
 const configureStore = require('./redux/store').default;
 
-const ReactDOM = require('react-dom');
+const { createRoot } = require('react-dom/client');
 const React = require('react');
-const { MuiThemeProvider } = require('@material-ui/core/styles');
+const { ThemeProvider } = require('@mui/material/styles');
 
 const Utils = require('./Utils').default;
 
@@ -29,6 +29,7 @@ window.updateFile = nwbFileService.setNWBFileUrl;
 
 
 const store = configureStore();
+import '@metacell/geppetto-meta-ui/flex-layout/style/dark.css'
 import './styles/main.less';
 
 (function init () {
@@ -67,15 +68,16 @@ import './styles/main.less';
 
   window.load = loadFromEvent;
 
-
-  ReactDOM.render(
-    <MuiThemeProvider theme={theme}>
+  const container = document.getElementById("mainContainer");
+  const root = createRoot(container); // createRoot(container!) if you use TypeScript
+  root.render(
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
       <Provider store={store}>
         <App />
         <LoadingSpinner />
         <ErrorDialog />
       </Provider>
-    </MuiThemeProvider>,
-    document.getElementById('mainContainer'),
+    </ThemeProvider>
   );
 }());

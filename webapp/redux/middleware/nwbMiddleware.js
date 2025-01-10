@@ -199,7 +199,7 @@ function handleImportTimestamps (store, next, action) {
     timestamps.getValue().getPath = () => timestamps.getPath();
 
     timestamps.getValue().resolve(timeValue => {
-      next(GeppettoActions.deleteInstance(timestamps)),
+      next(GeppettoActions.clientActions.deleteInstance(timestamps)),
       Instances.getInstance(time_path);
 
       next(action);

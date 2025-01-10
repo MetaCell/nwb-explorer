@@ -1,5 +1,5 @@
 import React from 'react';
-import IconButton from '@material-ui/core/IconButton';
+import IconButton from '@mui/material/IconButton';
 import { isString } from '../Utils';
 
 const IconComponent = ({ action, color, tooltip, Icon, }) => (
@@ -8,7 +8,7 @@ const IconComponent = ({ action, color, tooltip, Icon, }) => (
     className="list-icon"
     title={tooltip}
     onClick={action}
-  >
+    size="large">
     <Icon />
   </IconButton>
 );

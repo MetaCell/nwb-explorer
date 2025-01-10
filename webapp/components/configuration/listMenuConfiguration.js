@@ -1,5 +1,5 @@
 import React from 'react';
-import Icon from '@material-ui/core/Icon';
+import Icon from '@mui/material/Icon';
 
 import {
   bgRegular,
@@ -54,7 +54,7 @@ export const listMenuConfigurations = (Instances, entity, availablePlots) => {
 
   const config = {
     global: {
-      color: 'white',
+      color: '#ffffff',
       subMenuOpenOnHover: true,
       menuOpenOnClick: true,
       menuPadding: 0,

@@ -1,14 +1,10 @@
-import createMuiTheme from '@material-ui/core/styles/createTheme';
-import lessToJs from 'less-vars-to-js';
+import { createTheme } from '@mui/material/styles';
 
 
 // 6require('./styles/flexlayout.css');
 
 // Read the less file in as string: using the raw-loader to override the default loader
-export const vars = lessToJs(require('!!raw-loader!./styles/variables.less'), {
-  resolveVariables: true,
-  stripPrefix: true,
-});
+import vars from './styles/variables.js';
 
 export const {
   primaryColor,
@@ -25,6 +21,8 @@ export const {
   radius,
   buttonOutlineColor,
 } = vars;
+
+console.log(vars)
 
 const baseTheme = {
   typography: {
@@ -43,108 +41,118 @@ const baseTheme = {
     primary: { main: primaryColor },
     secondary: { main: secondaryColor },
     error: { main: '#ffffff' },
-    text: { secondary: 'white' },
+    text: { secondary: '#ffffff' },
   },
-  overrides: {
+  components: {
     MuiInput: {
-      input: {
-        outline: 'none !important',
-        border: 'none !important',
-        boxShadow: 'none !important',
-        fontSize: '16px',
+      styleOverrides: {
+        input: {
+          outline: 'none !important',
+          border: 'none !important',
+          boxShadow: 'none !important',
+          fontSize: '16px',
+        },
+        root: { color: fontColor },
       },
-      root: { color: fontColor },
     },
     MuiMenuItem: {
-      root: {
-        color: fontColor,
-        paddingTop: `calc(${gutter} / 2)`,
-        fontSize: '13px',
-      },
-      gutters: {
-        paddingLeft: `calc(${gutter} * 2)`,
-        paddingRight: `calc(${gutter} * 2)`,
-      },
+      styleOverrides: {
+        root: {
+          color: fontColor,
+          paddingTop: `calc(${gutter} / 2)`,
+          fontSize: '13px',
+        },
+        gutters: {
+          paddingLeft: `calc(${gutter} * 2)`,
+          paddingRight: `calc(${gutter} * 2)`,
+        },
+      }
     },
     MuiPaper: {
-      root: {
-        color: 'inherit',
-        backgroundColor: bgRegular,
-        boxShadow: 'none !important',
-        borderRadius: '2px !important',
-      },
-    },
-    MuiFormControl: { root: { overflow: 'visible' } },
-    MuiBackdrop: { root: { zIndex: 9999 } },
-    MuiButton: {
-      contained: {
-        color: fontColor,
-        backgroundColor: bgInputs,
-        borderRadius: '2px',
-        textTransform: 'uppercase',
-      },
-      outlined: {
-        borderColor: buttonOutlineColor,
-        borderRadius: '16px',
-        color: buttonOutlineColor,
-        fontSize: '13px',
-        lineHeight: '13px',
-        fontWeight: '400',
-        marginBottom: '9px',
-        padding: '8px 15px',
-        '&:hover': {
-          background: 'rgba(255, 255, 255, 0.1)',
-          borderColor: buttonOutlineColor,
+      styleOverrides: {
+        root: {
+          color: 'inherit',
+          backgroundColor: bgRegular,
+          boxShadow: 'none !important',
+          borderRadius: '2px !important',
         },
-      },
-      containedSecondary: { color: fontColor },
-      containedPrimary: { color: fontColor },
+      }
+    },
+    MuiFormControl: { styleOverrides: { root: { overflow: 'visible' } } },
+    MuiBackdrop: { styleOverrides: { root: { zIndex: 9999 } } },
+    MuiButton: {
+      styleOverrides: {
+        contained: {
+          color: fontColor,
+          backgroundColor: bgInputs,
+          borderRadius: '2px',
+          textTransform: 'uppercase',
+        },
+        outlined: {
+          borderColor: buttonOutlineColor,
+          borderRadius: '16px',
+          color: buttonOutlineColor,
+          fontSize: '13px',
+          lineHeight: '13px',
+          fontWeight: '400',
+          marginBottom: '9px',
+          padding: '8px 15px',
+          '&:hover': {
+            background: 'rgba(255, 255, 255, 0.1)',
+            borderColor: buttonOutlineColor,
+          },
+        },
+        containedSecondary: { color: fontColor },
+        containedPrimary: { color: fontColor },
+      }
     },
     MuiTypography: {
-      color: '#FFF',
-      fontWeight: '400',
-      h1: {
-        fontSize: '34px',
-        lineHeight: '40px',
-      },
-      h2: {
-        fontSize: '20px',
-        lineHeight: '32px',
-        letterSpacing: '0.5px',
-        marginBottom: '41px',
-        color: 'rgba(255,255,255,0.3)',
+      styleOverrides: {
+        color: '#FFF',
         fontWeight: '400',
+        h1: {
+          fontSize: '34px',
+          lineHeight: '40px',
+        },
+        h2: {
+          fontSize: '20px',
+          lineHeight: '32px',
+          letterSpacing: '0.5px',
+          marginBottom: '41px',
+          color: 'rgba(255,255,255,0.3)',
+          fontWeight: '400',
+        },
+        h3: {
+          fontSize: '16px',
+          lineHeight: '18px',
+          marginBottom: 10,
+        },
+        h4: {
+          fontSize: '12px',
+          lineHeight: '20px',
+          letterSpacing: '0.32px',
+          color: bgInputs,
+          textTransform: 'Uppercase',
+          margin: '13px 0 11px',
+        },
+        h6: {
+          fontSize: '12px',
+          fontWeight: '400',
+          lineHeight: '20px',
+          marginBottom: '5px',
+          color: primaryColor,
+        },
+        body2: {
+          fontSize: '14px',
+          fontWeight: '400',
+          marginBottom: '5px',
+        },
+        root: { color: fontColor },
       },
-      h3: {
-        fontSize: '16px',
-        lineHeight: '18px',
-        marginBottom: 10,
-      },
-      h4: {
-        fontSize: '12px',
-        lineHeight: '20px',
-        letterSpacing: '0.32px',
-        color: bgInputs,
-        textTransform: 'Uppercase',
-        margin: '13px 0 11px',
-      },
-      h6: {
-        fontSize: '12px',
-        fontWeight: '400',
-        lineHeight: '20px',
-        marginBottom: '5px',
-        color: primaryColor,
-      },
-      body2: {
-        fontSize: '14px',
-        fontWeight: '400',
-        marginBottom: '5px',
-      },
-      root: { color: fontColor },
     },
-    MuiIcon: { fontSizeSmall: { fontSize: '10px' } },
-    MuiDialog: { paper: { zIndex: 10000 } }
+    MuiIcon: { styleOverrides: { fontSizeSmall: { fontSize: '10px' } } },
+    MuiDialog: { styleOverrides:{ paper: { zIndex: 10000 } } }
   },
 };
 
-export default createMuiTheme(baseTheme);
+export default createTheme(baseTheme);

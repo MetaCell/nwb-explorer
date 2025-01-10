@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
-import Icon from '@material-ui/core/Icon';
-import Zoom from '@material-ui/core/Zoom';
-import { withStyles } from '@material-ui/core/styles';
-import CircularProgress from '@material-ui/core/CircularProgress';
+import Icon from '@mui/material/Icon';
+import Zoom from '@mui/material/Zoom';
+import CircularProgress from '@mui/material/CircularProgress';
 
-const styles = theme => ({
+const styles = {
   root: {
     height: '100%',
     display: 'flex',
@@ -58,7 +57,7 @@ const styles = theme => ({
     position: 'absolute',
   },
 
-});
+};
 
 function extractImageSeriesPaths (instancePath) {
   const projectId = Project.getId();
@@ -178,7 +177,7 @@ class ImageViewer extends Component {
   }
 
   render () {
-    const { instancePath, classes } = this.props;
+    const { instancePath } = this.props;
     const { activeStep, hoverImg, imageLoading, autoplayToggled, } = this.state;
 
     const imagePaths = extractImageSeriesPaths(instancePath);
@@ -187,14 +186,14 @@ class ImageViewer extends Component {
 
     return (
       <div
-        className={classes.root}
+        sx={styles.root}
         onClick={e => this.clickImage(e, timestamps.length)}
         onMouseEnter={() => this.setState({ hoverImg: true })}
         onMouseLeave={() => this.setState({ hoverImg: false })}
       >
 
         <Zoom in={hoverImg} timeout={200}>
-          <div className={classes.arrowLeft}>
+          <div sx={styles.arrowLeft}>
             <Icon className="fa fa-chevron-left imgBtn" />
           </div>
         </Zoom>
@@ -205,17 +204,17 @@ class ImageViewer extends Component {
           <CircularProgress
             size={24}
             thickness={4}
-            className={classes.spinner}
+            sx={styles.spinner}
           />
         )}
 
-        <p className={classes.watermarkRight}>{timestamps[activeStep]}</p>
-        <p className={classes.watermarkLeft}>{`${activeStep}/${timestamps.length - 1}`}</p>
+        <p sx={styles.watermarkRight}>{timestamps[activeStep]}</p>
+        <p sx={styles.watermarkLeft}>{`${activeStep}/${timestamps.length - 1}`}</p>
 
         <Zoom in={hoverImg} timeout={{ enter: 1000, exit: 1500 }}>
           <a
             download
-            className={classes.download}
+            sx={styles.download}
             href={imagePaths[activeStep]}
           >
             <Icon className="fa fa-download imgBtn" />
@@ -223,7 +222,7 @@ class ImageViewer extends Component {
         </Zoom>
 
         <Zoom in={hoverImg} timeout={{ enter: 1000, exit: 1500 }}>
-          <span className={classes.play}>
+          <span sx={styles.play}>
             <Icon
               onClick={() => this.autoPlay()}
               className={autoplayToggled ? 'fa fa-pause imgBtn' : 'fa fa-play imgBtn'}
@@ -232,7 +231,7 @@ class ImageViewer extends Component {
         </Zoom>
 
         <Zoom in={hoverImg} timeout={200}>
-          <div className={classes.arrowRight}>
+          <div sx={styles.arrowRight}>
             <Icon className="fa fa-chevron-right imgBtn" />
           </div>
         </Zoom>
@@ -246,11 +245,11 @@ class ImageViewer extends Component {
     const { imagePaths, classes } = this.props;
     return imagePaths.map((image, index) => {
       if (image == imagePaths[activeStep]) {
-        return <img key="active" className={classes.img} src={image} onLoad={() => this.onLoadImage(index)} />;
+        return <img key="active" sx={styles.img} src={image} onLoad={() => this.onLoadImage(index)} />;
       }
-      return <img key={image} className={classes.img} src={image} style={{ display: 'none' }} onLoad={() => this.onLoadImage(index)} />;
+      return <img key={image} sx={styles.img} src={image} style={{ display: 'none' }} onLoad={() => this.onLoadImage(index)} />;
     });
   }
 }
 
-export default withStyles(styles)(ImageViewer);
+export default ImageViewer;
