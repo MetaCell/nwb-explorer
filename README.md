@@ -23,8 +23,8 @@ Alternatively, to see a working demo of nwb explorer without a local setup see t
 Below you will find the software you need to install to use nwb explorer (and the versions we used):
 
 * Git (2+).
-* Node (10+) and npm (6+).
-* Python 3 (3.7+), pip (20+)
+* Node (20+) and npm (7+).
+* Python 3 (3.10+), pip (20+)
 
 #### Python Dependencies
 
