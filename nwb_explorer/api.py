@@ -20,6 +20,7 @@ def create_notebook(filename):
     from nbformat.v4.nbbase import new_notebook
     from nbformat import sign
     import codecs
+    logging.info("Creating notebook {}".format(filename))
 
     directory = os.path.dirname(filename)
     if not os.path.exists(directory):
@@ -81,7 +82,7 @@ class NWBController:  # pytest: no cover
 
     @get('/notebook')
     def new_notebook(handler: IPythonHandler, path):
+        path = os.path.join('workspace', path)
         if not os.path.exists(path):
-            logging.info("Creating notebook {}".format(path))
             create_notebook(path)
         handler.redirect('notebooks/' + path)
