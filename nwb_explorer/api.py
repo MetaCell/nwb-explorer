@@ -82,7 +82,6 @@ class NWBController:  # pytest: no cover
 
     @get('/notebook')
     def new_notebook(handler: IPythonHandler, path):
-        path = os.path.join('workspace', path)
-        if not os.path.exists(path):
+        if not os.path.exists(os.path.join('workspace', path)):
             create_notebook(path)
         handler.redirect('notebooks/' + path)
