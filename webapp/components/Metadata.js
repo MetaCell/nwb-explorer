@@ -24,7 +24,7 @@ export default class Metadata extends React.Component {
     }
 
     const type
-      = geppettoInstanceOrType instanceof Type
+      = !geppettoInstanceOrType.getType
         ? geppettoInstanceOrType
         : geppettoInstanceOrType.getType();
     if (this.props.showObjectInfo) {

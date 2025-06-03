@@ -7,7 +7,7 @@ module.exports = env => {
 
     port: 8081,
 
-    static: '/geppetto/build',
+    // static: '/geppetto/build',
 
     headers: {
     // Set Content-Security-Policy header to allow only self as frame ancestor

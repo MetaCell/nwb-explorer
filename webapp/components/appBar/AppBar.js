@@ -65,9 +65,8 @@ export default class Appbar extends Component {
   }
 
   render () {
-    const { classes } = this.props;
     return (<>
-      <AppBar position="static" color="secondary">
+      <AppBar position="static" color="secondary" sx={{ px :1, gap: 1 }}>
         <Toolbar variant="dense" classes={{ gutters: 'toolbar-gutters' }}>
           <Grid
             container
@@ -77,42 +76,6 @@ export default class Appbar extends Component {
               configuration={toolbarConfig}
               menuHandler={this.menuHandler.bind(this)}
             />
-            {/* <Grid item >
-              <Box id="main-header">
-                <Typography variant="h1">
-                  NWB Explorer <sup>beta</sup>
-                </Typography>
-              </Box>
-            </Grid>
-
-            <Grid item className="icon-container">
-
-              <CustomTooltip tooltip="Back">
-                <IconButton
-                  onClick={() => this.handleClickBack()}
-                >
-                  <Icon color="error" className='fa fa-home'/>
-                </IconButton>
-              </CustomTooltip>
-
-              <CustomTooltip tooltip="Restore tabs">
-                <IconButton
-                  onClick={() => this.handleShowLists()}
-                >
-                  <Icon color="error" className='fa fa-sitemap' />
-                </IconButton>
-              </CustomTooltip>
-
-              <CustomTooltip tooltip="Show all content">
-                <IconButton
-                  onClick={() => this.handleShowAll()}
-                >
-                  <Icon color="error" className='fa fa-list' />
-                </IconButton>
-              </CustomTooltip>
-
-            </Grid>
-           */}
           </Grid>
         </Toolbar>
 

@@ -1,12 +1,5 @@
 import React from 'react';
-import {
-  bgRegular,
-  bgDark,
-  font,
-  primaryColor,
-  gutter,
-  radius,
-} from '../../theme';
+
 
 import { openDialog } from '../../redux/actions/general';
 
@@ -14,16 +7,16 @@ import { APPBAR_CONSTANTS, NWBE_WEBSITE, NWB_WEBSITE } from '../../constants';
 
 const style = {
   standard: {
-    background: bgRegular,
+    background: "var(--bg-regular)",
     borderRadius: 0,
     border: 0,
     boxShadow: '0px 0px',
     color: '#ffffff',
-    paddingLeft: `calc(${gutter} * 2)`,
-    paddingRight: `calc(${gutter} * 2)`,
+    paddingLeft: `calc(var(--gutter) * 2)`,
+    paddingRight: `calc(var(--gutter) * 2)`,
     fontSize: 16,
     fontWeight: 400,
-    fontFamily: font,
+    fontFamily: "var(--font)",
     margin: '0px 0px 0px 0px',
     height: '100%',
     borderLeft: 0,
@@ -35,11 +28,11 @@ const style = {
 
     hr: {},
   },
-  lighter: { background: primaryColor },
+  lighter: { background: "var(--primary-color)" },
   padding: {
     fontSize: 16,
-    paddingTop: `calc(${gutter} / 2)`,
-    paddingBottom: `calc(${gutter} / 2)`,
+    paddingTop: `calc(var(--gutter) / 2)`,
+    paddingBottom: `calc(var(--gutter) / 2)`,
   },
 };
 
@@ -50,7 +43,7 @@ const topLevelMenuItemStyle = {
 
 const firstItemCustom = {
   fontWeight: 'bold',
-  paddingLeft: `calc(${gutter} / 2)`,
+  paddingLeft: 1,
 };
 
 const firstItemStyle = {
@@ -64,10 +57,10 @@ export default {
     subMenuOpenOnHover: true,
     menuOpenOnClick: true,
     menuPadding: 0,
-    fontFamily: font,
+    fontFamily: "var(--font)",
     menuFontSize: '14',
     subMenuFontSize: '12',
-    background: bgRegular,
+    background: "var(--bg-regular)",
     buttonsStyle: {
       standard: style.standard,
       hover: {
@@ -85,17 +78,17 @@ export default {
     drawersStyle: {
       standard: {
         top: 10,
-        backgroundColor: bgDark,
+        backgroundColor: "var(--bg-dark)",
         borderRadius: 0,
         color: '#ffffff',
         fontSize: 14,
-        fontFamily: font,
+        fontFamily: "var(--font)",
         minWidth: 110,
         borderLeft: 0,
         borderRight: 0,
         borderBottom: 0,
-        borderBottomLeftRadius: radius,
-        borderBottomRightRadius: radius,
+        borderBottomLeftRadius: "var(--radius)",
+        borderBottomRightRadius: "var(--radius)",
       },
     },
   },

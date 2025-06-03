@@ -1,4 +1,4 @@
-import { createStore } from '@metacell/geppetto-meta-client/common';
+import { createLayoutAndStore } from '@metacell/geppetto-meta-client/common';
 import all from './reducers/all';
 import { GENERAL_DEFAULT_STATUS } from './reducers/general';
 import { NOTEBOOK_DEFAULT_STATUS } from './reducers/notebook';
@@ -17,7 +17,7 @@ const INIT_STATE = {
 };
 
 function configureStore (state = INIT_STATE) {
-  return createStore(
+  return createLayoutAndStore(
     all,
     state,
     [nwbMiddleware],
@@ -25,4 +25,4 @@ function configureStore (state = INIT_STATE) {
   );
 }
 
-export default configureStore;
+export const { store, layoutManager } = configureStore();

@@ -1,30 +1,7 @@
 import { createTheme } from '@mui/material/styles';
 
-
-// 6require('./styles/flexlayout.css');
-
-// Read the less file in as string: using the raw-loader to override the default loader
-import vars from './styles/variables.js';
-
-export const {
-  primaryColor,
-  secondaryColor,
-  font,
-  fontColor,
-  bgLight,
-  bgRegular,
-  bgDark,
-  bgDarker,
-  bgDarkest,
-  bgInputs,
-  gutter,
-  radius,
-  buttonOutlineColor,
-} = vars;
-
-console.log(vars)
-
 const baseTheme = {
+  darkMode: true,
   typography: {
     useNextVariants: true,
     suppressDeprecationWarnings: true,
@@ -38,10 +15,11 @@ const baseTheme = {
     },
   },
   palette: {
-    primary: { main: primaryColor },
-    secondary: { main: secondaryColor },
+    primary: { main: 'rgb(var(--primary-color))' },
+    secondary: { main: 'rgb(var(--secondary-color))' },
     error: { main: '#ffffff' },
-    text: { secondary: '#ffffff' },
+    mode: 'dark',
+    text: { main: "rgb(174, 174, 174)", secondary: '#ffffff' },
   },
   components: {
     MuiInput: {
@@ -52,19 +30,19 @@ const baseTheme = {
           boxShadow: 'none !important',
           fontSize: '16px',
         },
-        root: { color: fontColor },
+        root: { color: 'var(--font-color)' },
       },
     },
     MuiMenuItem: {
       styleOverrides: {
         root: {
-          color: fontColor,
-          paddingTop: `calc(${gutter} / 2)`,
+          color: 'var(--font-color)',
+          paddingTop: 'calc(var(--gutter) / 2)',
           fontSize: '13px',
         },
         gutters: {
-          paddingLeft: `calc(${gutter} * 2)`,
-          paddingRight: `calc(${gutter} * 2)`,
+          paddingLeft: 'calc(var(--gutter) * 2)',
+          paddingRight: 'calc(var(--gutter) * 2)',
         },
       }
     },
@@ -72,7 +50,7 @@ const baseTheme = {
       styleOverrides: {
         root: {
           color: 'inherit',
-          backgroundColor: bgRegular,
+          backgroundColor: 'var(--bg-regular)',
           boxShadow: 'none !important',
           borderRadius: '2px !important',
         },
@@ -83,15 +61,15 @@ const baseTheme = {
     MuiButton: {
       styleOverrides: {
         contained: {
-          color: fontColor,
-          backgroundColor: bgInputs,
+          color: 'var(--font-color)',
+          backgroundColor: 'var(--bg-inputs)',
           borderRadius: '2px',
           textTransform: 'uppercase',
         },
         outlined: {
-          borderColor: buttonOutlineColor,
+          borderColor: 'var(--button-outline-color)',
           borderRadius: '16px',
-          color: buttonOutlineColor,
+          color: 'var(--button-outline-color)',
           fontSize: '13px',
           lineHeight: '13px',
           fontWeight: '400',
@@ -99,11 +77,11 @@ const baseTheme = {
           padding: '8px 15px',
           '&:hover': {
             background: 'rgba(255, 255, 255, 0.1)',
-            borderColor: buttonOutlineColor,
+            borderColor: 'var(--button-outline-color)',
           },
         },
-        containedSecondary: { color: fontColor },
-        containedPrimary: { color: fontColor },
+        containedSecondary: { color: 'var(--font-color)' },
+        containedPrimary: { color: 'var(--font-color)' },
       }
     },
     MuiTypography: {
@@ -131,7 +109,7 @@ const baseTheme = {
           fontSize: '12px',
           lineHeight: '20px',
           letterSpacing: '0.32px',
-          color: bgInputs,
+          color: 'var(--bg-inputs)',
           textTransform: 'Uppercase',
           margin: '13px 0 11px',
         },
@@ -140,14 +118,14 @@ const baseTheme = {
           fontWeight: '400',
           lineHeight: '20px',
           marginBottom: '5px',
-          color: primaryColor,
+          color: 'var(--primary-color)',
         },
         body2: {
           fontSize: '14px',
           fontWeight: '400',
           marginBottom: '5px',
         },
-        root: { color: fontColor },
+        root: { color: 'var(--font-color)' },
       },
     },
     MuiIcon: { styleOverrides: { fontSizeSmall: { fontSize: '10px' } } },

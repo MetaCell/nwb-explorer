@@ -9,7 +9,6 @@ import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid2';
 import Box from '@mui/material/Box';
 import Link from '@mui/material/Link';
-import { fontColor } from '../theme';
 import logo_nwb_explorer from '../resources/logos/nwb-explorer.png';
 import logo_metacell from '../resources/logos/metacell_logo.png';
 import logo_osb_colour from '../resources/logos/osblogofull.png';
@@ -20,7 +19,7 @@ const styles = {
     backgroundColor: '#4a4a4a',
     textAlign: 'center',
     padding: 2,
-    '& .MuiTypography-root': { color: fontColor, },
+    '& .MuiTypography-root': { color: "var(--font-color)", },
   },
 };
 

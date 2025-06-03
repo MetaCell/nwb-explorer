@@ -1,14 +1,6 @@
 import React from 'react';
 import Icon from '@mui/material/Icon';
 
-import {
-  bgRegular,
-  bgDark,
-  font,
-  primaryColor,
-  gutter,
-  radius,
-} from '../../theme';
 
 const style = {
   standard: {
@@ -22,11 +14,11 @@ const style = {
     fontSize: '10px',
     hr: {},
   },
-  lighter: { background: primaryColor },
+  lighter: { background: "var(primary-color)" },
   padding: {
     fontSize: 15,
-    paddingTop: `calc(${gutter} / 2)`,
-    paddingBottom: `calc(${gutter} / 2)`,
+    paddingTop: 1,
+    paddingBottom: 1,
   },
 };
 
@@ -58,10 +50,10 @@ export const listMenuConfigurations = (Instances, entity, availablePlots) => {
       subMenuOpenOnHover: true,
       menuOpenOnClick: true,
       menuPadding: 0,
-      fontFamily: font,
+      fontFamily: "var(--font)",
       menuFontSize: '14',
       subMenuFontSize: '12',
-      background: bgRegular,
+      background: "var(--bg-regular)",
       buttonsStyle: {
         standard: style.standard,
         position: 'relative',
@@ -80,17 +72,17 @@ export const listMenuConfigurations = (Instances, entity, availablePlots) => {
       drawersStyle: {
         standard: {
           top: 10,
-          backgroundColor: bgDark,
+          backgroundColor: "var(--bg-dark)",
           borderRadius: 0,
           color: '#ffffff',
           fontSize: 14,
-          fontFamily: font,
+          fontFamily: "var(--font)",
           minWidth: 110,
           borderLeft: 0,
           borderRight: 0,
           borderBottom: 0,
-          borderBottomLeftRadius: radius,
-          borderBottomRightRadius: radius,
+          borderBottomLeftRadius: "var(--radius)",
+          borderBottomRightRadius: "var(--radius)",
         },
       },
     },

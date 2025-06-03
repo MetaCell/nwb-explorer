@@ -1,8 +1,11 @@
 export default {
   global: {
-    sideBorders: 8,
-    tabSetHeaderHeight: 26,
-    tabSetTabStripHeight: 26,
+    sideBorders: 0,
+    tabSetHeaderHeight: 122,
+    tabSetTabStripHeight: 122,
+    enableEdgeDock: false,
+    borderSize: 0,
+    borderEnableDrop: false,
   },
   layout: {
     type: 'tabset',
@@ -11,7 +14,7 @@ export default {
     children: [
       {
         type: 'row',
-        weight: 20,
+        weight: 30,
         children: [
           {
             type: 'tabset',

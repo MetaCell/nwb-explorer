@@ -7,7 +7,7 @@ import CssBaseline from '@mui/material/CssBaseline';
 
 require('babel-polyfill');
 const { Provider } = require('react-redux');
-const configureStore = require('./redux/store').default;
+const store = require('./redux/store').store;
 
 const { createRoot } = require('react-dom/client');
 const React = require('react');
@@ -21,16 +21,15 @@ const App = require('./components/reduxconnect/AppContainer').default;
 const nwbFileService = require('./services/NWBFileService').default;
 import { loadNWBFile, clearModel } from './redux/actions/nwbfile';
 
-initGeppetto(true);
+initGeppetto(true, false);
 // MUI theming
 const theme = require('./theme').default;
 
 window.updateFile = nwbFileService.setNWBFileUrl;
 
 
-const store = configureStore();
-import '@metacell/geppetto-meta-ui/flex-layout/style/dark.css'
-import './styles/main.less';
+import '@metacell/geppetto-meta-client/common/layout/styles/dark.css';
+import './styles/nwb.css';
 
 (function init () {
   

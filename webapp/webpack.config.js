@@ -149,6 +149,11 @@ module.exports = function (env) {
             },
           },
         },
+
+        {
+          test: /main\.less$/,
+          loader: 'ignore-loader',
+        },
         {
           test: /\.less$/,
           use: [
@@ -177,9 +182,9 @@ module.exports = function (env) {
           type: 'asset/resource'
         },
         {
-          test: /\.css$/,
+          test: /\.css$/i,
           use: [
-            { loader: MiniCssExtractPlugin.loader },
+            { loader: "style-loader", },
             { loader: 'css-loader' },
           ],
         },

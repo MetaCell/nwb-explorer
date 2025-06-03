@@ -28,7 +28,7 @@ export default class FileUrlSelector extends React.Component {
   render () {
     return (
       <div>
-        <Typography variant="h6" className="input-label">What file do you wish to load?</Typography>
+        <Typography variant="h6" >What file do you wish to load?</Typography>
         <Box display="flex" alignItems="flex-end" justifyContent="space-between" className="input-with-button">
           <TextField
             id="nwb-url-input"
@@ -36,6 +36,7 @@ export default class FileUrlSelector extends React.Component {
             className="input-form-control"
             placeholder="Paste a URL pointing to an NWB v2 file"
             margin="0"
+            variant="standard"
             slotProps={{ input: { shrink: true } }}
             onChange={evt => this.updateInputValue(evt)}
           />
