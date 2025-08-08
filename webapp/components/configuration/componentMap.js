@@ -1,6 +1,6 @@
 import React, { lazy, Suspense } from 'react';
 import NWBPlot from '../reduxconnect/NWBPlotContainer';
-import CircularProgress from '@material-ui/core/CircularProgress';
+import CircularProgress from '@mui/material/CircularProgress';
 import FileExplorerPage from '../pages/FileExplorerPage';
 import Metadata from '../Metadata';
 import NWBListViewer from '../reduxconnect/NWBListViewerContainer';

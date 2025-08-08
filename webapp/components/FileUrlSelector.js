@@ -1,8 +1,8 @@
 import React from 'react';
-import TextField from '@material-ui/core/TextField';
-import Box from '@material-ui/core/Box';
-import Button from '@material-ui/core/Button';
-import Typography from '@material-ui/core/Typography';
+import TextField from '@mui/material/TextField';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import Typography from '@mui/material/Typography';
 
 export default class FileUrlSelector extends React.Component {
   constructor (props) {
@@ -28,7 +28,7 @@ export default class FileUrlSelector extends React.Component {
   render () {
     return (
       <div>
-        <Typography variant="h6" className="input-label">What file do you wish to load?</Typography>
+        <Typography variant="h6" >What file do you wish to load?</Typography>
         <Box display="flex" alignItems="flex-end" justifyContent="space-between" className="input-with-button">
           <TextField
             id="nwb-url-input"
@@ -36,9 +36,8 @@ export default class FileUrlSelector extends React.Component {
             className="input-form-control"
             placeholder="Paste a URL pointing to an NWB v2 file"
             margin="0"
-            InputLabelProps={
-              { shrink: true }
-            }
+            variant="standard"
+            slotProps={{ input: { shrink: true } }}
             onChange={evt => this.updateInputValue(evt)}
           />
           <Button

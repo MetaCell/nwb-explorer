@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Button, Typography, FormControl, Select, MenuItem, Grid, } from '@material-ui/core';
+import { Box, Button, Typography, FormControl, Select, MenuItem, Grid2 as Grid, } from '@mui/material';
 
 const SAMPLE_LINK_FERGUSON = 'https://github.com/OpenSourceBrain/NWBShowcase/raw/master/FergusonEtAl2015/FergusonEtAl2015.nwb';
 const SAMPLE_LINK_FERGUSON_2 = 'https://github.com/OpenSourceBrain/NWBShowcase/raw/master/FergusonEtAl2015/FergusonEtAl2015_PYR2.nwb';
@@ -63,6 +63,7 @@ export default class FileSampleSelector extends React.Component {
                     className="button badge-button"
                     name="ferguson"
                     displayEmpty
+                    variant="outlined"
                     inputProps={{ 'aria-label': 'ferguson' }}
                   >
                     <MenuItem value="" disabled>
@@ -85,6 +86,7 @@ export default class FileSampleSelector extends React.Component {
                     className="button badge-button"
                     name="ferguson"
                     displayEmpty
+                    variant="outlined"
                     inputProps={{ 'aria-label': 'ferguson' }}
                   >
                     <MenuItem value="" disabled>

@@ -73,6 +73,10 @@ export default (state = {}, action) => {
     }
     return state;
   }
+  case LayoutActions.layoutActions.UPDATE_LAYOUT: {
+    window.dispatchEvent(new Event('resize')); // Triggers widgets resize on maximize
+    return state;
+  }
   default:
     return state;
   }

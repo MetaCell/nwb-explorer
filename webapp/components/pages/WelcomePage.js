@@ -1,5 +1,6 @@
 import React from 'react';
-import { Box, Paper, Grid, Link, Typography, Hidden, withStyles, } from '@material-ui/core';
+import { Box, Paper, Grid2 as Grid, Link, Typography } from '@mui/material';
+
 
 import FileUrlSelector from '../reduxconnect/FileUrlSelectorContainer';
 import FileSampleSelector from '../reduxconnect/FileSampleSelectorContainer';
@@ -10,24 +11,25 @@ import logo_metacell from '../../resources/logos/metacell-blue.png';
 import logo_wellcome from '../../resources/logos/wellcome.png';
 import logo_nwb_explorer from '../../resources/logos/nwb-explorer.png';
 
-const styles = theme => ({
-  leftColumn: {
-    padding: '0 30px',
+const styles = {
+  leftColumn:  {
     display: 'flex',
     flexDirection: 'column',
-    [theme.breakpoints.up('sm')]: { padding: '0 89px 0 57px' },
-    [theme.breakpoints.up('md')]: { padding: '0 30px' },
-    [theme.breakpoints.up('lg')]: { padding: '0 89px 0 57px' },
+    padding: {
+      xs: '0 30px',
+      sm: '0 89px 0 57px',
+      md: '0 30px',
+      lg: '0 89px 0 57px',
+    }
   },
-});
+};
 
 class WelcomePage extends React.Component {
   render () {
-    const { classes } = this.props;
     return (
-      <div id="splash" className="h-100">
+      (<div id="splash" className="h-100">
         <Grid container className="h-100 p-0">
-          <Grid item sm={12} md={7} className={classes.leftColumn}>
+          <Grid item size={{ sm: 12, md: 7 }} sx={styles.leftColumn}>
             <Box>
               <img src={logo_nwb_explorer} alt="NWB Explorer" title="NWB Explorer" className="brand-logo" />
               <Typography variant="h1">
@@ -73,19 +75,17 @@ class WelcomePage extends React.Component {
               </Box>
             </Box>
           </Grid>
-          <Hidden smDown>
-            <Grid item sm={4} md={5} className="splash-background">
-              <Box className="logo-container">
-                <Link href="https://metacell.us/" target="_blank" className="logo" title="MetaCell">
-                  <img src={logo_metacell} alt="MetaCell" />
-                </Link>
-              </Box>
-            </Grid>
-          </Hidden>
+          <Grid item size={{ xs: 0, sm: 4, md: 5 }} className="splash-background">
+            <Box className="logo-container">
+              <Link href="https://metacell.us/" target="_blank" className="logo" title="MetaCell">
+                <img src={logo_metacell} alt="MetaCell" />
+              </Link>
+            </Box>
+          </Grid>
         </Grid>
-      </div>
+      </div>)
     );
   }
 }
 
-export default withStyles(styles, { withTheme: true })(WelcomePage);
+export default WelcomePage;

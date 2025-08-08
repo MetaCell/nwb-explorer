@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { GroupComponent } from '@metacell/geppetto-meta-ui/list-viewer/ListViewer';
-import RemoveRedEyeIcon from '@material-ui/icons/RemoveRedEye';
+import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 import { FILEVARIABLE_LENGTH } from '../../constants';
 import { CustomIconComponent } from '../CustomIconComponent';
 import ListControlsComponent from '../ListMenuComponent';

@@ -8,19 +8,17 @@ COPY webapp/yarn.lock .
 COPY webapp/package.json .
 RUN yarn install --network-timeout 1000000000
 COPY webapp/ .
-RUN yarn build
-#Remove node_modules, need to keep the geppetto client
-RUN rm -Rf node_modules
+RUN yarn build && rm -Rf node_modules
 
 ###
-FROM jupyter/base-notebook:hub-1.5.0
+FROM quay.io/jupyter/base-notebook:latest
 ENV NB_UID=jovyan
 ENV FOLDER=nwb-explorer
 USER root
 RUN jupyter labextension disable @jupyterlab/hub-extension
 RUN apt-get update -qq &&\
-    apt-get install python3-tk vim nano unzip git g++ -qq
-  
+    apt-get install python3-tk vim nano unzip git g++ -qq\
+    && rm -rf /var/lib/apt/lists
 USER $NB_UID
 COPY --chown=1000:1000 requirements.txt .   
 RUN --mount=type=cache,target=/root/.cache python -m pip install --upgrade pip &&\ 
@@ -34,23 +32,15 @@ WORKDIR $FOLDER
 RUN mkdir workspace
 
 
-
-# Temporary fix for deprecated api usage on some requirement
-RUN pip install setuptools==45
-
-
-
 # RUN --mount=type=cache,target=/root/.cache python -m pip install --upgrade pip &&\
 #     python utilities/install.py --npm-skip
 
-
-RUN rm -rf /var/lib/apt/lists
+USER root
 # sym link workspace pvc to $FOLDER
 RUN mkdir -p /opt/workspace
 RUN mkdir -p /opt/home
 # clean workspace from tests
 RUN rm -Rf workspace/* 
-RUN chown $NB_UID app.log
 RUN chown $NB_UID /opt/workspace
 RUN chown $NB_UID /opt/home
 RUN ln -s /opt/workspace ./workspace

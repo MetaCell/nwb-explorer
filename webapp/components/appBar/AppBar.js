@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from 'react';
-import { Icon, Box, Tooltip, Grid, AppBar, Typography, Toolbar, IconButton, withStyles, } from '@material-ui/core';
+import { Icon, Box, Tooltip, Grid2 as Grid, AppBar, Typography, Toolbar, IconButton } from '@mui/material';
 import Menu from '@metacell/geppetto-meta-ui//menu/Menu';
 import { WidgetStatus, APPBAR_CONSTANTS } from '../../constants';
 import toolbarConfig from './menuConfiguration';
@@ -65,60 +65,21 @@ export default class Appbar extends Component {
   }
 
   render () {
-    const { classes } = this.props;
-    return (
-      <>
-        <AppBar position="static" color="secondary">
-          <Toolbar variant="dense" classes={{ gutters: 'toolbar-gutters' }}>
-            <Grid
-              container
-              justify="space-between"
-            >
-              <Menu
-                configuration={toolbarConfig}
-                menuHandler={this.menuHandler.bind(this)}
-              />
-              {/* <Grid item >
-                <Box id="main-header">
-                  <Typography variant="h1">
-                    NWB Explorer <sup>beta</sup>
-                  </Typography>
-                </Box>
-              </Grid>
+    return (<>
+      <AppBar position="static" color="secondary" sx={{ px :1, gap: 1 }}>
+        <Toolbar variant="dense" classes={{ gutters: 'toolbar-gutters' }}>
+          <Grid
+            container
+            justifyContent="space-between"
+          >
+            <Menu
+              configuration={toolbarConfig}
+              menuHandler={this.menuHandler.bind(this)}
+            />
+          </Grid>
+        </Toolbar>
 
-              <Grid item className="icon-container">
-
-                <CustomTooltip tooltip="Back">
-                  <IconButton
-                    onClick={() => this.handleClickBack()}
-                  >
-                    <Icon color="error" className='fa fa-home'/>
-                  </IconButton>
-                </CustomTooltip>
-
-                <CustomTooltip tooltip="Restore tabs">
-                  <IconButton
-                    onClick={() => this.handleShowLists()}
-                  >
-                    <Icon color="error" className='fa fa-sitemap' />
-                  </IconButton>
-                </CustomTooltip>
-
-                <CustomTooltip tooltip="Show all content">
-                  <IconButton
-                    onClick={() => this.handleShowAll()}
-                  >
-                    <Icon color="error" className='fa fa-list' />
-                  </IconButton>
-                </CustomTooltip>
-
-              </Grid>
-             */}
-            </Grid>
-          </Toolbar>
-
-        </AppBar>
-      </>
-    );
+      </AppBar>
+    </>);
   }
 }

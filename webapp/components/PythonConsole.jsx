@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import CircularProgress from "@material-ui/core/CircularProgress";
+import CircularProgress from "@mui/material/CircularProgress";
 
 export class NWBPythonConsole extends Component {
   componentDidMount () {}
@@ -15,9 +15,7 @@ export class NWBPythonConsole extends Component {
           id="pythonConsoleFrame"
           src={this.props["pythonNotebookPath"]}
           allowtransparency="true"
-          style={{
-            visibility: !this.props.extensionLoaded ? "hidden" : "visible",
-          }}
+          style={{ visibility: !this.props.extensionLoaded ? "hidden" : "visible" }}
         ></iframe>
         {!this.props.extensionLoaded && (
           <CircularProgress

@@ -3,7 +3,7 @@ import {
   execPythonMessage,
   evalPythonMessage,
 } from '@metacell/geppetto-meta-client/communication/geppettoJupyter/GeppettoJupyterUtils';
-import { teal, deepOrange, lightGreen, purple, amber, cyan, brown, lime, pink, yellow, indigo, red, lightBlue, orange, green, blueGrey, } from '@material-ui/core/colors';
+import { teal, deepOrange, lightGreen, purple, amber, cyan, brown, lime, pink, yellow, indigo, red, lightBlue, orange, green, blueGrey, } from '@mui/material/colors';
 
 const Utils = {
 

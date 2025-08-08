@@ -4,10 +4,12 @@ jupyter-core<6.0.0
 # jupyterhub==4.0.2
 jupyterthemes==0.20.0
 nbclient==0.10.0
+notebook==6.5.7
 jupyter_geppetto==1.1.5
 pynwb==2.8.3
 nwbwidgets==0.11.3
-nwbinspector==0.6.0
+hdmf-zarr==0.10.0
+nwbinspector==0.6.1
 quantities
 pyecore==0.15.2
 pygeppetto==0.9.0
@@ -24,7 +26,7 @@ ipyvolume==0.6.2
 # ipywidgets>=8.0.0
 plotly==5.13.1
 tqdm>=4.36.0
-zarr
+zarr==2.18.4
 tifffile
 ndx-spectrum
 ndx-icephys-meta

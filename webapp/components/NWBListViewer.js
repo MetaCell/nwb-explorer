@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import ListViewer from '@metacell/geppetto-meta-ui/list-viewer/ListViewer';
-import RemoveRedEyeIcon from '@material-ui/icons/RemoveRedEye';
+import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 import listViewerConf from './configuration/listViewerConfiguration.js';
 
 const DEFAULT_MODEL_SETTINGS = { color: '#ffffff' };

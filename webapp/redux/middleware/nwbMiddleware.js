@@ -39,7 +39,7 @@ export const DEFAULT_WIDGETS = {
   python: {
     id: "python",
     name: "Python",
-    status: WidgetStatus.MINIMIZED,
+    status: WidgetStatus.ACTIVE,
     icon: "fa-python",
     component: "PythonConsole",
     panelName: "bottomPanel",
@@ -199,7 +199,7 @@ function handleImportTimestamps (store, next, action) {
     timestamps.getValue().getPath = () => timestamps.getPath();
 
     timestamps.getValue().resolve(timeValue => {
-      next(GeppettoActions.deleteInstance(timestamps)),
+      next(GeppettoActions.clientActions.deleteInstance(timestamps)),
       Instances.getInstance(time_path);
 
       next(action);
@@ -210,7 +210,7 @@ function handleImportTimestamps (store, next, action) {
 }
 
 const nwbMiddleware = store => next => action => {
-  // console.log(action);
+  console.debug(action);
 
   switch (action.type) {
   case LOAD_NWB_FILE: {
