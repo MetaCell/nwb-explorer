@@ -49,7 +49,7 @@ const AboutContent = withStyles(styles)(({ classes }) => (
 
     <Box m={1}>
       <Typography variant="body2" color={fontColor}>
-        NWB Explorer is a web application that can be used by scientists to read, visualize and explore the content of NWB:N 2 files.
+        NWB Explorer is a web-based application that can be used by scientists to read, visualize and explore the content of NWB:N 2 files.
       </Typography>
     </Box>
 
@@ -64,7 +64,7 @@ const AboutContent = withStyles(styles)(({ classes }) => (
 
     <Box m={1}>
       <Typography variant="body2" color={fontColor}>
-        NWB Explorer is being developed in collaboration with:
+        NWB Explorer is being developed by MetaCell in collaboration with the Silver and Gleeson labs and:
       </Typography>
       <Link href="http://www.opensourcebrain.org" target="_blank">
         <img width="200" src={logo_osb_colour} />
