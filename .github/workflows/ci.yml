@@ -33,7 +33,9 @@ jobs:
         pip list
 
     - name: Install NWBE locally
-      run: python utilities/install.py
+      run: |
+          pip install setuptools # for python 3.12
+          python utilities/install.py
 
     - name: Final file info
       run: |
